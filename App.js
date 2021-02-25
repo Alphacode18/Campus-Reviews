@@ -8,13 +8,13 @@ import {
 } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { StyleSheet } from 'react-native';
-import SignUp from './src/screens/SignUp';
+import AuthStack from './navigation/StackNavigator';
 
 export default () => (
   <>
     <IconRegistry icons={EvaIconsPack} />
     <ApplicationProvider {...eva} theme={eva.light}>
-      <SignUp />
+      <AuthStack />
     </ApplicationProvider>
   </>
 );
