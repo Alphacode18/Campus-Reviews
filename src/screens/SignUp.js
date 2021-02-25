@@ -87,7 +87,10 @@ export default register = ({ navigation }) => {
         >
           {loading === false ? <Text>Sign Up</Text> : <Spinner size='small' />}
         </Button>
-        <TouchableOpacity style={{ color: 'white', marginTop: 40 }}>
+        <TouchableOpacity
+          style={{ color: 'white', marginTop: 40 }}
+          onPress={() => navigation.navigate('Login')}
+        >
           <Text>
             <Text>Already have an account? </Text>
             <Text style={{ textDecorationLine: 'underline' }}>Login</Text>
