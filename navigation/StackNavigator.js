@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Login from '../src/screens/Login';
 import SignUp from '../src/screens/SignUp';
 import Home from '../src/screens/Home';
+import Create_Post_Dining from '../src/screens/CreatePost';
 
 const Stack = createStackNavigator();
 
@@ -24,6 +25,11 @@ function AuthStack() {
         <Stack.Screen
           name='SignUp'
           component={SignUp}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='CreatePost'
+          component={CreatePost}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
