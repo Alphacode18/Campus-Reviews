@@ -1,31 +1,40 @@
 import React, { useState } from 'react';
 import { StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { Layout, Text, Button } from '@ui-kitten/components';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { Layout, Text, Button, Input } from '@ui-kitten/components';
 
-export default create_dining_posts = ({ navigation }) => {
-  return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <Layout style={styles.container} level={'1'}>
-        <Text category='h1' style={{ padding: 20, marginTop: 50 }}>
-          Campus Reviews
-        </Text>
-        <Button
-          style={{ width: '50%', borderRadius: 20, marginTop: 20 }}
-          status={'success'}
-          onPress={() => navigation.navigate('SignUp')}
-        >
-          <Text style={{ color: 'white' }}>Sign Up</Text>
-        </Button>
-        <Button
-          style={{ width: '50%', borderRadius: 20, marginTop: 20 }}
-          appearance='filled'
-          onPress={() => navigation.navigate('Login')}
-        >
-          <Text style={{ color: 'white' }}>Login</Text>
-        </Button>
-      </Layout>
-    </TouchableWithoutFeedback>
-  );
+const useInputState = (initialValue = '') => {
+    const [value, setValue] = React.useState(initialValue);
+    return { value, onChangeText: setValue };
+};
+
+export default create_post_dining = ({ navigation }) => {
+    const titleState = useInputState();
+    const postState = useInputState();
+
+    return (
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <Layout style={styles.container} level={'1'}> 
+                <Text category='h1' style={{ padding: 0, marginTop: 0 }}>
+                    Create Post
+                </Text>
+                
+                    <Input
+                        multiline={true}
+                        textStyle={{ minHeight: 256 }}
+                        placeholder='Write text here...'
+                        {...postState}
+                    />
+                <Button
+                    style={{ width: '50%', borderRadius: 20, marginTop: 20 }}
+                    status={'success'}
+                    onPress={() => navigation.navigate('Home')}
+                >
+                    <Text style={{ color: 'white' }}>Create Post</Text>
+                </Button>
+            </Layout>
+        </TouchableWithoutFeedback>
+    );
 };
 
 const styles = StyleSheet.create({
