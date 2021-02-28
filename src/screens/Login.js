@@ -76,6 +76,16 @@ export default register = ({ navigation }) => {
             <Text style={{ textDecorationLine: 'underline' }}>Sign Up</Text>
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={{ color: 'white', marginTop: 40 }}
+          onPress={() => navigation.navigate('ForgotPassword')}
+        >
+          <Text>
+            <Text style={{ textDecorationLine: 'underline' }}>
+              Forgot Your Password ?
+            </Text>
+          </Text>
+        </TouchableOpacity>
       </Layout>
     </TouchableWithoutFeedback>
   );
