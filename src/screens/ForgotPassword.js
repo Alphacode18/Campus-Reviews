@@ -29,7 +29,7 @@ export default register = ({ navigation }) => {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <Layout style={styles.container} level={'1'}>
         <Text category='h1' style={{ padding: 20, marginTop: 50 }}>
-          Let's Get Started!
+          Forgot Password?
         </Text>
         <Input
           style={styles.inputBox}
