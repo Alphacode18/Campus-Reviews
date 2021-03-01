@@ -6,7 +6,7 @@ import InputScrollView from 'react-native-input-scroll-view';
 import { Dimensions } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
 
-const data = [
+const types = [
     'Dining',
     'On-Campus Facilities',
     'Classes',
@@ -15,15 +15,14 @@ const data = [
 
 export default editPost = ({ route, navigation }) => {
     const { title, post, index } = route.params;
-    const [titleState, setTitleState] = useState(title);
-    const [postState, setPostState] = useState(post);
+    const [newTitle, setNewTitle] = useState(title);
+    const [newPost, setNewPost] = useState(post);
     const [selectedIndex, setSelectedIndex] = useState(index);
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
-    const displayValue = data[selectedIndex.row];
+    const displayValue = types[selectedIndex.row];
 
     const changeSelection = (selectedIndex) => {
-        setNotSelected(false);
         setSelectedIndex(selectedIndex);
       };
         
@@ -34,14 +33,13 @@ export default editPost = ({ route, navigation }) => {
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <Layout style={styles.container} level={'1'}> 
                     <ScrollView contentContainerStyle={{flexGrow : 1, width : screenWidth, alignItems: 'center', justifyContent: 'center'}}>
-                
                         <Text category='h1' style={{ padding: 20, marginTop: 0 }}> Edit Post </Text>
                         <Select
                             selectedIndex={selectedIndex}
                             value={displayValue}
                             onSelect={changeSelection}
                             style={{width: '90%'}}>
-                            <SelectItem title='Dining' style={{}}/>
+                            <SelectItem title='Dining'/>
                             <SelectItem title='On-Campus Facilities'/>
                             <SelectItem title='Classes'/>
                             <SelectItem title='Professors'/>
@@ -49,22 +47,25 @@ export default editPost = ({ route, navigation }) => {
                         <Input
                             style={{width: '90%', paddingTop : 10}}
                             size='medium'
-                            value={titleState}
-                            onChangeText={setTitleState}
+                            value={newTitle}
+                            onChangeText={setNewTitle}
                         />
 
                         <Input
                             multiline={true}
                             textStyle={{ minHeight: 256, maxHeight: 256}}
                             style={{width: '90%', paddingTop : 5}}
-                            value={postState}
-                            onChangeText={setPostState}    
+                            value={newPost}
+                            onChangeText={setNewPost}    
                         />
 
                         <Button
                             style={{ width: '50%', borderRadius: 20, marginTop: 25 }}
                             status={'success'}
-                            onPress={() => navigation.navigate('Home')}
+                            onPress={() => {
+                                if (!(newTitle === '' || newPost === ''))
+                                    navigation.navigate('Home')
+                            }}
                         >
                             <Text style={{ color: 'white' }}>Edit Post</Text>
                         </Button>
