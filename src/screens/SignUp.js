@@ -53,7 +53,7 @@ export default register = ({ navigation }) => {
         <Input
           style={styles.inputBox}
           value={username}
-          placeholder='Username'
+          placeholder='Username (30 characters or less)' /* TODO: check for uniqueness, [possible TODO]: suggestions for username (based on email id?)  */
           onChangeText={(username) => setUsername(username)}
         />
         <Input
