@@ -4,7 +4,14 @@ import { Layout, Text, Button, Input, Select, SelectItem, IndexPath } from '@ui-
 import { Dimensions } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
 
-const rateVal = [
+const data = [
+    'Dining',
+    'On-Campus Facilities',
+    'Classes',
+    'Professors'
+  ];
+
+  const rateVal = [
     '1',
     '2',
     '3',
@@ -17,25 +24,18 @@ const rateVal = [
     '10'
   ];
 
-const data = [
-    'Dining',
-    'On-Campus Facilities',
-    'Classes',
-    'Professors'
-  ];
-
-
 const useInputState = (initialValue = '') => {
     const [value, setValue] = React.useState(initialValue);
     return { value, onChangeText: setValue };
 };
 
-export default createReview = ({ navigation }) => {
-    const [titleText, settitleText] = useState('');
-    const [reviewText, setreviewText] = useState('');
-    const [selectedIndex_type, setSelectedIndex_type] = useState(new IndexPath(0));
+export default createReview = ({ route, navigation }) => {
+    const { review_title, review_text, review_type, review_rate } = route.params;
+    const [titleText, settitleText] = useState(review_title);
+    const [reviewText, setreviewText] = useState(review_text);
+    const [selectedIndex_type, setSelectedIndex_type] = useState(review_type);
     const [notSelected_type, setNotSelected_type] = useState(true);
-    const [selectedIndex_rate, setSelectedIndex_rate] = useState(new IndexPath(0));
+    const [selectedIndex_rate, setSelectedIndex_rate] = useState(review_rate);
     const [notSelected_rate, setNotSelected_rate] = useState(true);
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
@@ -110,10 +110,7 @@ export default createReview = ({ navigation }) => {
                         <Button
                             style={{ width: '50%', borderRadius: 20, marginTop: 25 }}
                             status={'success'}
-                            onPress={() => {navigation.navigate('EditReview', {review_title: titleText,
-                                                                                review_text: reviewText,
-                                                                                review_type: selectedIndex_type,
-                                                                                review_rate: selectedIndex_rate });}}
+                            onPress={() => navigation.navigate('Home')}
                         >
                             <Text style={{ color: 'white' }}>Create Review</Text>
                         </Button>
