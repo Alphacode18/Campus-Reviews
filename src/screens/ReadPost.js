@@ -26,58 +26,21 @@ export default createPost = ({ navigation }) => {
         setSelectedIndex(selectedIndex);
         setNotSelected(false);
       };
-        
+
     return (
         <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}> 
+        style={styles.container}>
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-                <Layout style={styles.container} level={'1'}> 
+                <Layout style={styles.container} level={'1'}>
                     <ScrollView contentContainerStyle={{flexGrow : 1, width : screenWidth, alignItems: 'center', justifyContent: 'center'}}>
-                
-                        <Text category='h1' style={{ padding: 20, marginTop: 0 }}> Create Post </Text>
-                        <Select
-                            placeholder='Default'
-                            selectedIndex={selectedIndex}
-                            value={displayValue}
-                            onSelect={changeSelection}
-                            style={{width: '90%'}}>
-                            <SelectItem title='Dining' style={{}}/>
-                            <SelectItem title='On-Campus Facilities'/>
-                            <SelectItem title='Classes'/>
-                            <SelectItem title='Professors'/>
-                        </Select>
-                        <Input
-                            style={{width: '90%', paddingTop : 10}}
-                            size='medium'
-                            placeholder='Title'
-                            value={titleState}
-                            onChangeText={setTitleState}
-                        />
 
-                        <Input
-                            multiline={true}
-                            textStyle={{ minHeight: 256, maxHeight: 256}}
-                            style={{width: '90%', paddingTop : 5}}
-                            placeholder='Enter text here...'
-                            value={postState}
-                            onChangeText={setPostState}  
-                        />
+                        <Text category='h1' style={{ padding: 20, marginTop: 0, textAlign: center }}> Post Title Here </Text>
 
-                        <Button
-                            style={{ width: '50%', borderRadius: 20, marginTop: 25 }}
-                            status={'success'}
-                            onPress={() => {
-                                navigation.navigate('EditPost', {
-                                  title: titleState,
-                                  post: postState,
-                                  index: selectedIndex
+                        <Text category='h1' style={{ padding: 20, marginTop: 0 }}> Post text here </Text>
 
-                                });
-                            }}
-                        >
-                            <Text style={{ color: 'white' }}>Create Post</Text>
-                        </Button>
+                        <Button style={styles.button} size='medium'> Done viewing post </Button>
+
                     </ScrollView>
                 </Layout>
             </TouchableWithoutFeedback>
