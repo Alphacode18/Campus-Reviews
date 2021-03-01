@@ -4,7 +4,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Login from '../src/screens/Login';
 import SignUp from '../src/screens/SignUp';
 import Home from '../src/screens/Home';
-import Create_Post_Dining from '../src/screens/CreatePost';
+import CreatePost from '../src/screens/CreatePost';
+import CreateReview from '../src/screens/CreateReview.js';
 
 const Stack = createStackNavigator();
 
@@ -30,6 +31,11 @@ function AuthStack() {
         <Stack.Screen
           name='CreatePost'
           component={CreatePost}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='CreateReview'
+          component={CreateReview}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
