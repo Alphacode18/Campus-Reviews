@@ -32,12 +32,21 @@ export default register = ({ navigation }) => {
     </TouchableWithoutFeedback>
   );
 
-  //TODO
+  //[potential]TODO:
   /*
-   * Read Through Firebase Docs & firebase.config before implementation
+   * Integrated using email for now, maybe add using username later
    */
   const handleLogin = () => {
     setLoading(true);
+    Firebase.auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(() => {
+        navigation.navigate('Home');
+      })
+      .catch(() => {
+        setLoading(false);
+        Alert.alert('Incorrect Email or Password. Try again.');
+      });
   };
 
   return (
