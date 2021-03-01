@@ -13,18 +13,18 @@ const data = [
     'Professors'
   ];
 
-export default createPost = ({ navigation }) => {
-    const [titleState, setTitleState] = useState('');
-    const [postState, setPostState] = useState('');
-    const [selectedIndex, setSelectedIndex] = useState(new IndexPath(0));
-    const [notSelected, setNotSelected] = useState(true);
+export default editPost = ({ route, navigation }) => {
+    const { title, post, index } = route.params;
+    const [titleState, setTitleState] = useState(title);
+    const [postState, setPostState] = useState(post);
+    const [selectedIndex, setSelectedIndex] = useState(index);
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
-    const displayValue = notSelected ? 'Type' : data[selectedIndex.row];
+    const displayValue = data[selectedIndex.row];
 
     const changeSelection = (selectedIndex) => {
-        setSelectedIndex(selectedIndex);
         setNotSelected(false);
+        setSelectedIndex(selectedIndex);
       };
         
     return (
@@ -35,9 +35,8 @@ export default createPost = ({ navigation }) => {
                 <Layout style={styles.container} level={'1'}> 
                     <ScrollView contentContainerStyle={{flexGrow : 1, width : screenWidth, alignItems: 'center', justifyContent: 'center'}}>
                 
-                        <Text category='h1' style={{ padding: 20, marginTop: 0 }}> Create Post </Text>
+                        <Text category='h1' style={{ padding: 20, marginTop: 0 }}> Edit Post </Text>
                         <Select
-                            placeholder='Default'
                             selectedIndex={selectedIndex}
                             value={displayValue}
                             onSelect={changeSelection}
@@ -50,7 +49,6 @@ export default createPost = ({ navigation }) => {
                         <Input
                             style={{width: '90%', paddingTop : 10}}
                             size='medium'
-                            placeholder='Title'
                             value={titleState}
                             onChangeText={setTitleState}
                         />
@@ -59,24 +57,16 @@ export default createPost = ({ navigation }) => {
                             multiline={true}
                             textStyle={{ minHeight: 256, maxHeight: 256}}
                             style={{width: '90%', paddingTop : 5}}
-                            placeholder='Enter text here...'
                             value={postState}
-                            onChangeText={setPostState}  
+                            onChangeText={setPostState}    
                         />
 
                         <Button
                             style={{ width: '50%', borderRadius: 20, marginTop: 25 }}
                             status={'success'}
-                            onPress={() => {
-                                navigation.navigate('EditPost', {
-                                  title: titleState,
-                                  post: postState,
-                                  index: selectedIndex
-
-                                });
-                            }}
+                            onPress={() => navigation.navigate('Home')}
                         >
-                            <Text style={{ color: 'white' }}>Create Post</Text>
+                            <Text style={{ color: 'white' }}>Edit Post</Text>
                         </Button>
                     </ScrollView>
                 </Layout>
