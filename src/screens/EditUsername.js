@@ -1,3 +1,4 @@
+//TODO: Integrate with the latest version of homescreen
 import React, { useState } from 'react';
 import { StyleSheet, Keyboard, TouchWithoutFeedback, TouchOpacity, Alert } from 'react-native';
 import { Layout, Button, Input, Text, Spinner, Icon } from '@ui-kitten/components';
