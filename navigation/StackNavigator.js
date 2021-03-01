@@ -26,6 +26,11 @@ function AuthStack() {
           component={SignUp}
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name='ReadPost'
+          component={ReadPost}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
