@@ -112,6 +112,14 @@ export default createReview = ({ navigation }) => {
                         >
                             <Text style={{ color: 'white' }}>Create Review</Text>
                         </Button>
+                        <TouchableOpacity
+                            style={{ color: 'white', marginTop: 40 }}
+                            onPress={() => navigation.navigate('Home')}
+                        >
+                            <Text>
+                                <Text style={{ textDecorationLine: 'underline' }}>Go Back</Text>
+                            </Text>
+                        </TouchableOpacity>
                     </ScrollView>
                 </Layout>
             </TouchableWithoutFeedback>
