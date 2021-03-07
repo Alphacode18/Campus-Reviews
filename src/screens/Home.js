@@ -20,8 +20,9 @@ export default register = ({ navigation }) => {
           style={{ width: '50%', borderRadius: 20, marginTop: 20 }}
           appearance='filled'
           onPress={() => navigation.navigate('ReadPost')}
+          >
           <Text style={{ color: 'white' }}>Read Post</Text>
-        ></Button>
+        </Button>
         <Button
           style={{ width: '50%', borderRadius: 20, marginTop: 20 }}
           appearance='filled'
