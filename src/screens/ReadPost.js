@@ -33,9 +33,9 @@ export default createPost = ({ navigation }) => {
         style={styles.container}>
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <Layout style={styles.container} level={'1'}>
-                    <ScrollView contentContainerStyle={{flexGrow : 1, width : screenWidth, alignItems: 'center', justifyContent: 'center'}}>
+                    <ScrollView contentContainerStyle={{flexGrow : 1, width : screenWidth}}>
 
-                        <Text category='h1' style={{ padding: 20, marginTop: 0, textAlign: center }}> Post Title Here </Text>
+                        <Text category='h1' style={{ padding: 20, marginTop: 0}}> Post Title Here </Text>
 
                         <Text category='h1' style={{ padding: 20, marginTop: 0 }}> Post text here </Text>
 

@@ -35,7 +35,7 @@ export default createPost = ({ navigation }) => {
                 <Layout style={styles.container} level={'1'}>
                     <ScrollView contentContainerStyle={{flexGrow : 1, width : screenWidth, alignItems: 'center', justifyContent: 'center'}}>
 
-                        <Text category='h1' style={{ padding: 20, marginTop: 0, textAlign: center }}> Post Title Here </Text>
+                        <Text category='h1' style={{ padding: 20, marginTop: 0 }}> Post Title Here </Text>
 
                         <Text category='h1' style={{ padding: 20, marginTop: 0 }}> Post text here </Text>
 
