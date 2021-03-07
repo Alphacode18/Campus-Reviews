@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ScrollView, TextInput, KeyboardAvoidingView, textarea} from 'react-native';
 import { Layout, Text, Button, Input, Select, SelectItem, IndexPath } from '@ui-kitten/components';
-import { Dimensions } from 'react-native';
+import { Dimensions, Alert } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
+
+import Firebase from '../../config/firebase';
 
 const rateVal = [
     '1',
@@ -110,10 +112,22 @@ export default createReview = ({ navigation }) => {
                         <Button
                             style={{ width: '50%', borderRadius: 20, marginTop: 25 }}
                             status={'success'}
-                            onPress={() => {navigation.navigate('EditReview', {review_title: titleText,
+                            onPress={() => {
+                                if ((notSelected_type || notSelected_rate || title === '' || post === '')) {
+                                    Alert.alert('Please fill in all the information for your review');
+                                }
+                                else {
+                                    Firebase.database().ref('/' + types[selectedIndex_type.row] + ' Reviews').push({
+                                        review_title: titleText,
+                                        review_rate: selectedIndex_rate,
+                                        review_text: reviewText,
+                                        user: 'Review Tester'
+                                    });
+                                
+                                navigation.navigate('EditReview', {review_title: titleText,
                                                                                 review_text: reviewText,
                                                                                 review_type: selectedIndex_type,
-                                                                                review_rate: selectedIndex_rate });}}
+                                                                                review_rate: selectedIndex_rate });}}}
                         >
                             <Text style={{ color: 'white' }}>Create Review</Text>
                         </Button>
