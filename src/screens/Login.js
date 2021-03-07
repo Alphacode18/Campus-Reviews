@@ -13,6 +13,7 @@ import {
   Button,
   Spinner,
   Icon,
+  CheckBox,
 } from '@ui-kitten/components';
 import Firebase from '../../config/firebase';
 
@@ -60,6 +61,9 @@ export default register = ({ navigation }) => {
           secureTextEntry={secureTextEntry}
           onChangeText={(password) => setPassword(password)}
         />
+        <CheckBox style={{ width: '85%', paddingLeft: 20 }}>
+          <Text>Remember Me</Text>
+        </CheckBox>
         <Button
           onPress={handleLogin}
           style={{ width: '50%', borderRadius: 20, marginTop: 20 }}
