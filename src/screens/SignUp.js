@@ -42,6 +42,15 @@ export default register = ({ navigation }) => {
    */
   const handleRegistrations = () => {
     setLoading(true);
+    Firebase.auth()
+    .createUserWithEmailAndPassword(email, password)
+    .then(() => {
+        navigation.navigate('Login'); //TODO: For now they have to try logging in right after signup, later we'll have to first add the check for @purdue.edu email.
+      })
+      .catch(() => {
+        setLoading(false);
+        Alert.alert('Email does not exist. Try Again.'); //TODO: Alert text may need to be updated.
+      });
   };
 
   return (
@@ -53,7 +62,7 @@ export default register = ({ navigation }) => {
         <Input
           style={styles.inputBox}
           value={username}
-          placeholder='Username'
+          placeholder='Username (30 characters or less)' /* TODO: check for uniqueness, [possible TODO]: suggestions for username (based on email id?)  */
           onChangeText={(username) => setUsername(username)}
         />
         <Input
