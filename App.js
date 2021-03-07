@@ -10,6 +10,7 @@ export default () => {
 
   firebase.auth().onAuthStateChanged((user) => {
     user ? setIsAuthenticated(true) : setIsAuthenticated(false);
+    console.log(isAuthenticated);
   });
 
   return (
