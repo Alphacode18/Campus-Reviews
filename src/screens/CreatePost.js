@@ -5,6 +5,7 @@ import { Layout, Text, Button, Input, Select, SelectItem, IndexPath, Icon } from
 import InputScrollView from 'react-native-input-scroll-view';
 import { Dimensions } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
+import Firebase from '../../config/firebase';
 
 const types = [
     'Dining',
@@ -71,6 +72,11 @@ export default createPost = ({ navigation }) => {
                             status={'success'}
                             onPress={() => {
                                 if (!(notSelected || title === '' || post === '')) {
+                                    Firebase.database().ref('/' + types[selectedIndex.row] + ' Posts').push({
+                                        title: title,
+                                        post: post,
+                                        user: 'Anirudh Seela'
+                                    });
                                     navigation.navigate('EditPost', {
                                         title: title,
                                         post: post,
