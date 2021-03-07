@@ -42,7 +42,11 @@ export default register = ({ navigation }) => {
           style={{ width: '50%', borderRadius: 20, marginTop: 20 }}
           appearance='outline'
         >
-          {loading === false ? <Text>Login</Text> : <Spinner size='small' />}
+          {loading === false ? (
+            <Text>Send Mail</Text>
+          ) : (
+            <Spinner size='small' />
+          )}
         </Button>
       </Layout>
     </TouchableWithoutFeedback>
