@@ -26,6 +26,13 @@ export default register = ({ navigation }) => {
         <Button
           style={{ width: '50%', borderRadius: 20, marginTop: 20 }}
           appearance='filled'
+          onPress={() => navigation.navigate('DeletePost')}
+          >
+            <Text style={{ color: 'white' }}>Delete Post</Text>
+        </Button>
+        <Button
+          style={{ width: '50%', borderRadius: 20, marginTop: 20 }}
+          appearance='filled'
           onPress={() => navigation.navigate('Login')}
         >
 
