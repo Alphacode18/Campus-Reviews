@@ -29,7 +29,7 @@ const useInputState = (initialValue = '') => {
     return { value, onChangeText: setValue };
 };
 
-export default createReview = ({ route, navigation }) => {
+export default editReview = ({ route, navigation }) => {
     const { review_title, review_text, review_type, review_rate } = route.params;
     const [titleText, settitleText] = useState(review_title);
     const [reviewText, setreviewText] = useState(review_text);
