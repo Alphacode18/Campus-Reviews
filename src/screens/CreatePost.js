@@ -77,7 +77,7 @@ export default createPost = ({ navigation }) => {
                                         post: post,
                                         user: 'Anirudh Seela'
                                     });
-                                    navigation.navigate('EditPost', {
+                                    navigation.navigate('ShowPosts', {
                                         title: title,
                                         post: post,
                                         index: selectedIndex

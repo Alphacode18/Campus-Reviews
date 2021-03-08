@@ -5,6 +5,7 @@ import { Layout, Text, Button, Input, Select, SelectItem, IndexPath } from '@ui-
 import InputScrollView from 'react-native-input-scroll-view';
 import { Dimensions } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
+import Firebase from '../../config/firebase';
 
 const types = [
     'Dining',
@@ -63,7 +64,8 @@ export default editPost = ({ route, navigation }) => {
                             style={{ width: '50%', borderRadius: 20, marginTop: 25 }}
                             status={'success'}
                             onPress={() => {
-                                if (!(newTitle === '' || newPost === ''))
+                                
+                                if (!(newTitle === '' || newPost === '')) 
                                     navigation.navigate('Home')
                             }}
                         >
