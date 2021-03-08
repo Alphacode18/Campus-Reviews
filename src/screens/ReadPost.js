@@ -26,7 +26,7 @@ const renderBackAction = () => (
       <View style={styles.controlContainer}>
         <Text style={styles.review} status='control'>Review</Text>
       </View>
-      <Text category='h6' style={styles.text} status='danger'>Turkstra Is The BEST</Text>
+      <Text category='h6' style={styles.text} status='danger'>Prof X Is The BEST</Text>
     </View>
   );
 
