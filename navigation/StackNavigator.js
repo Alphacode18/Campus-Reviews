@@ -5,6 +5,7 @@ import Login from '../src/screens/Login';
 import SignUp from '../src/screens/SignUp';
 import Home from '../src/screens/Home';
 import ReadPost from '../src/screens/ReadPost'
+import DeletePost from '../src/screens/DeletePost';
 
 const Stack = createStackNavigator();
 
@@ -26,6 +27,11 @@ function AuthStack() {
           name='SignUp'
           component={SignUp}
           options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='DeletePost'
+          component={DeletePost}
+          options={{ headreShown: false }}
         />
         <Stack.Screen
           name='ReadPost'
