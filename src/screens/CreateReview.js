@@ -117,10 +117,15 @@ export default createReview = ({ navigation }) => {
                                     Alert.alert('Please fill in all the information for your review');
                                 }
                                 else {
+                                    var today = new Date();
+                                    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+                                    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                                    var datetime = date+' '+time;
                                     Firebase.database().ref('/' + types[selectedIndex_type.row] + ' Reviews').push({
                                         review_title: titleText,
                                         review_rate: selectedIndex_rate,
                                         review_text: reviewText,
+                                        date_time: datetime,
                                         user: 'Review Tester'
                                     });
                                 

@@ -30,9 +30,10 @@ const useInputState = (initialValue = '') => {
 };
 
 export default editReview = ({ route, navigation }) => {
-    const { review_title, review_text, review_type, review_rate } = route.params;
+    const { review_title, review_text, review_type, review_rate, date_time } = route.params;
     const [titleText, settitleText] = useState(review_title);
     const [reviewText, setreviewText] = useState(review_text);
+    const [datetime, setdatetime] = useState(date_time);
     const [selectedIndex_type, setSelectedIndex_type] = useState(review_type);
     const [notSelected_type, setNotSelected_type] = useState(true);
     const [selectedIndex_rate, setSelectedIndex_rate] = useState(review_rate);
