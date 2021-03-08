@@ -23,9 +23,9 @@ const renderBackAction = () => (
 
   const Header = (props) => (
     <View style={{flexDirection:'row', alignItems:'center'}}>
-      <View style={styles.controlContainer}>
-        <Text style={styles.review} status='control'>Review</Text>
-      </View>
+      <TouchableOpacity
+        style={{ color: 'white', marginLeft: 100 }}>
+      </TouchableOpacity>
       <Text category='h6' style={styles.text} status='danger'>Delete Post Screen</Text>
     </View>
   );
@@ -75,7 +75,11 @@ export default createPost = ({ navigation }) => {
                       {'    '}This is a really bad post that we need to delete. 
                       </Text>
                     </Card>
-                        <Button style={styles.button} size='medium'> Done viewing post </Button>
+                        <Button style={styles.button} size='small'> Cancel </Button>
+                        <TouchableOpacity
+                          style={{ color: 'white', marginTop: 40 }}>
+                        </TouchableOpacity>
+                        <Button style={styles.button} size='small'>Delete Post</Button>
                         <TouchableOpacity
                            style={{ color: 'white', marginTop: 40 }}
                            onPress={() => navigation.navigate('Home')}
