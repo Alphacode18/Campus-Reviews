@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ScrollView, TextInput, KeyboardAvoidingView, textarea} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { Layout, Text, Button, Card, Input, Select, SelectItem, IndexPath, TopNavigation, TopNavigationAction, Icon } from '@ui-kitten/components';
+import { Layout, Text, Button, Card, Divider, Input, Select, SelectItem, IndexPath, TopNavigation, TopNavigationAction, Icon } from '@ui-kitten/components';
 import InputScrollView from 'react-native-input-scroll-view';
 import { Dimensions, View } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
@@ -26,7 +26,7 @@ const renderBackAction = () => (
       <View style={styles.controlContainer}>
         <Text style={styles.review} status='control'>Review</Text>
       </View>
-      <Text category='h6' style={styles.text} status='danger'>Title: Turkstra Is The BEST</Text>
+      <Text category='h6' style={styles.text} status='danger'>Turkstra Is The BEST</Text>
     </View>
   );
 
@@ -39,6 +39,7 @@ const renderBackAction = () => (
       <Text style={styles.text} status='danger'>1d</Text>
       </Text>
     </View>
+
     </View>
   );
 
@@ -81,12 +82,47 @@ export default createPost = ({ navigation }) => {
 
                       </Text>
                     </Card>
-                        <Button style={styles.button} size='medium'> Done viewing post </Button>
+                    <React.Fragment>
+                      <View style={styles.details}>
+                        <Text style={styles.title} category='h6'>Comment</Text>
+                      </View>
+                      <Divider/>
+
+                    </React.Fragment>
+                    <React.Fragment>
+                      <View style={styles.details}>
+                        <Text style={styles.title} category='h6'>Comment</Text>
+                      </View>
+                      <Divider/>
+
+                    </React.Fragment>
+                    <React.Fragment>
+                      <View style={styles.details}>
+                        <Text style={styles.title} category='h6'>Comment</Text>
+                      </View>
+                      <Divider/>
+
+                    </React.Fragment>
+                    <React.Fragment>
+                      <View style={styles.details}>
+                        <Text style={styles.title} category='h6'>Comment</Text>
+                      </View>
+                      <Divider/>
+
+                    </React.Fragment>
+                    <React.Fragment>
+                      <View style={styles.details}>
+                        <Text style={styles.title} category='h6'>Comment</Text>
+                      </View>
+                      <Divider/>
+
+                    </React.Fragment>
+
                         <TouchableOpacity
-                           style={{ color: 'white', marginTop: 40 }}
+                           style={{ color: 'white', marginTop: 120  }}
                            onPress={() => navigation.navigate('Home')}
                         >
-                        <Text style={{ textDecorationLine: 'underline' }}>Go Back</Text>
+                        <Button style={styles.button} size='medium'> Done viewing post </Button>
                        </TouchableOpacity>
                     </ScrollView>
                 </Layout>
@@ -109,5 +145,16 @@ const styles = StyleSheet.create({
     padding: 4,
     width: '20%',
     backgroundColor: '#3366FF',
+  },
+  details: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 4,
+  },
+  title: {
+    marginHorizontal: 8,
+  },
+  installButton: {
+    marginVertical: 4,
   },
 });
