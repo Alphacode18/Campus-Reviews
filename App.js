@@ -3,6 +3,7 @@ import * as eva from '@eva-design/eva';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import AuthStack from './navigation/StackNavigator';
+import AuthenticatedNavigator from './navigation/SwitchNavigator';
 import firebase from './config/firebase';
 
 export default () => {
@@ -17,9 +18,7 @@ export default () => {
     <>
       <IconRegistry icons={EvaIconsPack} />
       <ApplicationProvider {...eva} theme={eva.light}>
-        {/* If persistence is false, display authentication screens */}
-        {!isAuthenticated && <AuthStack />}
-        {/* Else show protected screens */}
+        {isAuthenticated ? <AuthenticatedNavigator /> : <AuthStack />}
       </ApplicationProvider>
     </>
   );
