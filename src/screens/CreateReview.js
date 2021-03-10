@@ -19,7 +19,7 @@ const rateVal = [
     '10'
   ];
 
-const data = [
+const typeVal = [
     'Dining',
     'On-Campus Facilities',
     'Classes',
@@ -33,15 +33,15 @@ const useInputState = (initialValue = '') => {
 };
 
 export default createReview = ({ navigation }) => {
-    const [titleText, settitleText] = useState('');
-    const [reviewText, setreviewText] = useState('');
+    const [review_title, settitleText] = useState('');
+    const [review_text, setreviewText] = useState('');
     const [selectedIndex_type, setSelectedIndex_type] = useState(new IndexPath(0));
     const [notSelected_type, setNotSelected_type] = useState(true);
     const [selectedIndex_rate, setSelectedIndex_rate] = useState(new IndexPath(0));
     const [notSelected_rate, setNotSelected_rate] = useState(true);
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
-    const displayValue = notSelected_type ? 'Type' : data[selectedIndex_type.row];
+    const displayValue = notSelected_type ? 'Type' : typeVal[selectedIndex_type.row];
     const ratingValue = notSelected_rate ? 'Rating(#/10)' : rateVal[selectedIndex_rate.row];
 
     const changeSelection_type = (selectedIndex_type) => {
@@ -78,7 +78,7 @@ export default createReview = ({ navigation }) => {
                             style={{width: '90%', paddingTop : 10}}
                             size='medium'
                             placeholder='Title'
-                            value={titleText}
+                            value={review_title}
                             onChangeText={settitleText}
                         />
                         <Select
@@ -105,7 +105,7 @@ export default createReview = ({ navigation }) => {
                             style={{width: '90%', paddingTop : 5}}
                             placeholder='Enter text here...'
                             numberOfLines={5}
-                            value={reviewText}
+                            value={review_text}
                             onChangeText={setreviewText}
                         />
 
@@ -113,7 +113,7 @@ export default createReview = ({ navigation }) => {
                             style={{ width: '50%', borderRadius: 20, marginTop: 25 }}
                             status={'success'}
                             onPress={() => {
-                                if ((notSelected_type || notSelected_rate || title === '' || post === '')) {
+                                if ((notSelected_type || notSelected_rate || review_title === '' || review_text === '')) {
                                     Alert.alert('Please fill in all the information for your review');
                                 }
                                 else {
@@ -121,18 +121,15 @@ export default createReview = ({ navigation }) => {
                                     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
                                     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
                                     var datetime = date+' '+time;
-                                    Firebase.database().ref('/' + types[selectedIndex_type.row] + ' Reviews').push({
-                                        review_title: titleText,
-                                        review_rate: selectedIndex_rate,
-                                        review_text: reviewText,
-                                        date_time: datetime,
-                                        user: 'Review Tester'
+                                    Firebase.database().ref('/' + typeVal[selectedIndex_type.row] + ' Reviews').push({
+                                        review_title: review_title,
+                                        review_rate: (selectedIndex_rate.row+1),
+                                        review_text: review_text,
+                                        user: 'Review Tester',
+                                        date_time: datetime
                                     });
                                 
-                                navigation.navigate('EditReview', {review_title: titleText,
-                                                                                review_text: reviewText,
-                                                                                review_type: selectedIndex_type,
-                                                                                review_rate: selectedIndex_rate });}}}
+                                navigation.navigate('ShowReviews');}}}
                         >
                             <Text style={{ color: 'white' }}>Create Review</Text>
                         </Button>
