@@ -15,10 +15,10 @@ const types = [
   ];
 
 export default editPost = ({ route, navigation }) => {
-    const { title, post, index } = route.params;
+    const { title, post, postID, index } = route.params;
     const [newTitle, setNewTitle] = useState(title);
     const [newPost, setNewPost] = useState(post);
-    const [selectedIndex, setSelectedIndex] = useState(index);
+    const [selectedIndex, setSelectedIndex] = useState(new IndexPath(index));
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
     const displayValue = types[selectedIndex.row];
@@ -39,7 +39,7 @@ export default editPost = ({ route, navigation }) => {
                             selectedIndex={selectedIndex}
                             value={displayValue}
                             onSelect={changeSelection}
-                            style={{width: '90%'}}>
+                            style={{width: '90%'}} disabled>
                             <SelectItem title='Dining'/>
                             <SelectItem title='On-Campus Facilities'/>
                             <SelectItem title='Classes'/>
@@ -65,8 +65,13 @@ export default editPost = ({ route, navigation }) => {
                             status={'success'}
                             onPress={() => {
                                 
-                                if (!(newTitle === '' || newPost === '')) 
-                                    navigation.navigate('Home')
+                                if (!(newTitle === '' || newPost === '')) {
+                                    let updates = {};
+                                    updates['/' + types[index] + ' Posts/' + postID + '/' + 'post'] = newPost;
+                                    updates['/' + types[index] + ' Posts/' + postID + '/' + 'title'] = newTitle;
+                                    Firebase.database().ref().update(updates);
+                                    navigation.navigate('Home');
+                                } 
                             }}
                         >
                             <Text style={{ color: 'white' }}>Edit Post</Text>

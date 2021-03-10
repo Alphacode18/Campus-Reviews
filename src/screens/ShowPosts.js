@@ -1,4 +1,4 @@
-import React, { useState, ReactDOM } from 'react';
+import React, { useState, ReactDOM, useReducer } from 'react';
 import { StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView, TextInput, KeyboardAvoidingView, View} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Layout, Text, Button, Input, Select, SelectItem, IndexPath, Icon, Card } from '@ui-kitten/components';
@@ -23,7 +23,7 @@ const Header = ({props, title, user}) => (
     </View>
 );
 
-const Footer = ({navigation, props, title, post}) => (
+const Footer = ({props, title, post, postID, navigation}) => (
     <View {...props} style={[styles.footerContainer]}>
         <Button
         style={styles.footerControl}
@@ -37,8 +37,8 @@ const Footer = ({navigation, props, title, post}) => (
             navigation.navigate('EditPost', {
                 title: title,
                 post: post,
-                index: 1
-                
+                postID: postID,
+                index: 0
             });
         }}>
         Edit
@@ -46,23 +46,30 @@ const Footer = ({navigation, props, title, post}) => (
     </View>
 );
 
+function readData(diningPosts) {
+    
+}
+
 export default showPosts = ({navigation}) => {
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
     let diningPosts = [];
     let fields = [];
-
     Firebase.database().ref('Dining Posts').on('value', (snapshot) => {
+        console.log('snapshot');
+        console.log(snapshot);
         snapshot.forEach(function(data) {
             // let str = JSON.stringify(data.key)
             // diningPosts.push(str.substring(2, str.length));
+            console.log("data")
+            console.log(data);
             diningPosts.push(data.key);
         });
-
-        console.log(diningPosts);
-        console.log(diningPosts[0]);
     });
-       
+    
+    console.log('dining posts');
+    console.log(diningPosts);
+    
     return (
         <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -70,6 +77,7 @@ export default showPosts = ({navigation}) => {
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <Layout style={styles.container} level={'1'} > 
                     <ScrollView contentContainerStyle={{flexGrow : 1, width : screenWidth, alignItems: 'center', justifyContent: 'center'}}>
+                        <Text style={{marginTop: 50, marginBottom: 20, fontSize: 36}}> Dining </Text>
                     <React.Fragment>
                         {diningPosts.map(function(post, index) {
                                 Firebase.database().ref('Dining Posts/' + post).on('value', (snapshot) => {
@@ -83,14 +91,22 @@ export default showPosts = ({navigation}) => {
                                     // console.log(fields[0]);
                                     
                                 });
+
+                                let user = JSON.stringify(fields[3 * index + 2]);
+                                user = user.replace(/\"/g, "");  
+                                let title = JSON.stringify(fields[3 * index + 1]);
+                                title = title.replace(/\"/g, "");  
+                                let postText = JSON.stringify(fields[3 * index]);
+                                postText = postText.replace(/\"/g, "");
+
                                 
                                 return  (
                                     <Layout style={styles.container} level={'1'} > 
                                         <Card style={styles.card}
-                                         header={(props) => <Header {...props} title={JSON.stringify(fields[3 * index + 1])} user={JSON.stringify(fields[3 * index + 2])} /> }
-                                         footer={(props) => <Footer {...props} title={JSON.stringify(fields[3 * index + 1])} user={JSON.stringify(fields[3 * index + 2])} navigation={navigation}/>}>
+                                         header={(props) => <Header {...props} title={title} user={user} /> }
+                                         footer={(props) => <Footer {...props} title={title} user={user} postID={post} post={postText} navigation={navigation}/>}>
                                             <Text>
-                                                {JSON.stringify(fields[3 * index])}
+                                                {postText}
                                             </Text>
                                         </Card>
                                     </Layout> 
@@ -102,13 +118,13 @@ export default showPosts = ({navigation}) => {
     
                             })
                         }
-                        <Layout style={styles.container} level={'1'} > 
+                        {/* <Layout style={styles.container} level={'1'} > 
                             <Card style={styles.card} header={Header} footer={Footer}>
                                 <Text>
                                     {JSON.stringify(fields[1])}
                                 </Text>
                             </Card>
-                        </Layout>   
+                        </Layout>    */}
                     </React.Fragment>
                     </ScrollView>
                 </Layout>
@@ -129,5 +145,22 @@ const styles = StyleSheet.create({
     padding: 15,
     fontSize: 16,
     textAlign: 'center',
+  },
+  topContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  card: {
+    flex: 1,
+    margin: 2,
+    minWidth:'95%',
+    maxWidth:'95%',
+  },
+  footerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  footerControl: {
+    marginHorizontal: 2,
   },
 });
