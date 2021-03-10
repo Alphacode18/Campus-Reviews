@@ -102,7 +102,6 @@ export default showPosts = ({navigation}) => {
                                 let postText = JSON.stringify(fields[3 * index]);
                                 postText = postText.replace(/\"/g, "");
 
-                                
                                 return  (
                                     
                                         <Layout style={styles.container} level={'1'}> 
