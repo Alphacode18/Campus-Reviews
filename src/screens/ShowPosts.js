@@ -1,5 +1,5 @@
 import React, { useState, ReactDOM, useReducer } from 'react';
-import { StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView, TextInput, KeyboardAvoidingView, View, TouchableOpacity} from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView, TextInput, KeyboardAvoidingView, View, TouchableOpacity, Alert} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Layout, Text, Button, Input, Select, SelectItem, IndexPath, Icon, Card } from '@ui-kitten/components';
 import InputScrollView from 'react-native-input-scroll-view';
@@ -9,13 +9,30 @@ import Firebase from '../../config/firebase';
 import { useScrollToTop } from '@react-navigation/native';
 // import Post from './Post.js';
 
-
 const types = [
     'Dining',
     'On-Campus Facilities',
     'Classes',
     'Professors'
   ];
+
+const createTwoButtonAlert = ({postID, navigation}) =>
+Alert.alert(
+    "Confirm Deletion",
+    "Are you sure you want to delete this post?",
+    [
+    {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel"
+    },
+    { text: "Delete", onPress: () => {
+        Firebase.database().ref('Dining Posts/' + postID).remove();
+        navigation.navigate('ShowPosts');
+    }}
+    ],
+    { cancelable: false }
+);
 
 const Header = ({props, title, user}) => (
     <View {...props}>
@@ -29,7 +46,7 @@ const Footer = ({props, title, post, postID, navigation}) => (
         <Button
         style={styles.footerControl}
         size='small'
-        status='basic'>
+        status='basic' onPress={createTwoButtonAlert(postID, navigation)}>
         Delete
         </Button>
         <Button
@@ -103,9 +120,8 @@ export default showPosts = ({navigation}) => {
                                 postText = postText.replace(/\"/g, "");
 
                                 return  (
-                                    
                                         <Layout style={styles.container} level={'1'}> 
-                                            <TouchableOpacity >
+                                            <TouchableOpacity>
                                                 <Card style={styles.card}
                                                     header={(props) => <Header {...props} title={title} user={user} /> }
                                                     footer={(props) => <Footer {...props} title={title} user={user} postID={post} post={postText} navigation={navigation}/>} onPress={() => {
