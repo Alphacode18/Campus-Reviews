@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ScrollView, TextInput, KeyboardAvoidingView, textarea} from 'react-native';
-import { Layout, Text, Button, Input, Select, SelectItem, IndexPath } from '@ui-kitten/components';
-import { Dimensions, Alert } from 'react-native';
+import React, { useState, ReactDOM } from 'react';
+import { StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView, TextInput, KeyboardAvoidingView, View} from 'react-native';
+import { Layout, Text, Button, Input, Select, SelectItem, IndexPath, Icon, Card } from '@ui-kitten/components';
+import { Dimensions } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
-
 import Firebase from '../../config/firebase';
+import { useScrollToTop } from '@react-navigation/native';
 
-const rateVal = [
+const typeVal = [
+    'Dining',
+    'On-Campus Facilities',
+    'Classes',
+    'Professors'
+  ];
+
+  const rateVal = [
     '1',
     '2',
     '3',
@@ -19,106 +26,98 @@ const rateVal = [
     '10'
   ];
 
-const data = [
-    'Dining',
-    'On-Campus Facilities',
-    'Classes',
-    'Professors'
-  ];
+const Header = ({props, title, user, date, rate}) => (
+    <View {...props}>
+        <Text category='h6'> Topic: {JSON.stringify(title)} </Text>
+        <Text category='s1'> User: {JSON.stringify(user)} </Text>
+        <Text category='s3'> Rating(#/10): {JSON.stringify(rate)} </Text>
+        <Text category='h9'> Date: {JSON.stringify(date)} </Text>
+    </View>
+);
 
+const Footer = ({navigation, props, title, user, rate, text}) => (
+    <View {...props} style={[styles.footerContainer]}>
+        <Button
+        style={styles.footerControl}
+        size='small'
+        status='basic'>
+        Delete
+        </Button>
+        <Button
+        style={styles.footerControl}
+        size='small' onPress= {() => {
+            navigation.navigate('EditReview', {review_title: title,
+                review_text: text,
+                review_type: 2,
+                review_rate: rate});
+        }}>
+        Edit Review
+        </Button>
+    </View>
+);
 
-const useInputState = (initialValue = '') => {
-    const [value, setValue] = React.useState(initialValue);
-    return { value, onChangeText: setValue };
-};
-
-export default showReviews = ({ navigation }) => {
-    const [titleText, settitleText] = useState('');
-    const [reviewText, setreviewText] = useState('');
-    const [selectedIndex_type, setSelectedIndex_type] = useState(new IndexPath(0));
-    const [notSelected_type, setNotSelected_type] = useState(true);
-    const [selectedIndex_rate, setSelectedIndex_rate] = useState(new IndexPath(0));
-    const [notSelected_rate, setNotSelected_rate] = useState(true);
+export default showReviews = ({navigation}) => {
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
-    const displayValue = notSelected_type ? 'Type' : data[selectedIndex_type.row];
-    const ratingValue = notSelected_rate ? 'Rating(#/10)' : rateVal[selectedIndex_rate.row];
+    let classReviews = [];
+    let fields = [];
 
-    const changeSelection_type = (selectedIndex_type) => {
-        setSelectedIndex_type(selectedIndex_type);
-        setNotSelected_type(false);
-      };
+    Firebase.database().ref('Classes Reviews').on('value', (snapshot) => {
+        snapshot.forEach(function(data) {
+            classReviews.push(data.key);
+        });
 
-    const changeSelection_rate = (selectedIndex_rate) => {
-        setSelectedIndex_rate(selectedIndex_rate);
-        setNotSelected_rate(false);
-    };
-        
+        console.log(classReviews);
+        console.log(classReviews[0]);
+    });
+       
     return (
         <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}> 
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-                <Layout style={styles.container} level={'1'}> 
+                <Layout style={styles.container} level={'1'} > 
                     <ScrollView contentContainerStyle={{flexGrow : 1, width : screenWidth, alignItems: 'center', justifyContent: 'center'}}>
-                
-                        <Text category='h1' style={{ padding: 20, marginTop: 0 }}> Showing all Reviews </Text>
-                        
-                            <Card
-                            style={styles.item}
-                            status='basic'
-                            header={headerProps => renderItemHeader(headerProps, info)}
-                            footer={renderItemFooter}>
-                                <Text>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
-                                    standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make
-                                    a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,
-                                    remaining essentially unchanged.
-                                </Text>
-                            </Card>
-
-                            <Card style={styles.card} header={Header} footer={Footer}>
-                                <Text style={styles.text} category='s2'>
-                                {'    '}Proin quis viverra risus. Vestibulum condimentum et lectus porta maximus. Quisque elementum, diam quis efficitur hendrerit, ligula lacus cursus justo, in interdum ipsum orci eu nibh. Praesent viverra risus vitae augue dapibus, id pulvinar lorem vehicula. Cras ante ante, sagittis nec sem eu, elementum pharetra erat. Nam lacus diam, aliquam non dolor non, dapibus suscipit augue. Donec sollicitudin at elit tincidunt maximus. Suspendisse potenti. Integer sit amet nibh non nisi.
-                                {"\n"}
-                                {'    '}sollicitudin sagittis. Vestibulum nec risus id nibh sagittis facilisis. Mauris sed ipsum sapien. Nulla pretium ornare cursus.
-                                Mauris mauris dui, tempus et ullamcorper in, vestibulum et mi. Nullam efficitur laoreet risus. Sed id enim libero. Phasellus varius massa vel ornare fermentum. Aliquam molestie leo ut vehicula sodales.
-                                {"\n"}
-                                {'    '}Fusce pharetra libero venenatis lorem interdum, sed ultricies justo varius. Aenean eu velit ipsum. Maecenas tempor, nibh quis mollis aliquet, libero odio elementum odio, ac eleifend magna diam vitae dui. Suspendisse potenti. Nam vel odio at felis malesuada semper. Pellentesque ipsum justo, scelerisque molestie vehicula a, hendrerit at ligula. Vestibulum pellentesque nulla vitae ante rutrum laoreet. Nulla fringilla sodales facilisis.
-
-                                </Text>
-                            </Card>
-
-                        <Button
-                            style={{ width: '50%', borderRadius: 20, marginTop: 25 }}
-                            status={'success'}
-                            onPress={() => {
-                                if ((notSelected_type || notSelected_rate || title === '' || post === '')) {
-                                    Alert.alert('Please fill in all the information for your review');
-                                }
-                                else {
-                                    Firebase.database().ref('/' + types[selectedIndex_type.row] + ' Reviews').push({
-                                        review_title: titleText,
-                                        review_rate: selectedIndex_rate,
-                                        review_text: reviewText,
-                                        user: 'Review Tester'
+                    <React.Fragment>
+                        {classReviews.map(function(review_text, index) {
+                                Firebase.database().ref('Classes Reviews/' + review_text).on('value', (snapshot) => {
+                                    console.log('Classes Reviews/' + review_text);
+                                    let i = 0;
+                                    snapshot.forEach(function(data) {
+                                        fields.push(data);
+                                        // console.log(data);
+                                        i++;
                                     });
+                                    // console.log(fields[0]);
+                                    
+                                });
                                 
-                                navigation.navigate('EditReview', {review_title: titleText,
-                                                                                review_text: reviewText,
-                                                                                review_type: selectedIndex_type,
-                                                                                review_rate: selectedIndex_rate });}}}
-                        >
-                            <Text style={{ color: 'white' }}>Create Review</Text>
-                        </Button>
-                        <TouchableOpacity
-                            style={{ color: 'white', marginTop: 40 }}
-                            onPress={() => navigation.navigate('Home')}
-                        >
-                            <Text>
-                                <Text style={{ textDecorationLine: 'underline' }}>Go Back</Text>
-                            </Text>
-                        </TouchableOpacity>
+                                return  (
+                                    <Layout style={styles.container} level={'1'} > 
+                                        <Card style={styles.card}
+                                         header={(props) => <Header {...props} title={JSON.stringify(fields[5 * index + 3])} user={JSON.stringify(fields[5 * index + 4])} date={JSON.stringify(fields[5 * index])} rate={JSON.stringify(fields[5 * index + 1])}/> }
+                                         footer={(props) => <Footer {...props} title={JSON.stringify(fields[5 * index + 3])} user={JSON.stringify(fields[5 * index + 4])} rate={JSON.stringify(fields[5 * index + 1])} text={JSON.stringify(fields[5 * index + 2])} navigation={navigation}/>}>
+                                            <Text>
+                                                {JSON.stringify(fields[5 * index + 2])}
+                                            </Text>
+                                        </Card>
+                                    </Layout> 
+                                )
+
+                                // console.log(card);
+                                
+                                // ReactDOM.render(card, document.getElementById('root'));
+    
+                            })
+                        }
+                        <Layout style={styles.container} level={'1'} > 
+                            <Card style={styles.card} header={Header} footer={Footer}>
+                                <Text>
+                                    {JSON.stringify(fields[1])}
+                                </Text>
+                            </Card>
+                        </Layout>   
+                    </React.Fragment>
                     </ScrollView>
                 </Layout>
             </TouchableWithoutFeedback>
@@ -131,6 +130,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  card: {
+      flex: 1,
+      margin: 2,
+      minWidth: '95%',
+      maxWidth: '95%',
   },
   inputBox: {
     width: '90%',
