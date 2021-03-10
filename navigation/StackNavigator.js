@@ -6,6 +6,8 @@ import SignUp from '../src/screens/SignUp';
 import Home from '../src/screens/Home';
 import CreatePost from '../src/screens/CreatePost';
 import CreateReview from '../src/screens/CreateReview.js';
+import EditReview from '../src/screens/EditReview.js';
+import ShowReviews from '../src/screens/ShowReviews.js';
 
 const Stack = createStackNavigator();
 
@@ -36,6 +38,16 @@ function AuthStack() {
         <Stack.Screen
           name='CreateReview'
           component={CreateReview}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='EditReview'
+          component={EditReview}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='ShowReviews'
+          component={ShowReviews}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
