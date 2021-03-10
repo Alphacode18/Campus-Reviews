@@ -1,5 +1,5 @@
 import React, { useState, ReactDOM, useReducer } from 'react';
-import { StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView, TextInput, KeyboardAvoidingView, View} from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView, TextInput, KeyboardAvoidingView, View, TouchableOpacity} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Layout, Text, Button, Input, Select, SelectItem, IndexPath, Icon, Card } from '@ui-kitten/components';
 import InputScrollView from 'react-native-input-scroll-view';
@@ -8,6 +8,7 @@ import { HeaderHeightContext } from '@react-navigation/stack';
 import Firebase from '../../config/firebase';
 import { useScrollToTop } from '@react-navigation/native';
 // import Post from './Post.js';
+
 
 const types = [
     'Dining',
@@ -46,8 +47,8 @@ const Footer = ({props, title, post, postID, navigation}) => (
     </View>
 );
 
-function readData(diningPosts) {
-    
+async function readData(diningPosts) {
+
 }
 
 export default showPosts = ({navigation}) => {
@@ -55,6 +56,7 @@ export default showPosts = ({navigation}) => {
     const screenHeight = Dimensions.get('window').height;
     let diningPosts = [];
     let fields = [];
+    // readData(diningPosts);
     Firebase.database().ref('Dining Posts').on('value', (snapshot) => {
         console.log('snapshot');
         console.log(snapshot);
@@ -70,6 +72,7 @@ export default showPosts = ({navigation}) => {
     console.log('dining posts');
     console.log(diningPosts);
     
+
     return (
         <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -101,15 +104,25 @@ export default showPosts = ({navigation}) => {
 
                                 
                                 return  (
-                                    <Layout style={styles.container} level={'1'} > 
-                                        <Card style={styles.card}
-                                         header={(props) => <Header {...props} title={title} user={user} /> }
-                                         footer={(props) => <Footer {...props} title={title} user={user} postID={post} post={postText} navigation={navigation}/>}>
-                                            <Text>
-                                                {postText}
-                                            </Text>
-                                        </Card>
-                                    </Layout> 
+                                    
+                                        <Layout style={styles.container} level={'1'}> 
+                                            <TouchableOpacity >
+                                                <Card style={styles.card}
+                                                    header={(props) => <Header {...props} title={title} user={user} /> }
+                                                    footer={(props) => <Footer {...props} title={title} user={user} postID={post} post={postText} navigation={navigation}/>} onPress={() => {
+                                                        navigation.navigate('ReadPost', {
+                                                            title: title,
+                                                            post: postText,
+                                                            postId: post,
+                                                        });
+                                                    }}>
+                                                    <Text>
+                                                        {postText}
+                                                    </Text>
+                                                </Card>
+                                            </TouchableOpacity>
+                                        </Layout>   
+                                    
                                 )
 
                                 // console.log(card);
