@@ -16,23 +16,7 @@ const types = [
     'Professors'
   ];
 
-const createTwoButtonAlert = ({postID, navigation}) =>
-Alert.alert(
-    "Confirm Deletion",
-    "Are you sure you want to delete this post?",
-    [
-    {
-        text: "Cancel",
-        onPress: () => console.log("Cancel Pressed"),
-        style: "cancel"
-    },
-    { text: "Delete", onPress: () => {
-        Firebase.database().ref('Dining Posts/' + postID).remove();
-        navigation.navigate('ShowPosts');
-    }}
-    ],
-    { cancelable: false }
-);
+
 
 const Header = ({props, title, user}) => (
     <View {...props}>
@@ -46,7 +30,25 @@ const Footer = ({props, title, post, postID, navigation}) => (
         <Button
         style={styles.footerControl}
         size='small'
-        status='basic' onPress={createTwoButtonAlert(postID, navigation)}>
+        status='basic' onPress={() => {
+            //createTwoButtonAlert(postID, navigation);
+            Alert.alert(
+                "Confirm Deletion",
+                "Are you sure you want to delete this post?",
+                [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "Delete", onPress: () => {
+                    Firebase.database().ref('Dining Posts/' + postID).remove();
+                    navigation.navigate('ShowPosts');
+                }}
+                ],
+                { cancelable: false }
+            );
+        }}>
         Delete
         </Button>
         <Button
@@ -121,7 +123,7 @@ export default showPosts = ({navigation}) => {
 
                                 return  (
                                         <Layout style={styles.container} level={'1'}> 
-                                            <TouchableOpacity>
+                                            
                                                 <Card style={styles.card}
                                                     header={(props) => <Header {...props} title={title} user={user} /> }
                                                     footer={(props) => <Footer {...props} title={title} user={user} postID={post} post={postText} navigation={navigation}/>} onPress={() => {
@@ -135,7 +137,7 @@ export default showPosts = ({navigation}) => {
                                                         {postText}
                                                     </Text>
                                                 </Card>
-                                            </TouchableOpacity>
+                                            
                                         </Layout>   
                                     
                                 )
