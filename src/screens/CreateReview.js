@@ -7,6 +7,7 @@ import { HeaderHeightContext } from '@react-navigation/stack';
 import Firebase from '../../config/firebase';
 
 const rateVal = [
+    '0',
     '1',
     '2',
     '3',
@@ -87,7 +88,8 @@ export default createReview = ({ navigation }) => {
                             value={ratingValue}
                             onSelect={changeSelection_rate}
                             style={{width: '90%'}}>
-                            <SelectItem title='1' style={{}}/>
+                            <SelectItem title='0' style={{}}/>
+                            <SelectItem title='1'/>
                             <SelectItem title='2'/>
                             <SelectItem title='3'/>
                             <SelectItem title='4'/>
@@ -123,7 +125,7 @@ export default createReview = ({ navigation }) => {
                                     var datetime = date+' '+time;
                                     Firebase.database().ref('/' + typeVal[selectedIndex_type.row] + ' Reviews').push({
                                         review_title: review_title,
-                                        review_rate: (selectedIndex_rate.row+1),
+                                        review_rate: (selectedIndex_rate.row),
                                         review_text: review_text,
                                         user: 'Review Tester',
                                         date_time: datetime

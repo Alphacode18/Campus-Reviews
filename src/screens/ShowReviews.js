@@ -1,7 +1,7 @@
 import React, { useState, ReactDOM } from 'react';
 import { StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView, TextInput, KeyboardAvoidingView, View} from 'react-native';
 import { Layout, Text, Button, Input, Select, SelectItem, IndexPath, Icon, Card } from '@ui-kitten/components';
-import { Dimensions } from 'react-native';
+import { Dimensions, Alert } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
 import Firebase from '../../config/firebase';
 import { useScrollToTop } from '@react-navigation/native';
@@ -14,6 +14,7 @@ const typeVal = [
   ];
 
   const rateVal = [
+    '0',
     '1',
     '2',
     '3',
@@ -26,16 +27,34 @@ const typeVal = [
     '10'
   ];
 
+  /*const createTwoButtonAlert = ({review_id, navigation}) =>
+  Alert.alert(
+    "Confirm Deletion",
+    "Are you sure you want to delete this post?",
+    [
+    {
+        text: "No",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel"
+    },
+    { text: "Yes", onPress: () => {
+        Firebase.database().ref('Classes Reviews/' + review_id).remove();
+        navigation.navigate('ShowReviews');
+    }}
+    ],
+    { cancelable: false }
+  );*/
+
 const Header = ({props, title, user, date, rate}) => (
     <View {...props}>
-        <Text category='h6'> Topic: {JSON.stringify(title)} </Text>
-        <Text category='s1'> User: {JSON.stringify(user)} </Text>
-        <Text category='s3'> Rating(#/10): {JSON.stringify(rate)} </Text>
-        <Text category='h9'> Date: {JSON.stringify(date)} </Text>
+        <Text category='h6'> Topic: {title} </Text>
+        <Text category='s1'> User: {user} </Text>
+        <Text category='s3'> Rating(#/10): {rate} </Text>
+        <Text category='h9'> Date: {date} </Text>
     </View>
 );
 
-const Footer = ({navigation, props, title, user, rate, text}) => (
+const Footer = ({navigation, props, title, user, rate, text, review_id}) => (
     <View {...props} style={[styles.footerContainer]}>
         <Button
         style={styles.footerControl}
@@ -49,7 +68,8 @@ const Footer = ({navigation, props, title, user, rate, text}) => (
             navigation.navigate('EditReview', {review_title: title,
                 review_text: text,
                 review_type: 2,
-                review_rate: rate});
+                review_rate: rate,
+                review_id: review_id});
         }}>
         Edit Review
         </Button>
@@ -78,10 +98,11 @@ export default showReviews = ({navigation}) => {
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <Layout style={styles.container} level={'1'} > 
                     <ScrollView contentContainerStyle={{flexGrow : 1, width : screenWidth, alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={{marginBottom: 20}}></Text>
                     <React.Fragment>
-                        {classReviews.map(function(review_text, index) {
-                                Firebase.database().ref('Classes Reviews/' + review_text).on('value', (snapshot) => {
-                                    console.log('Classes Reviews/' + review_text);
+                        {classReviews.map(function(review_id, index) {
+                                Firebase.database().ref('Classes Reviews/' + review_id).on('value', (snapshot) => {
+                                    console.log('Classes Reviews/' + review_id);
                                     let i = 0;
                                     snapshot.forEach(function(data) {
                                         fields.push(data);
@@ -91,14 +112,25 @@ export default showReviews = ({navigation}) => {
                                     // console.log(fields[0]);
                                     
                                 });
+
+                                let title = JSON.stringify(fields[5 * index + 3]);
+                                title = title.replace(/\"/g, "");  
+                                let user = JSON.stringify(fields[5 * index + 4]);
+                                user = user.replace(/\"/g, "");  
+                                let date = JSON.stringify(fields[5 * index]);
+                                date = date.replace(/\"/g, "");
+                                let rate = JSON.stringify(fields[5 * index + 1]);
+                                rate = rate.replace(/\"/g, "");
+                                let text = JSON.stringify(fields[5 * index + 2]);
+                                text = text.replace(/\"/g, "");
                                 
                                 return  (
                                     <Layout style={styles.container} level={'1'} > 
                                         <Card style={styles.card}
-                                         header={(props) => <Header {...props} title={JSON.stringify(fields[5 * index + 3])} user={JSON.stringify(fields[5 * index + 4])} date={JSON.stringify(fields[5 * index])} rate={JSON.stringify(fields[5 * index + 1])}/> }
-                                         footer={(props) => <Footer {...props} title={JSON.stringify(fields[5 * index + 3])} user={JSON.stringify(fields[5 * index + 4])} rate={JSON.stringify(fields[5 * index + 1])} text={JSON.stringify(fields[5 * index + 2])} navigation={navigation}/>}>
+                                         header={(props) => <Header {...props} title={title} user={user} date={date} rate={rate}/> }
+                                         footer={(props) => <Footer {...props} title={title} user={user} rate={rate} text={text} review_id={review_id} navigation={navigation}/>}>
                                             <Text>
-                                                {JSON.stringify(fields[5 * index + 2])}
+                                                {text}
                                             </Text>
                                         </Card>
                                     </Layout> 
@@ -110,14 +142,8 @@ export default showReviews = ({navigation}) => {
     
                             })
                         }
-                        <Layout style={styles.container} level={'1'} > 
-                            <Card style={styles.card} header={Header} footer={Footer}>
-                                <Text>
-                                    {JSON.stringify(fields[1])}
-                                </Text>
-                            </Card>
-                        </Layout>   
                     </React.Fragment>
+                    <Text style={{marginBottom: 20}}></Text>
                     </ScrollView>
                 </Layout>
             </TouchableWithoutFeedback>
