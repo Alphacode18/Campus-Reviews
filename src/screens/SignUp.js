@@ -42,13 +42,21 @@ export default register = ({ navigation }) => {
    */
   const handleRegistrations = () => {
     setLoading(true);
-    Firebase.auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(() => {})
-      .catch((erro) => {
-        setLoading(false);
-        Alert.alert(error); //TODO: Alert text may need to be updated.
-      });
+    if (username.length > 30) {
+      setLoading(false);
+      Alert.alert('Username longer than expected');
+    } else if (password === confirmPassword) {
+      Firebase.auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then(() => {})
+        .catch((error) => {
+          setLoading(false);
+          Alert.alert('Invalid Email or Incomplete Details'); //TODO: Alert text may need to be updated.
+        });
+    } else {
+      setLoading(false);
+      Alert.alert('Passwords Do Not Match');
+    }
   };
 
   return (

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layout, Text, Button } from '@ui-kitten/components';
+import { Layout, Text, Button, Spinner } from '@ui-kitten/components';
 import firebase from '../../../config/firebase';
 import { Alert } from 'react-native';
 
@@ -10,7 +10,9 @@ export default ProfileScreen = ({ navigation }) => {
     firebase
       .auth()
       .signOut()
-      .then(() => {})
+      .then(() => {
+        setLoading(true);
+      })
       .catch((error) => {
         Alert.alert('Something went wrong');
       });
@@ -18,7 +20,9 @@ export default ProfileScreen = ({ navigation }) => {
   const handleDelete = () => {
     user
       .delete()
-      .then(function () {})
+      .then(() => {
+        setLoading(true);
+      })
       .catch(function (error) {
         Alert.alert('Something went wrong');
       });
