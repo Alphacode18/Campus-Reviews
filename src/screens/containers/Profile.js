@@ -4,6 +4,7 @@ import firebase from '../../../config/firebase';
 import { Alert } from 'react-native';
 
 export default ProfileScreen = ({ navigation }) => {
+  const user = firebase.auth().currentUser;
   const [loading, setLoading] = useState(false);
   const handleLogout = () => {
     firebase
@@ -11,6 +12,14 @@ export default ProfileScreen = ({ navigation }) => {
       .signOut()
       .then(() => {})
       .catch((error) => {
+        Alert.alert('Something went wrong');
+      });
+  };
+  const handleDelete = () => {
+    user
+      .delete()
+      .then(function () {})
+      .catch(function (error) {
         Alert.alert('Something went wrong');
       });
   };
@@ -22,6 +31,17 @@ export default ProfileScreen = ({ navigation }) => {
         appearance='outline'
       >
         {loading === false ? <Text>Logout</Text> : <Spinner size='small' />}
+      </Button>
+      <Button
+        onPress={handleDelete}
+        style={{ width: '50%', borderRadius: 5, marginTop: 25 }}
+        appearance='outline'
+      >
+        {loading === false ? (
+          <Text>Delete Account</Text>
+        ) : (
+          <Spinner size='small' />
+        )}
       </Button>
     </Layout>
   );

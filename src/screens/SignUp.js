@@ -43,13 +43,11 @@ export default register = ({ navigation }) => {
   const handleRegistrations = () => {
     setLoading(true);
     Firebase.auth()
-    .createUserWithEmailAndPassword(email, password)
-    .then(() => {
-        navigation.navigate('Login'); //TODO: For now they have to try logging in right after signup, later we'll have to first add the check for @purdue.edu email.
-      })
-      .catch(() => {
+      .createUserWithEmailAndPassword(email, password)
+      .then(() => {})
+      .catch((erro) => {
         setLoading(false);
-        Alert.alert('Email does not exist. Try Again.'); //TODO: Alert text may need to be updated.
+        Alert.alert(error); //TODO: Alert text may need to be updated.
       });
   };
 

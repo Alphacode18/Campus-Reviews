@@ -15,7 +15,7 @@ export default register = ({ navigation }) => {
   const handleForgotPassword = () => {
     setLoading(true);
     Firebase.auth()
-      .passwordReset(email)
+      .sendPasswordResetEmail(email)
       .then(() => {
         navigation.navigate('Home');
       })
