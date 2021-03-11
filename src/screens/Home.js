@@ -19,7 +19,7 @@ export default register = ({ navigation }) => {
         <Button
           style={{ width: '50%', borderRadius: 20, marginTop: 20 }}
           appearance='filled'
-          onPress={() => navigation.navigate('CreatePost')}
+          onPress={() => navigation.navigate('Login')}
         >
           <Text style={{ color: 'white' }}>Login</Text>
         </Button>
