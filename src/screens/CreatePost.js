@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView, TextInput, KeyboardAvoidingView, textarea} from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView, TextInput, KeyboardAvoidingView, textarea, Alert} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Layout, Text, Button, Input, Select, SelectItem, IndexPath, Icon } from '@ui-kitten/components';
 import InputScrollView from 'react-native-input-scroll-view';
@@ -36,8 +36,10 @@ export default createPost = ({ navigation }) => {
         style={styles.container}> 
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <Layout style={styles.container} level={'1'} > 
-                <Button accessoryCenter={ExitIcon} style={{color: 'white', borderColor: 'white', position: 'absolute', top:'7%', left: '70%' }} onPress={() => navigation.navigate('Home')}> </Button> 
+                {/* <Button accessoryCenter={ExitIcon} style={{color: 'white', borderColor: 'white', position: 'absolute', top:'7%', left: '70%' }} onPress={() => navigation.navigate('Home')}> </Button>  */}
+                
                     <ScrollView contentContainerStyle={{flexGrow : 1, width : screenWidth, alignItems: 'center', justifyContent: 'center'}}>
+                    <Button status='basic' onPress={() => navigation.navigate('ShowPosts')}> Back </Button>
                         <Text category='h1' style={{ padding: 20, marginTop: 0 }}> Create Post </Text>
                         <Select
                             placeholder='Default'
@@ -77,11 +79,14 @@ export default createPost = ({ navigation }) => {
                                         post: post,
                                         user: 'Anirudh Seela'
                                     });
+                                    
                                     navigation.navigate('ShowPosts', {
                                         title: title,
                                         post: post,
                                         index: selectedIndex
                                     });
+                                } else {
+                                    Alert.alert('Please fill in all the information for your post.');
                                 }
                             }}
                         >

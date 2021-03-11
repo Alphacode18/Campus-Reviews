@@ -7,6 +7,7 @@ import { Dimensions } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
 import Firebase from '../../config/firebase';
 import { useScrollToTop } from '@react-navigation/native';
+import { render } from 'react-dom';
 // import Post from './Post.js';
 
 const types = [
@@ -16,28 +17,28 @@ const types = [
     'Professors'
   ];
 
-const createTwoButtonAlert = ({postID, navigation}) =>
-Alert.alert(
-    "Confirm Deletion",
-    "Are you sure you want to delete this post?",
-    [
-    {
-        text: "Cancel",
-        onPress: () => console.log("Cancel Pressed"),
-        style: "cancel"
-    },
-    { text: "Delete", onPress: () => {
-        Firebase.database().ref('Dining Posts/' + postID).remove();
-        navigation.navigate('ShowPosts');
-    }}
-    ],
-    { cancelable: false }
-);
+const createTwoButtonAlert = ({postID, navigation}) => (
+    Alert.alert(
+        "Confirm Deletion",
+        "Are you sure you want to delete this post?",
+        [
+        {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+        },
+        { text: "Delete", onPress: () => {
+            Firebase.database().ref('Dining Posts/' + postID).remove();
+            navigation.navigate('ShowPosts');
+        }}
+        ],
+        { cancelable: false }
+    ));
 
 const Header = ({props, title, user}) => (
     <View {...props}>
-        <Text category='h6'> {JSON.stringify(title)} </Text>
-        <Text category='s1'> {JSON.stringify(user)} </Text>
+        <Text category='h6'> {'   ' + title} </Text>
+        <Text category='s1'> {'   ' + user} </Text>
     </View>
 );
 
@@ -46,7 +47,7 @@ const Footer = ({props, title, post, postID, navigation}) => (
         <Button
         style={styles.footerControl}
         size='small'
-        status='basic' onPress={createTwoButtonAlert(postID, navigation)}>
+        status='basic'>
         Delete
         </Button>
         <Button
@@ -63,6 +64,18 @@ const Footer = ({props, title, post, postID, navigation}) => (
         </Button>
     </View>
 );
+
+const renderIcon = ({props, navigation}) => (
+    <TouchableWithoutFeedback onPress={() => {
+        navigation.navigate('CreatePost', {
+            title: title,
+            post: postText,
+            postId: post,
+        })
+    }}>
+      <Icon {...props} name={'plus-outline'} />
+    </TouchableWithoutFeedback>
+  );
 
 async function readData(diningPosts) {
 
@@ -86,10 +99,10 @@ export default showPosts = ({navigation}) => {
         });
     });
     
+
     console.log('dining posts');
     console.log(diningPosts);
     
-
     return (
         <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -97,7 +110,14 @@ export default showPosts = ({navigation}) => {
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <Layout style={styles.container} level={'1'} > 
                     <ScrollView contentContainerStyle={{flexGrow : 1, width : screenWidth, alignItems: 'center', justifyContent: 'center'}}>
-                        <Text style={{marginTop: 50, marginBottom: 20, fontSize: 36}}> Dining </Text>
+                        <Text style={{marginTop: 50, marginBottom: 20, fontSize: 36, marginHorizontal: 2}}> Dining </Text>
+                        {/* <Button
+                            style={styles.button}
+                            appearance='ghost'
+                            accessoryARight={renderIcon}
+                        /> */}
+                        <Button status='basic' onPress={() => navigation.navigate('CreatePost')}> Create </Button>
+                        
                     <React.Fragment>
                         {diningPosts.map(function(post, index) {
                                 Firebase.database().ref('Dining Posts/' + post).on('value', (snapshot) => {
@@ -113,11 +133,19 @@ export default showPosts = ({navigation}) => {
                                 });
 
                                 let user = JSON.stringify(fields[3 * index + 2]);
-                                user = user.replace(/\"/g, "");  
-                                let title = JSON.stringify(fields[3 * index + 1]);
-                                title = title.replace(/\"/g, "");  
+                                console.log('user');
+                                console.log(user.replace(/\"/g, ""))
+                                user = user.replace(/\"/g, "");
+                                 
+                                let title = JSON.parse(JSON.stringify(fields[3 * index + 1]));
+                                console.log('title'); 
+                                console.log(title);
+
                                 let postText = JSON.stringify(fields[3 * index]);
+                                console.log('postText');
+                                console.log(postText.replace(/\"/g, ""))
                                 postText = postText.replace(/\"/g, "");
+                                console.log(postText);
 
                                 return  (
                                         <Layout style={styles.container} level={'1'}> 
@@ -138,22 +166,11 @@ export default showPosts = ({navigation}) => {
                                             </TouchableOpacity>
                                         </Layout>   
                                     
-                                )
-
-                                // console.log(card);
-                                
-                                // ReactDOM.render(card, document.getElementById('root'));
-    
+                                )    
                             })
                         }
-                        {/* <Layout style={styles.container} level={'1'} > 
-                            <Card style={styles.card} header={Header} footer={Footer}>
-                                <Text>
-                                    {JSON.stringify(fields[1])}
-                                </Text>
-                            </Card>
-                        </Layout>    */}
                     </React.Fragment>
+                    <Text style={{marginBottom: 20}}></Text>
                     </ScrollView>
                 </Layout>
             </TouchableWithoutFeedback>
