@@ -13,6 +13,7 @@ import {
   Button,
   Spinner,
   Icon,
+  CheckBox,
 } from '@ui-kitten/components';
 import Firebase from '../../config/firebase';
 
@@ -32,12 +33,21 @@ export default register = ({ navigation }) => {
     </TouchableWithoutFeedback>
   );
 
-  //TODO
+  //[potential]TODO:
   /*
-   * Read Through Firebase Docs & firebase.config before implementation
+   * Integrated using email for now, maybe add using username later
    */
   const handleLogin = () => {
     setLoading(true);
+    Firebase.auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(() => {
+        navigation.navigate('Home');
+      })
+      .catch(() => {
+        setLoading(false);
+        Alert.alert('Incorrect Email or Password. Try again.');
+      });
   };
 
   return (
@@ -60,6 +70,9 @@ export default register = ({ navigation }) => {
           secureTextEntry={secureTextEntry}
           onChangeText={(password) => setPassword(password)}
         />
+        <CheckBox style={{ width: '85%', paddingLeft: 20 }}>
+          <Text>Remember Me</Text>
+        </CheckBox>
         <Button
           onPress={handleLogin}
           style={{ width: '50%', borderRadius: 20, marginTop: 20 }}
@@ -74,6 +87,16 @@ export default register = ({ navigation }) => {
           <Text>
             <Text>Do not have an account yet? </Text>
             <Text style={{ textDecorationLine: 'underline' }}>Sign Up</Text>
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{ color: 'white', marginTop: 40 }}
+          onPress={() => navigation.navigate('ForgotPassword')}
+        >
+          <Text>
+            <Text style={{ textDecorationLine: 'underline' }}>
+              Forgot Your Password ?
+            </Text>
           </Text>
         </TouchableOpacity>
       </Layout>

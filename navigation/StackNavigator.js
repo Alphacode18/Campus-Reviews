@@ -8,6 +8,8 @@ import CreatePost from '../src/screens/CreatePost';
 import EditPost from '../src/screens/EditPost';
 import ShowPosts from '../src/screens/ShowPosts';
 import ReadPost from '../src/screens/ReadPost';
+import EditUsername from '../src/screens/EditUsername';
+import ForgotPassword from '../src/screens/ForgotPassword';
 
 const Stack = createStackNavigator();
 
@@ -48,6 +50,15 @@ function AuthStack() {
         <Stack.Screen
           name='ReadPost'
           component={ReadPost}
+        />
+        <Stack.Screen
+          name='EditUsername'
+          component={EditUsername}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='ForgotPassword'
+          component={ForgotPassword}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

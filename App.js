@@ -1,28 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import * as eva from '@eva-design/eva';
-import {
-  ApplicationProvider,
-  IconRegistry,
-  Layout,
-  Text,
-} from '@ui-kitten/components';
+import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
-import { StyleSheet } from 'react-native';
 import AuthStack from './navigation/StackNavigator';
+import AuthenticatedNavigator from './navigation/SwitchNavigator';
+import firebase from './config/firebase';
 
-export default () => (
-  <>
-    <IconRegistry icons={EvaIconsPack} />
-    <ApplicationProvider {...eva} theme={eva.light}>
-      <AuthStack />
-    </ApplicationProvider>
-  </>
-);
+export default () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-const styles = StyleSheet.create({
-  layout: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
+  firebase.auth().onAuthStateChanged((user) => {
+    user ? setIsAuthenticated(true) : setIsAuthenticated(false);
+    console.log(isAuthenticated);
+  });
+
+  return (
+    <>
+      <IconRegistry icons={EvaIconsPack} />
+      <ApplicationProvider {...eva} theme={eva.light}>
+        {isAuthenticated ? <AuthenticatedNavigator /> : <AuthStack />}
+      </ApplicationProvider>
+    </>
+  );
+};
