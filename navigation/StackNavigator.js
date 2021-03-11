@@ -4,6 +4,10 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Login from '../src/screens/Login';
 import SignUp from '../src/screens/SignUp';
 import Home from '../src/screens/Home';
+import CreatePost from '../src/screens/CreatePost';
+import EditPost from '../src/screens/EditPost';
+import ShowPosts from '../src/screens/ShowPosts';
+import ReadPost from '../src/screens/ReadPost';
 import EditUsername from '../src/screens/EditUsername';
 import ForgotPassword from '../src/screens/ForgotPassword';
 
@@ -27,6 +31,25 @@ function AuthStack() {
           name='SignUp'
           component={SignUp}
           options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='CreatePost'
+          component={CreatePost}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='EditPost'
+          component={EditPost}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='ShowPosts'
+          component={ShowPosts}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='ReadPost'
+          component={ReadPost}
         />
         <Stack.Screen
           name='EditUsername'
