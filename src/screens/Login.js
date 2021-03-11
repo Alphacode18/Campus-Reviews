@@ -22,6 +22,7 @@ export default register = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [checked, setChecked] = useState(false);
 
   const toggleSecureEntry = () => {
     setSecureTextEntry(!secureTextEntry);
@@ -70,7 +71,11 @@ export default register = ({ navigation }) => {
           secureTextEntry={secureTextEntry}
           onChangeText={(password) => setPassword(password)}
         />
-        <CheckBox style={{ width: '85%', paddingLeft: 20 }}>
+        <CheckBox
+          style={{ width: '85%', paddingLeft: 20 }}
+          checked={checked}
+          onChange={(nextChecked) => setChecked(nextChecked)}
+        >
           <Text>Remember Me</Text>
         </CheckBox>
         <Button
