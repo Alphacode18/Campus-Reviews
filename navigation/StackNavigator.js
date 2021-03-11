@@ -4,10 +4,15 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Login from '../src/screens/Login';
 import SignUp from '../src/screens/SignUp';
 import Home from '../src/screens/Home';
+<<<<<<< HEAD
 import CreatePost from '../src/screens/CreatePost';
 import EditPost from '../src/screens/EditPost';
 import ShowPosts from '../src/screens/ShowPosts';
 import ReadPost from '../src/screens/ReadPost';
+=======
+import ReadPost from '../src/screens/ReadPost'
+import DeletePost from '../src/screens/DeletePost';
+>>>>>>> 80d1bea84b14260707c45bd3fe3e217c8dd7e44c
 
 const Stack = createStackNavigator();
 
@@ -31,6 +36,7 @@ function AuthStack() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+<<<<<<< HEAD
           name='CreatePost'
           component={CreatePost}
           options={{ headerShown: false }}
@@ -44,6 +50,11 @@ function AuthStack() {
           name='ShowPosts'
           component={ShowPosts}
           options={{ headerShown: false }}
+=======
+          name='DeletePost'
+          component={DeletePost}
+          options={{ headreShown: false }}
+>>>>>>> 80d1bea84b14260707c45bd3fe3e217c8dd7e44c
         />
         <Stack.Screen
           name='ReadPost'

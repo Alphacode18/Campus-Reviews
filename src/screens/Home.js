@@ -19,8 +19,27 @@ export default register = ({ navigation }) => {
         <Button
           style={{ width: '50%', borderRadius: 20, marginTop: 20 }}
           appearance='filled'
+<<<<<<< HEAD
           onPress={() => navigation.navigate('CreatePost')}
+=======
+          onPress={() => navigation.navigate('ReadPost')}
+          >
+          <Text style={{ color: 'white' }}>Read Post</Text>
+        </Button>
+        <Button
+          style={{ width: '50%', borderRadius: 20, marginTop: 20 }}
+          appearance='filled'
+          onPress={() => navigation.navigate('DeletePost')}
+          >
+            <Text style={{ color: 'white' }}>Delete Post</Text>
+        </Button>
+        <Button
+          style={{ width: '50%', borderRadius: 20, marginTop: 20 }}
+          appearance='filled'
+          onPress={() => navigation.navigate('Login')}
+>>>>>>> 80d1bea84b14260707c45bd3fe3e217c8dd7e44c
         >
+
           <Text style={{ color: 'white' }}>Login</Text>
         </Button>
       </Layout>

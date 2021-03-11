@@ -21,12 +21,20 @@ const renderBackAction = () => (
     <TopNavigationAction icon={BackIcon}/>
   );
 
+<<<<<<< HEAD
   const Header = ({props, title}) => (
+=======
+  const Header = (props) => (
+>>>>>>> 80d1bea84b14260707c45bd3fe3e217c8dd7e44c
     <View style={{flexDirection:'row', alignItems:'center'}}>
       <View style={styles.controlContainer}>
         <Text style={styles.review} status='control'>Review</Text>
       </View>
+<<<<<<< HEAD
       <Text category='h6' style={styles.text} status='danger'> {title} </Text>
+=======
+      <Text category='h6' style={styles.text} status='danger'>Prof X Is The BEST</Text>
+>>>>>>> 80d1bea84b14260707c45bd3fe3e217c8dd7e44c
     </View>
   );
 
@@ -35,8 +43,13 @@ const renderBackAction = () => (
     <View style={{flexDirection:'row', alignItems:'center'}}>
       <Text category='h6' style={styles.text} category='p1'>
       <Text style={styles.text} status='info'>by: DarshDalal2001 </Text>
+<<<<<<< HEAD
       {/* <Text style={styles.text} status='success'>8 comments </Text>
       <Text style={styles.text} status='danger'>1d</Text> */}
+=======
+      <Text style={styles.text} status='success'>8 comments </Text>
+      <Text style={styles.text} status='danger'>1d</Text>
+>>>>>>> 80d1bea84b14260707c45bd3fe3e217c8dd7e44c
       </Text>
     </View>
 
@@ -44,11 +57,27 @@ const renderBackAction = () => (
   );
 
 
+<<<<<<< HEAD
 export default readPost = ({ route, navigation }) => {
     const { title, post, postID } = route.params;
 
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
+=======
+export default createPost = ({ navigation }) => {
+    const [titleState, setTitleState] = useState('');
+    const [postState, setPostState] = useState('');
+    const [selectedIndex, setSelectedIndex] = useState(new IndexPath(0));
+    const [notSelected, setNotSelected] = useState(true);
+    const screenWidth = Dimensions.get('window').width;
+    const screenHeight = Dimensions.get('window').height;
+    const displayValue = notSelected ? 'Type' : data[selectedIndex.row];
+
+    const changeSelection = (selectedIndex) => {
+        setSelectedIndex(selectedIndex);
+        setNotSelected(false);
+      };
+>>>>>>> 80d1bea84b14260707c45bd3fe3e217c8dd7e44c
 
     return (
         <KeyboardAvoidingView
@@ -63,6 +92,7 @@ export default readPost = ({ route, navigation }) => {
                   accessoryLeft={renderBackAction}
                 />
                     <ScrollView contentContainerStyle={{flexGrow : 1}}>
+<<<<<<< HEAD
                     <Card style={styles.card} 
                     header={(props) => <Header {...props} title={title}/> }
                     footer={(props) => <Footer {...props}/> }>
@@ -71,6 +101,20 @@ export default readPost = ({ route, navigation }) => {
                       </Text>
                     </Card>
                     {/* <React.Fragment>
+=======
+                    <Card style={styles.card} header={Header} footer={Footer}>
+                      <Text style={styles.text} category='s2'>
+                      {'    '}Proin quis viverra risus. Vestibulum condimentum et lectus porta maximus. Quisque elementum, diam quis efficitur hendrerit, ligula lacus cursus justo, in interdum ipsum orci eu nibh. Praesent viverra risus vitae augue dapibus, id pulvinar lorem vehicula. Cras ante ante, sagittis nec sem eu, elementum pharetra erat. Nam lacus diam, aliquam non dolor non, dapibus suscipit augue. Donec sollicitudin at elit tincidunt maximus. Suspendisse potenti. Integer sit amet nibh non nisi.
+                      {"\n"}
+                      {'    '}sollicitudin sagittis. Vestibulum nec risus id nibh sagittis facilisis. Mauris sed ipsum sapien. Nulla pretium ornare cursus.
+                      Mauris mauris dui, tempus et ullamcorper in, vestibulum et mi. Nullam efficitur laoreet risus. Sed id enim libero. Phasellus varius massa vel ornare fermentum. Aliquam molestie leo ut vehicula sodales.
+                      {"\n"}
+                      {'    '}Fusce pharetra libero venenatis lorem interdum, sed ultricies justo varius. Aenean eu velit ipsum. Maecenas tempor, nibh quis mollis aliquet, libero odio elementum odio, ac eleifend magna diam vitae dui. Suspendisse potenti. Nam vel odio at felis malesuada semper. Pellentesque ipsum justo, scelerisque molestie vehicula a, hendrerit at ligula. Vestibulum pellentesque nulla vitae ante rutrum laoreet. Nulla fringilla sodales facilisis.
+
+                      </Text>
+                    </Card>
+                    <React.Fragment>
+>>>>>>> 80d1bea84b14260707c45bd3fe3e217c8dd7e44c
                       <View style={styles.details}>
                         <Text style={styles.title} category='h6'>Comment</Text>
                       </View>
@@ -97,7 +141,11 @@ export default readPost = ({ route, navigation }) => {
                       </View>
                       <Divider/>
 
+<<<<<<< HEAD
                     </React.Fragment> */}
+=======
+                    </React.Fragment>
+>>>>>>> 80d1bea84b14260707c45bd3fe3e217c8dd7e44c
                     <React.Fragment>
                       <View style={styles.details}>
                         <Text style={styles.title} category='h6'>Comment</Text>
@@ -145,4 +193,8 @@ const styles = StyleSheet.create({
   installButton: {
     marginVertical: 4,
   },
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> 80d1bea84b14260707c45bd3fe3e217c8dd7e44c
