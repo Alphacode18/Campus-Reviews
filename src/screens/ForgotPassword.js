@@ -18,6 +18,7 @@ export default register = ({ navigation }) => {
       .sendPasswordResetEmail(email)
       .then(() => {
         Alert.alert('Password Recovery Mail Sent!');
+        setLoading(false);
       })
       .catch(() => {
         setLoading(false);
