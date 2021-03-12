@@ -21,6 +21,9 @@ import {
   IndexPath,
   Icon,
   Card,
+  TopNavigation,
+  TopNavigationAction
+
 } from '@ui-kitten/components';
 import InputScrollView from 'react-native-input-scroll-view';
 import { Dimensions } from 'react-native';
@@ -32,8 +35,28 @@ import { render } from 'react-dom';
 
 const types = ['Dining', 'On-Campus Facilities', 'Classes', 'Professors'];
 
+const trashIcon = (props) => (
+  <Icon {...props} name='trash-2'/>
+);
+
+const editIcon = (props) => (
+  <Icon {...props} name='edit-outline'/>
+);
+
+const plusIcon = (props) => (
+  <Icon {...props} name='plus'/>
+);
+
+const BackIcon = (props) => (
+  <Icon {...props} name='arrow-back'/>
+);
+
+const renderBackAction = () => (
+  <TopNavigationAction icon={BackIcon}/>
+);
+
 const Header = ({ props, title, user }) => (
-  <View {...props}>
+  <View {...props} style={[styles.headerContainer]}>
     <Text category='h6'> {'   ' + title} </Text>
     <Text category='s1'> {'   ' + user} </Text>
   </View>
@@ -45,6 +68,7 @@ const Footer = ({ props, title, post, postID, navigation, index, user, currentUs
       <Button
         style={styles.footerControl}
         size='small'
+        accessoryLeft = {trashIcon}
         status='basic' onPress={() => {
             Alert.alert(
                 "Confirm Deletion",
@@ -63,11 +87,12 @@ const Footer = ({ props, title, post, postID, navigation, index, user, currentUs
                 { cancelable: false }
             );
         }}>
-        Delete
         </Button>
         <Button
         style={styles.footerControl}
-        size='small' onPress= {() => {
+        size='small' 
+        accessoryLeft= {editIcon}
+        onPress= {() => {
             navigation.navigate('EditPost', {
                 title: title,
                 post: post,
@@ -75,7 +100,6 @@ const Footer = ({ props, title, post, postID, navigation, index, user, currentUs
                 index: index
             });
         }}>
-        Edit
         </Button>
     </View>
   ) : (
@@ -129,12 +153,27 @@ export default showPosts = ({ navigation, route }) => {
   console.log(posts);
 
   return (
+
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <Layout style={styles.container} level={'1'}>
+
+          
+          
+        <Button
+              title='Back'
+              accessoryLeft={renderBackAction}
+              onPress = { () => {
+                navigation.navigate('Buffer')
+              }
+                  
+              }
+          />
+
+
           <ScrollView
             contentContainerStyle={{
               flexGrow: 1,
@@ -143,6 +182,15 @@ export default showPosts = ({ navigation, route }) => {
               justifyContent: 'center',
             }}
           >
+
+            {/* <Button 
+                onPress = {
+                  navigation.navigate('Buffer');
+                }
+
+            /> */}
+
+          
             <Text
               style={{
                 marginTop: 50,
@@ -161,6 +209,7 @@ export default showPosts = ({ navigation, route }) => {
                         /> */}
             <Button
               status='basic'
+              accessoryLeft = {plusIcon}
               onPress={() => {
                 navigation.navigate('CreatePost', {
                   index: index,
@@ -266,13 +315,17 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
-    margin: 2,
+    margin: 7.5,
     minWidth: '95%',
     maxWidth: '95%',
   },
   footerContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    margin: 3,
+  },
+  headerContainer: {
+    margin: 5,
   },
   footerControl: {
     marginHorizontal: 2,
