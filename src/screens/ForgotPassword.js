@@ -17,7 +17,7 @@ export default register = ({ navigation }) => {
     Firebase.auth()
       .sendPasswordResetEmail(email)
       .then(() => {
-        navigation.navigate('Home');
+        Alert.alert('Password Recovery Mail Sent!');
       })
       .catch(() => {
         setLoading(false);
