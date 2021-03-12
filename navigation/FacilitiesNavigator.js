@@ -7,6 +7,10 @@ import ReadPost from '../src/screens/ReadPost';
 import CreatePost from '../src/screens/CreatePost';
 import Loading from '../src/screens/Loading';
 import Buffer from '../src/screens/Buffer';
+import CreateReview from '../src/screens/CreateReview.js';
+import EditReview from '../src/screens/EditReview.js';
+import ShowReviews from '../src/screens/ShowReviews.js';
+import ReadReview from '../src/screens/ReadReview.js';
 
 const Stack = createStackNavigator();
 
@@ -44,6 +48,26 @@ function classNavigator() {
         component={ReadPost}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+          name='CreateReview'
+          component={CreateReview}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='EditReview'
+          component={EditReview}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='ShowReviews'
+          component={ShowReviews}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='ReadReview'
+          component={ReadReview}
+          options={{ headerShown: false }}
+        />
     </Stack.Navigator>
   );
 }

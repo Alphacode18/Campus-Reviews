@@ -34,26 +34,27 @@ const types = ['Dining', 'On-Campus Facilities', 'Classes', 'Professors'];
 
 export default loading = ({ navigation, route }) => {
   const index = route.params.index; 
+  const postType = route.params.postType;
   const db = Firebase.database();
   let posts = [];
   let fields = [];
   // readData(diningPosts);
   setTimeout(() => {
-    db.ref(types[index] + ' Posts').on('value', (snapshot) => {
+    db.ref(types[index] + ' ' + postType).on('value', (snapshot) => {
         console.log('snapshot');
         console.log(snapshot);
         snapshot.forEach(function (data) {
             console.log('data');
             console.log(data);
             posts.push(data.key);
-            db.ref(types[index] + ' Posts/' + data.key).on('value', (snapshot) => {
-                console.log(types[index] + ' Posts/' + data.key);
+            db.ref(types[index] + ' ' + postType + '/' + data.key).on('value', (snapshot) => {
+                console.log(types[index] + ' ' + postType + '/' + data.key);
                 snapshot.forEach(function (field) {
                     fields.push(field);
                 });
             });
         })
-        navigation.navigate('ShowPosts', {
+        navigation.navigate('Show' + postType, {
             index: index,
         });
     });
