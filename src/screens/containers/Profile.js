@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Layout, Text, Button, Spinner,CheckBox } from '@ui-kitten/components';
 import firebase from '../../../config/firebase';
 import { Alert } from 'react-native';
-import { StyleSheet, Keyboard, TouchWithoutFeedback, TouchOpacity } from 'react-native';
-import { Input, Icon } from '@ui-kitten/components';
+import { StyleSheet, Keyboard, TouchWithoutFeedback, TouchOpacity, View, ScrollView, Dimensions } from 'react-native';
+import { Input, Icon, Card, Modal } from '@ui-kitten/components';
 
 export default ProfileScreen = ({ navigation }) => {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -12,6 +12,8 @@ export default ProfileScreen = ({ navigation }) => {
   const [confirmUserName , setConfirmUserName] = useState('');
   const user = firebase.auth().currentUser;
   const [loading, setLoading] = useState(false);
+  const [visible, setVisible] = React.useState(false);
+  const screenWidth = Dimensions.get('window').width;
  // const firebase = require('firebase');
   const handleLogout = () => {
     firebase
@@ -78,7 +80,18 @@ export default ProfileScreen = ({ navigation }) => {
 
 
     return (
+
+   
     <Layout style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <ScrollView
+            contentContainerStyle={{
+              flexGrow: 1,
+              width: screenWidth,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+
       <Button
         onPress={handleLogout}
         style={{ width: '50%', borderRadius: 5 }}
@@ -88,7 +101,7 @@ export default ProfileScreen = ({ navigation }) => {
       </Button>
       <Button
         onPress={handleDelete}
-        style={{ width: '50%', borderRadius: 5, marginTop: 25 }}
+        style={{ width: '50%', borderRadius: 5, marginTop: 15 }}
         appearance='outline'
       >
         {loading === false ? (
@@ -97,7 +110,7 @@ export default ProfileScreen = ({ navigation }) => {
           <Spinner size='small' />
         )}
       </Button>
-        <Text category='h1' style={{ padding: 20, marginTop: 20 }}>
+        <Text category='h1' style={{ padding: 10, marginTop: 15 }}>
           Change your Password
         </Text>
         <Input
@@ -118,14 +131,14 @@ export default ProfileScreen = ({ navigation }) => {
         />
         <Button
           onPress={handleChangePassword}
-          style={{ width: '50%', borderRadius: 20, marginTop: 20 }}
+          style={{ width: '50%', borderRadius: 20, marginTop: 15 }}
           appearance='outline'
         >
           <Text>
             Change Password
           </Text>
         </Button>
-        <Text category='h1' style={{ padding: 20, marginTop: 20 }}>
+        <Text category='h1' style={{ padding: 10, marginTop: 15 }}>
           Edit your User Name
         </Text>
         <Input
@@ -144,7 +157,7 @@ export default ProfileScreen = ({ navigation }) => {
         />
         <Button
           onPress={handleEditUsername}
-          style={{ width: '50%', borderRadius: 20, marginTop: 20 }}
+          style={{ width: '50%', borderRadius: 20, marginTop: 15 }}
           appearance='outline'
         >
           <Text>
@@ -152,13 +165,61 @@ export default ProfileScreen = ({ navigation }) => {
           </Text>
           </Button>
 
+    <View style={styles.container}>
 
+      <Button onPress={() => setVisible(true)}>
+        FAQs
+      </Button>
+
+      <Modal
+        visible={visible}
+        backdropStyle={styles.backdrop}
+        onBackdropPress={() => setVisible(false)}>
+        <Card disabled={true}>
+       <Text category='h1' style={{ padding: 20, marginTop: 50 }}>
+          FREQUENTLY ASKED QUESTIONS
+        </Text>
+        <Text>
+       
+            1.What does the credibility rating mean?
+            </Text>
+            <Text>
+            Ans: Your credibility rating is a representation of how reliable other users found your answers and posts to be 
+            </Text>
+            <Text>
+            2. How can I improve my credibility rating?
+            </Text>
+            <Text>
+            Ans: We recommend only answering about things you are sure about, ensuring that your answers are more likely to help people, rather than harm them.
+            </Text>
+            <Text>
+            3. Can I change my usewname?
+            </Text>
+            <Text>
+            Ans: Yes! You should be able to find the Edit Username screen at
+            </Text>
+            <Text>
+            4. Can I change my account email ID?
+            </Text>
+            <Text>
+            Ans: Yes, you can change your email using the _. You will have to verify once again that it is a Purdue email.
+            </Text>
+        <Button onPress={() => setVisible(false)}>
+            Back
+          </Button>
+
+        </Card>
+      </Modal>
+
+    </View>
+    </ScrollView>
     </Layout>
     
              
 
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 4,
@@ -172,6 +233,9 @@ const styles = StyleSheet.create({
     padding: 15,
     fontSize: 16,
     textAlign: 'center',
+  },
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
 });
 
