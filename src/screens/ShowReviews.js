@@ -1,5 +1,5 @@
 import React, { useState, ReactDOM } from 'react';
-import { StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView, TextInput, KeyboardAvoidingView, View} from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView, TextInput, KeyboardAvoidingView, View, TouchableOpacity} from 'react-native';
 import { Layout, Text, Button, Input, Select, SelectItem, IndexPath, Icon, Card } from '@ui-kitten/components';
 import { Dimensions, Alert } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
@@ -59,8 +59,26 @@ const Footer = ({navigation, props, title, user, rate, text, review_id}) => (
         <Button
         style={styles.footerControl}
         size='small'
-        status='basic'>
-        Delete
+        status='basic' onPress={() => {
+            //createTwoButtonAlert(postID, navigation);
+            Alert.alert(
+                "Confirm Deletion",
+                "Are you sure you want to delete this review?",
+                [
+                {
+                    text: "No",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "Yes", onPress: () => {
+                    Firebase.database().ref('Classes Reviews/' + review_id).remove();
+                    navigation.navigate('ShowReviews');
+                }}
+                ],
+                { cancelable: false }
+            );
+        }}>
+        Delete Review
         </Button>
         <Button
         style={styles.footerControl}
@@ -126,17 +144,28 @@ export default showReviews = ({navigation}) => {
                                 
                                 return  (
                                     <Layout style={styles.container} level={'1'} > 
-                                        <Card style={styles.card}
-                                         header={(props) => <Header {...props} title={title} user={user} date={date} rate={rate}/> }
-                                         footer={(props) => <Footer {...props} title={title} user={user} rate={rate} text={text} review_id={review_id} navigation={navigation}/>}>
-                                            <Text>
-                                                {text}
-                                            </Text>
-                                        </Card>
+                                        <TouchableOpacity>
+                                            <Card style={styles.card}
+                                            header={(props) => <Header {...props} title={title} user={user} date={date} rate={rate}/> }
+                                            footer={(props) => <Footer {...props} title={title} user={user} rate={rate} text={text} review_id={review_id} navigation={navigation}/>}
+                                            onPress={() => {
+                                                navigation.navigate('ReadReview', {
+                                                  title: title,
+                                                  user: user,
+                                                  rate: rate,
+                                                  text: text,
+                                                  review_id: review_id,
+                                                  date: date
+                                                });
+                                              }}
+                                            >
+                                                <Text>
+                                                    {text}
+                                                </Text>
+                                            </Card>
+                                        </TouchableOpacity>
                                     </Layout> 
                                 )
-
-                                // console.log(card);
                                 
                                 // ReactDOM.render(card, document.getElementById('root'));
     

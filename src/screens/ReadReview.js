@@ -49,8 +49,26 @@ const Footer = ({navigation, props, title, user, rate, text, review_id}) => (
         <Button
         style={styles.footerControl}
         size='small'
-        status='basic'>
-        Delete
+        status='basic' onPress={() => {
+            //createTwoButtonAlert(postID, navigation);
+            Alert.alert(
+                "Confirm Deletion",
+                "Are you sure you want to delete this review?",
+                [
+                {
+                    text: "No",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "Yes", onPress: () => {
+                    Firebase.database().ref('Classes Reviews/' + review_id).remove();
+                    navigation.navigate('ShowReviews');
+                }}
+                ],
+                { cancelable: false }
+            );
+        }}>
+        Delete Review
         </Button>
         <Button
         style={styles.footerControl}
@@ -88,7 +106,7 @@ export default readReview = ({ route, navigation }) => {
                     <ScrollView contentContainerStyle={{flexGrow : 1}}>
                     <Card style={styles.card} 
                     header={(props) => <Header {...props} title={title} user={user} date={date} rate={rate}/> }
-                    footer={(props) => <Footer {...props} title={title} user={user} rate={rate} text={text} review_id={review_id}/>}>
+                    footer={(props) => <Footer {...props} title={title} user={user} rate={rate} text={text} review_id={review_id} navigation={navigation}/>}>
                       <Text style={styles.text} category='s2'>
                         {text}
                       </Text>
@@ -119,7 +137,11 @@ export default readReview = ({ route, navigation }) => {
                     </React.Fragment> */}
                     <React.Fragment>
                       <View style={styles.details}>
-                        <Text style={styles.title} category='h6'>Comment</Text>
+                        <Text style={{marginBottom: 50}}></Text>
+                        <Text style={styles.title} category='h6'>Example Comment</Text>
+                        <Card style={styles.card}>
+                        </Card>
+                        <Text style={{marginBottom: 50}}></Text>
                       </View>
                       <Divider/>
 

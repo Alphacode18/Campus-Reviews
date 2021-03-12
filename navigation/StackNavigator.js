@@ -8,6 +8,7 @@ import CreatePost from '../src/screens/CreatePost';
 import CreateReview from '../src/screens/CreateReview.js';
 import EditReview from '../src/screens/EditReview.js';
 import ShowReviews from '../src/screens/ShowReviews.js';
+import ReadReview from '../src/screens/ReadReview.js';
 
 const Stack = createStackNavigator();
 
@@ -48,6 +49,11 @@ function AuthStack() {
         <Stack.Screen
           name='ShowReviews'
           component={ShowReviews}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='ReadReview'
+          component={ReadReview}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

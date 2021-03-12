@@ -116,7 +116,7 @@ export default editReview = ({ route, navigation }) => {
                             status={'success'}
                             onPress={() => {
 
-                                if ((notSelected_rate || review_title === '' || review_text === '')) {
+                                if ((review_title === '' || review_text === '')) {
                                     Alert.alert('Please fill in all the information for your review');
                                 }
                                 
