@@ -36,7 +36,7 @@ const Header = ({props, title, user, date, rate}) => (
     </View>
 );
 
-const Footer = ({navigation, props, title, user, rate, text, review_id, index, currentuser}) => {
+const Footer = ({navigation, props, title, user, rate, text, review_id, index, currentUser}) => {
     return user == currentUser ? (
         <View {...props} style={[styles.footerContainer]}>
             <Button
@@ -87,7 +87,6 @@ const Footer = ({navigation, props, title, user, rate, text, review_id, index, c
 
 export default showReviews = ({navigation, route }) => {
     const index = route.params.index;
-    const index = 2;
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
     let reviews = [];
@@ -167,7 +166,7 @@ export default showReviews = ({navigation, route }) => {
                                         <TouchableOpacity>
                                             <Card style={styles.card}
                                             header={(props) => <Header {...props} title={title} user={user} date={date} rate={rate}/> }
-                                            footer={(props) => <Footer {...props} title={title} user={user} rate={rate} text={text} review_id={review_id} navigation={navigation} index={index} currentuser={currentuser}/>}
+                                            footer={(props) => <Footer {...props} title={title} user={user} rate={rate} text={text} review_id={review_id} navigation={navigation} index={index} currentUser={currentUser}/>}
                                             onPress={() => {
                                                 navigation.navigate('ReadReview', {
                                                   title: title,
