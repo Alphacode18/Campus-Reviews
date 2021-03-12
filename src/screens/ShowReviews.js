@@ -150,16 +150,11 @@ export default showReviews = ({navigation, route }) => {
                                     
                                 });
 
-                                let title = JSON.stringify(fields[5 * i + 3]);
-                                title = title.replace(/\"/g, "");  
-                                let user = JSON.stringify(fields[5 * i + 4]);
-                                user = user.replace(/\"/g, "");  
-                                let date = JSON.stringify(fields[5 * i]);
-                                date = date.replace(/\"/g, "");
-                                let rate = JSON.stringify(fields[5 * i + 1]);
-                                rate = rate.replace(/\"/g, "");
-                                let text = JSON.stringify(fields[5 * i + 2]);
-                                text = text.replace(/\"/g, "");
+                                let title = JSON.parse(JSON.stringify(fields[5 * i + 3]));
+                                let user = JSON.parse(JSON.stringify(fields[5 * i + 4]));
+                                let date = JSON.parse(JSON.stringify(fields[5 * i]));
+                                let rate = JSON.parse(JSON.stringify(fields[5 * i + 1]));
+                                let text = JSON.parse(JSON.stringify(fields[5 * i + 2]));
                                 
                                 return  (
                                     <Layout style={styles.container} level={'1'} > 
