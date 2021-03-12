@@ -91,7 +91,9 @@ export default ProfileScreen = ({ navigation }) => {
               justifyContent: 'center',
             }}
           >
-      
+     <Text style={{marginTop:75}}> 
+     Hey, DarshDalal0
+     </Text>
       <Button
         onPress={handleLogout}
         style={{ width: '50%', borderRadius: 5, marginTop:50 }}
