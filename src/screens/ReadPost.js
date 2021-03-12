@@ -45,7 +45,7 @@ const renderBackAction = () => (
 
 
 export default readPost = ({ route, navigation }) => {
-    const { title, post, postID } = route.params;
+    const { title, post, postID, user } = route.params;
 
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;

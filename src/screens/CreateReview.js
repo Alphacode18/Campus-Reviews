@@ -33,16 +33,18 @@ const useInputState = (initialValue = '') => {
     return { value, onChangeText: setValue };
 };
 
-export default createReview = ({ navigation }) => {
+export default createReview = ({ navigation, route }) => {
+    const index = route.params.index;
+    const currentUser = route.params.currentUser;
     const [review_title, settitleText] = useState('');
     const [review_text, setreviewText] = useState('');
-    const [selectedIndex_type, setSelectedIndex_type] = useState(new IndexPath(0));
+    const [selectedIndex_type, setSelectedIndex_type] = useState(new IndexPath(index));
     const [notSelected_type, setNotSelected_type] = useState(true);
     const [selectedIndex_rate, setSelectedIndex_rate] = useState(new IndexPath(0));
     const [notSelected_rate, setNotSelected_rate] = useState(true);
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
-    const displayValue = notSelected_type ? 'Type' : typeVal[selectedIndex_type.row];
+    const displayValue = typeVal[selectedIndex_type.row];
     const ratingValue = notSelected_rate ? 'Rating(#/10)' : rateVal[selectedIndex_rate.row];
 
     const changeSelection_type = (selectedIndex_type) => {
@@ -68,8 +70,7 @@ export default createReview = ({ navigation }) => {
                             placeholder='Default'
                             selectedIndex_type={selectedIndex_type}
                             value={displayValue}
-                            onSelect={changeSelection_type}
-                            style={{width: '90%'}}>
+                            style={{width: '90%'}} disabled>
                             <SelectItem title='Dining' style={{}}/>
                             <SelectItem title='On-Campus Facilities'/>
                             <SelectItem title='Classes'/>
@@ -115,7 +116,7 @@ export default createReview = ({ navigation }) => {
                             style={{ width: '50%', borderRadius: 20, marginTop: 25 }}
                             status={'success'}
                             onPress={() => {
-                                if ((notSelected_type || notSelected_rate || review_title === '' || review_text === '')) {
+                                if (( notSelected_rate || review_title === '' || review_text === '')) {
                                     Alert.alert('Please fill in all the information for your review');
                                 }
                                 else {
@@ -127,17 +128,22 @@ export default createReview = ({ navigation }) => {
                                         review_title: review_title,
                                         review_rate: (selectedIndex_rate.row),
                                         review_text: review_text,
-                                        user: 'Review Tester',
+                                        user: currentUser,
                                         date_time: datetime
                                     });
+
+                                    navigation.navigate('ShowReviews', {
+                                        index: index
+                                    });
                                 
-                                navigation.navigate('ShowReviews');}}}
+                                }
+                            }}
                         >
                             <Text style={{ color: 'white' }}>Create Review</Text>
                         </Button>
                         <TouchableOpacity
                             style={{ color: 'white', marginTop: 40 }}
-                            onPress={() => navigation.navigate('Home')}
+                            onPress={() => navigation.navigate('ShowReviews')}
                         >
                             <Text>
                                 <Text style={{ textDecorationLine: 'underline' }}>Go Back</Text>

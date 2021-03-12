@@ -1,10 +1,8 @@
 {
-  "hostType": "lan",
+  "hostType": "tunnel",
   "lanType": "ip",
   "dev": true,
   "minify": false,
   "urlRandomness": "h4-b94",
-  "https": false,
-  "scheme": null,
-  "devClient": false
+  "https": false
 }

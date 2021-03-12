@@ -228,6 +228,7 @@ export default showPosts = ({ navigation, route }) => {
                             title: title,
                             post: postText,
                             postId: post,
+                            user: user
                           });
                         }}
                       >

@@ -70,8 +70,11 @@ export default editPost = ({ route, navigation }) => {
                                     updates['/' + types[index] + ' Posts/' + postID + '/' + 'post'] = newPost;
                                     updates['/' + types[index] + ' Posts/' + postID + '/' + 'title'] = newTitle;
                                     Firebase.database().ref().update(updates);
-                                    navigation.navigate('Loading', {index : index});
+                                    navigation.navigate('Loading', {index : index, postType: 'Posts'});
                                 } 
+                                else {
+                                    Alert.alert('Please fill in all the information for your post.');
+                                }
                             }}
                         >
                             <Text style={{ color: 'white' }}>Edit Post</Text>

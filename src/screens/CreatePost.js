@@ -76,8 +76,6 @@ export default createPost = ({ navigation, route }) => {
                                     });
                                     
                                     navigation.navigate('ShowPosts', {
-                                        title: title,
-                                        post: post,
                                         index: index
                                     });
                                 } else {

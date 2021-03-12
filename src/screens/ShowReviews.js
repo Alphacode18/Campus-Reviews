@@ -36,61 +36,76 @@ const Header = ({props, title, user, date, rate}) => (
     </View>
 );
 
-const Footer = ({navigation, props, title, user, rate, text, review_id}) => (
-    <View {...props} style={[styles.footerContainer]}>
-        <Button
-        style={styles.footerControl}
-        size='small'
-        status='basic' onPress={() => {
-            //createTwoButtonAlert(postID, navigation);
-            Alert.alert(
-                "Confirm Deletion",
-                "Are you sure you want to delete this review?",
-                [
-                {
-                    text: "No",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
-                },
-                { text: "Yes", onPress: () => {
-                    Firebase.database().ref('Classes Reviews/' + review_id).remove();
-                    navigation.navigate('ShowReviews');
-                }}
-                ],
-                { cancelable: false }
-            );
-        }}>
-        Delete Review
+const Footer = ({navigation, props, title, user, rate, text, review_id, index, currentuser}) => {
+    return user == currentUser ? (
+        <View {...props} style={[styles.footerContainer]}>
+            <Button
+            style={styles.footerControl}
+            size='small'
+            status='basic' onPress={() => {
+                //createTwoButtonAlert(postID, navigation);
+                Alert.alert(
+                    "Confirm Deletion",
+                    "Are you sure you want to delete this review?",
+                    [
+                    {
+                        text: "No",
+                        onPress: () => console.log("Cancel Pressed"),
+                        style: "cancel"
+                    },
+                    { text: "Yes", onPress: () => {
+                        Firebase.database().ref(types[index] + ' Reviews/' + review_id).remove();
+                        navigation.navigate('ShowReviews');
+                    }}
+                    ],
+                    { cancelable: false }
+                );
+            }}>
+            Delete Review
+            </Button>
+            <Button
+            style={styles.footerControl}
+            size='small' onPress= {() => {
+                navigation.navigate('EditReview', {review_title: title,
+                    review_text: text,
+                    index: index,
+                    review_rate: rate,
+                    review_id: review_id});
+            }}>
+            Edit Review
+            </Button>
+        </View>
+    ) : (
+      <View {...props} style={[styles.footerContainer]}>
+        <Button Button appearance='ghost'>
         </Button>
-        <Button
-        style={styles.footerControl}
-        size='small' onPress= {() => {
-            navigation.navigate('EditReview', {review_title: title,
-                review_text: text,
-                review_type: 2,
-                review_rate: rate,
-                review_id: review_id});
-        }}>
-        Edit Review
+        <Button appearance='ghost'>
         </Button>
-    </View>
-);
+      </View>
+    )
+    }
 
-export default showReviews = ({navigation}) => {
+export default showReviews = ({navigation, route }) => {
+    const index = route.params.index;
     const index = 2;
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
-    let classReviews = [];
+    let reviews = [];
     let fields = [];
 
-    Firebase.database().ref('Classes Reviews').on('value', (snapshot) => {
-        snapshot.forEach(function(data) {
-            classReviews.push(data.key);
-        });
-
-        console.log(classReviews);
-        console.log(classReviews[0]);
+    Firebase.database()
+    .ref(types[index] + ' Reviews/')
+    .on('value', (snapshot) => {
+      console.log('snapshot');
+      console.log(snapshot);
+      snapshot.forEach(function (data) {
+        console.log('data');
+        console.log(data);
+        reviews.push(data.key);
+      });
     });
+
+    const currentUser = Firebase.auth().currentUser.providerData[0].email;
        
     return (
         <KeyboardAvoidingView
@@ -115,6 +130,7 @@ export default showReviews = ({navigation}) => {
                         onPress={() => {
                             navigation.navigate('CreateReview', {
                                 index: index,
+                                currentUser: currentUser
                             });
                         }}
                         >
@@ -122,9 +138,9 @@ export default showReviews = ({navigation}) => {
                         Create{' '}
                     </Button>
                     <React.Fragment>
-                        {classReviews.map(function(review_id, index) {
-                                Firebase.database().ref('Classes Reviews/' + review_id).on('value', (snapshot) => {
-                                    console.log('Classes Reviews/' + review_id);
+                        {reviews.map(function(review_id, i) {
+                                Firebase.database().ref(types[index] + ' Reviews/' + review_id).on('value', (snapshot) => {
+                                    console.log(types[index] + ' Reviews/' + review_id);
                                     let i = 0;
                                     snapshot.forEach(function(data) {
                                         fields.push(data);
@@ -135,15 +151,15 @@ export default showReviews = ({navigation}) => {
                                     
                                 });
 
-                                let title = JSON.stringify(fields[5 * index + 3]);
+                                let title = JSON.stringify(fields[5 * i + 3]);
                                 title = title.replace(/\"/g, "");  
-                                let user = JSON.stringify(fields[5 * index + 4]);
+                                let user = JSON.stringify(fields[5 * i + 4]);
                                 user = user.replace(/\"/g, "");  
-                                let date = JSON.stringify(fields[5 * index]);
+                                let date = JSON.stringify(fields[5 * i]);
                                 date = date.replace(/\"/g, "");
-                                let rate = JSON.stringify(fields[5 * index + 1]);
+                                let rate = JSON.stringify(fields[5 * i + 1]);
                                 rate = rate.replace(/\"/g, "");
-                                let text = JSON.stringify(fields[5 * index + 2]);
+                                let text = JSON.stringify(fields[5 * i + 2]);
                                 text = text.replace(/\"/g, "");
                                 
                                 return  (
@@ -151,7 +167,7 @@ export default showReviews = ({navigation}) => {
                                         <TouchableOpacity>
                                             <Card style={styles.card}
                                             header={(props) => <Header {...props} title={title} user={user} date={date} rate={rate}/> }
-                                            footer={(props) => <Footer {...props} title={title} user={user} rate={rate} text={text} review_id={review_id} navigation={navigation}/>}
+                                            footer={(props) => <Footer {...props} title={title} user={user} rate={rate} text={text} review_id={review_id} navigation={navigation} index={index} currentuser={currentuser}/>}
                                             onPress={() => {
                                                 navigation.navigate('ReadReview', {
                                                   title: title,
@@ -159,7 +175,7 @@ export default showReviews = ({navigation}) => {
                                                   rate: rate,
                                                   text: text,
                                                   review_id: review_id,
-                                                  date: date
+                                                  date: date,
                                                 });
                                               }}
                                             >
