@@ -11,6 +11,11 @@ export default changePassword = ({navigation}) =>  {
 
   //TODO: Add implementationa and integrate with Firebase
   const handleChangePassword = () => {
+  // Re-use functionality needs to be tested.
+    if (newPassword === currentPassword) {
+      Alert.alert("Your new password must be different from your current password.");
+    }
+    else {
     reauthenticate(currentPassword).then(() => {
       var user = firebase.auth().currentUser;
       user.updatePassword(newPassword).then(() => {
@@ -21,6 +26,7 @@ export default changePassword = ({navigation}) =>  {
     }).catch((error) => {
       Alert.alert("Error. Could not change Password.")
     });
+    }
 
   };
 
