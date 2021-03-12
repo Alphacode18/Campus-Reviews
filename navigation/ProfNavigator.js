@@ -16,7 +16,7 @@ function profNavigator() {
       <Stack.Screen
         name='Buffer'
         component={Buffer}
-        initialParams={{ index: 4 }}
+        initialParams={{ index: 3 }}
         options={{ headerShown: false }}
       />
       <Stack.Screen

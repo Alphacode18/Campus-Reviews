@@ -35,11 +35,11 @@ const BottomTabBar = ({ navigation, state }) => (
 );
 
 const TabNavigator = () => (
-  <Navigator tabBar={(props) => <BottomTabBar {...props} index={3}/>}>
-    <Screen name='Professors' component={ProfessorsNavigator} index={2}/>
-    <Screen name='Classes' component={ClassNavigator} index={1}/>
-    <Screen name='Facilities' component={FacilitiesNavigator} index={0}/>
-    <Screen name='Dining' component={DiningNavigator} />
+  <Navigator tabBar={(props) => <BottomTabBar {...props} />}>
+    <Screen name='Professors' component={ProfessorsNavigator} index={3}/>
+    <Screen name='Classes' component={ClassNavigator} index={2}/>
+    <Screen name='Facilities' component={FacilitiesNavigator} index={1}/>
+    <Screen name='Dining' component={DiningNavigator} index={0} />
     <Screen name='Profile' component={ProfileScreen} />
   </Navigator>
 );
