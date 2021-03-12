@@ -16,19 +16,15 @@ const types = [
 
 const ExitIcon = (props) => <Icon {...props} name='close-outline' />;
 
-export default createPost = ({ navigation }) => {
+export default createPost = ({ navigation, route }) => {
+    const index = route.params.index;
+    const currentUser = route.params.currentUser;
     const [title, setTitle] = useState('');
     const [post, setPost] = useState('');
-    const [selectedIndex, setSelectedIndex] = useState(new IndexPath(0));
-    const [notSelected, setNotSelected] = useState(true);
+    const [selectedIndex, setSelectedIndex] = useState(new IndexPath(index));
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
-    const displayValue = notSelected ? 'Type' : types[selectedIndex.row];
-
-    const changeSelection = (selectedIndex) => {
-        setSelectedIndex(selectedIndex);
-        setNotSelected(false);
-      };
+    const displayValue = types[selectedIndex.row];
         
     return (
         <KeyboardAvoidingView
@@ -45,8 +41,7 @@ export default createPost = ({ navigation }) => {
                             placeholder='Default'
                             selectedIndex={selectedIndex}
                             value={displayValue}
-                            onSelect={changeSelection}
-                            style={{width: '90%'}}>
+                            style={{width: '90%'}} disabled>
                             <SelectItem title='Dining' style={{}}/>
                             <SelectItem title='On-Campus Facilities'/>
                             <SelectItem title='Classes'/>
@@ -73,17 +68,17 @@ export default createPost = ({ navigation }) => {
                             style={{ width: '50%', borderRadius: 20, marginTop: 25 }}
                             status={'success'}
                             onPress={() => {
-                                if (!(notSelected || title === '' || post === '')) {
+                                if (!(title === '' || post === '')) {
                                     Firebase.database().ref('/' + types[selectedIndex.row] + ' Posts').push({
                                         title: title,
                                         post: post,
-                                        user: 'Anirudh Seela'
+                                        user: currentUser
                                     });
                                     
                                     navigation.navigate('ShowPosts', {
                                         title: title,
                                         post: post,
-                                        index: selectedIndex
+                                        index: index
                                     });
                                 } else {
                                     Alert.alert('Please fill in all the information for your post.');

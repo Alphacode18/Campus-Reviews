@@ -70,7 +70,7 @@ export default editPost = ({ route, navigation }) => {
                                     updates['/' + types[index] + ' Posts/' + postID + '/' + 'post'] = newPost;
                                     updates['/' + types[index] + ' Posts/' + postID + '/' + 'title'] = newTitle;
                                     Firebase.database().ref().update(updates);
-                                    navigation.navigate('ShowPosts');
+                                    navigation.navigate('Loading', {index : index});
                                 } 
                             }}
                         >

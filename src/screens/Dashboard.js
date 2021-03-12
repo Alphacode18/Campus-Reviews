@@ -26,19 +26,19 @@ const BottomTabBar = ({ navigation, state }) => (
     onSelect={(index) => navigation.navigate(state.routeNames[index])}
     style={{ marginBottom: 25 }}
   >
-    <BottomNavigationTab title='PROF' icon={ProfessorIcon} index={3} />
-    <BottomNavigationTab title='CLASS' icon={ClassIcon} index={2} />
-    <BottomNavigationTab title='FACILITES' icon={FacilitiesIcon} index={1} />
-    <BottomNavigationTab title='DINE' icon={DiningIcon} index={0} />
+    <BottomNavigationTab title='PROF' icon={ProfessorIcon}  />
+    <BottomNavigationTab title='CLASS' icon={ClassIcon} />
+    <BottomNavigationTab title='FACILITES' icon={FacilitiesIcon} />
+    <BottomNavigationTab title='DINE' icon={DiningIcon} />
     <BottomNavigationTab title='PROFILE' icon={PersonIcon} />
   </BottomNavigation>
 );
 
 const TabNavigator = () => (
-  <Navigator tabBar={(props) => <BottomTabBar {...props} />}>
-    <Screen name='Professors' component={ProfessorsNavigator} />
-    <Screen name='Classes' component={ClassNavigator} />
-    <Screen name='Facilities' component={FacilitiesNavigator} />
+  <Navigator tabBar={(props) => <BottomTabBar {...props} index={3}/>}>
+    <Screen name='Professors' component={ProfessorsNavigator} index={2}/>
+    <Screen name='Classes' component={ClassNavigator} index={1}/>
+    <Screen name='Facilities' component={FacilitiesNavigator} index={0}/>
     <Screen name='Dining' component={DiningNavigator} />
     <Screen name='Profile' component={ProfileScreen} />
   </Navigator>

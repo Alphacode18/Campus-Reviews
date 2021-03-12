@@ -5,12 +5,25 @@ import EditPost from '../src/screens/EditPost';
 import ShowPosts from '../src/screens/ShowPosts';
 import ReadPost from '../src/screens/ReadPost';
 import CreatePost from '../src/screens/CreatePost';
+import Loading from '../src/screens/Loading';
+import Buffer from '../src/screens/Buffer';
 
 const Stack = createStackNavigator();
 
 function classNavigator() {
   return (
     <Stack.Navigator>
+      <Stack.Screen
+        name='Buffer'
+        component={Buffer}
+        initialParams={{ index: 2 }}
+        options={{ headerShown: false }}
+      />
+       <Stack.Screen
+        name='Loading'
+        component={Loading}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name='ShowPosts'
         component={ShowPosts}

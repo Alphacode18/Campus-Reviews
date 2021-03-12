@@ -32,29 +32,6 @@ import { render } from 'react-dom';
 
 const types = ['Dining', 'On-Campus Facilities', 'Classes', 'Professors'];
 
-const createTwoButtonAlert = ({ postID, navigation }) =>
-  Alert.alert(
-    'Confirm Deletion',
-    'Are you sure you want to delete this post?',
-    [
-      {
-        text: 'Cancel',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
-      },
-      {
-        text: 'Delete',
-        onPress: () => {
-          Firebase.database()
-            .ref('Dining Posts/' + postID)
-            .remove();
-          navigation.navigate('ShowPosts');
-        },
-      },
-    ],
-    { cancelable: false }
-  );
-
 const Header = ({ props, title, user }) => (
   <View {...props}>
     <Text category='h6'> {'   ' + title} </Text>
@@ -62,27 +39,54 @@ const Header = ({ props, title, user }) => (
   </View>
 );
 
-const Footer = ({ props, title, post, postID, navigation }) => (
-  <View {...props} style={[styles.footerContainer]}>
-    <Button style={styles.footerControl} size='small' status='basic'>
-      Delete
-    </Button>
-    <Button
-      style={styles.footerControl}
-      size='small'
-      onPress={() => {
-        navigation.navigate('EditPost', {
-          title: title,
-          post: post,
-          postID: postID,
-          index: 0,
-        });
-      }}
-    >
-      Edit
-    </Button>
-  </View>
-);
+const Footer = ({ props, title, post, postID, navigation, index, user, currentUser }) => {
+  return user == currentUser ? (
+    <View {...props} style={[styles.footerContainer]}>
+      <Button
+        style={styles.footerControl}
+        size='small'
+        status='basic' onPress={() => {
+            Alert.alert(
+                "Confirm Deletion",
+                "Are you sure you want to delete this post?",
+                [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "Delete", onPress: () => {
+                    Firebase.database().ref(types[index] + ' Posts/' + postID).remove();
+                    navigation.navigate('ShowPosts');
+                }}
+                ],
+                { cancelable: false }
+            );
+        }}>
+        Delete
+        </Button>
+        <Button
+        style={styles.footerControl}
+        size='small' onPress= {() => {
+            navigation.navigate('EditPost', {
+                title: title,
+                post: post,
+                postID: postID,
+                index: index
+            });
+        }}>
+        Edit
+        </Button>
+    </View>
+  ) : (
+    <View {...props} style={[styles.footerContainer]}>
+      <Button Button appearance='ghost'>
+      </Button>
+      <Button appearance='ghost'>
+      </Button>
+    </View>
+  )
+}
 
 const renderIcon = ({ props, navigation }) => (
   <TouchableWithoutFeedback
@@ -98,30 +102,31 @@ const renderIcon = ({ props, navigation }) => (
   </TouchableWithoutFeedback>
 );
 
-async function readData(diningPosts) {}
 
-export default showPosts = ({ navigation }) => {
+export default showPosts = ({ navigation, route }) => {
+  const index = route.params.index;
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
-  let diningPosts = [];
+  let posts = [];
   let fields = [];
-  // readData(diningPosts);
+
   Firebase.database()
-    .ref('Dining Posts')
+    .ref(types[index] + ' Posts/')
     .on('value', (snapshot) => {
       console.log('snapshot');
       console.log(snapshot);
       snapshot.forEach(function (data) {
-        // let str = JSON.stringify(data.key)
-        // diningPosts.push(str.substring(2, str.length));
         console.log('data');
         console.log(data);
-        diningPosts.push(data.key);
+        posts.push(data.key);
       });
     });
 
-  console.log('dining posts');
-  console.log(diningPosts);
+  const currentUser = Firebase.auth().currentUser.providerData[0].email;
+  console.log('posts');
+  console.log(index);
+  console.log(currentUser);
+  console.log(posts);
 
   return (
     <KeyboardAvoidingView
@@ -147,7 +152,7 @@ export default showPosts = ({ navigation }) => {
               }}
             >
               {' '}
-              Dining{' '}
+              {types[index]}{' '}
             </Text>
             {/* <Button
                             style={styles.button}
@@ -156,18 +161,23 @@ export default showPosts = ({ navigation }) => {
                         /> */}
             <Button
               status='basic'
-              onPress={() => navigation.navigate('CreatePost')}
+              onPress={() => {
+                navigation.navigate('CreatePost', {
+                  index: index,
+                  currentUser: currentUser
+                });
+              }}
             >
               {' '}
               Create{' '}
             </Button>
 
             <React.Fragment>
-              {diningPosts.map(function (post, index) {
+              {posts.map(function (post, i) {
                 Firebase.database()
-                  .ref('Dining Posts/' + post)
+                  .ref(types[index] + ' Posts/' + post)
                   .on('value', (snapshot) => {
-                    console.log('Dining Posts/' + post);
+                    console.log(types[index] + ' Posts' + post);
                     let i = 0;
                     snapshot.forEach(function (data) {
                       fields.push(data);
@@ -177,16 +187,16 @@ export default showPosts = ({ navigation }) => {
                     // console.log(fields[0]);
                   });
 
-                let user = JSON.stringify(fields[3 * index + 2]);
+                let user = JSON.stringify(fields[3 * i + 2]);
                 console.log('user');
                 console.log(user.replace(/\"/g, ''));
                 user = user.replace(/\"/g, '');
 
-                let title = JSON.parse(JSON.stringify(fields[3 * index + 1]));
+                let title = JSON.parse(JSON.stringify(fields[3 * i + 1]));
                 console.log('title');
                 console.log(title);
 
-                let postText = JSON.stringify(fields[3 * index]);
+                let postText = JSON.stringify(fields[3 * i]);
                 console.log('postText');
                 console.log(postText.replace(/\"/g, ''));
                 postText = postText.replace(/\"/g, '');
@@ -208,6 +218,9 @@ export default showPosts = ({ navigation }) => {
                             postID={post}
                             post={postText}
                             navigation={navigation}
+                            index={index}
+                            user={user}
+                            currentUser={currentUser}
                           />
                         )}
                         onPress={() => {
