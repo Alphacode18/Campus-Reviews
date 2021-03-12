@@ -27,12 +27,33 @@ const types = [
     '10'
   ];
 
+
+  const trashIcon = (props) => (
+    <Icon {...props} name='trash-2'/>
+  );
+  
+  const editIcon = (props) => (
+    <Icon {...props} name='edit-outline'/>
+  );
+  
+  const plusIcon = (props) => (
+    <Icon {...props} name='plus'/>
+  );
+  
+  const BackIcon = (props) => (
+    <Icon {...props} name='arrow-back'/>
+  );
+  
+  const renderBackAction = () => (
+    <Icon icon={BackIcon}/>
+  );
+
 const Header = ({props, title, user, date, rate}) => (
-    <View {...props}>
+    <View {...props} style={[styles.headerContainer]}>
         <Text category='h6'> Topic: {title} </Text>
         <Text category='s1'> User: {user} </Text>
         <Text category='s3'> Rating(#/10): {rate} </Text>
-        <Text category='h9'> Date: {date} </Text>
+        {/* <Text category='h9'> Date: {date} </Text> */}
     </View>
 );
 
@@ -42,7 +63,9 @@ const Footer = ({navigation, props, title, user, rate, text, review_id, index, c
             <Button
             style={styles.footerControl}
             size='small'
-            status='basic' onPress={() => {
+            status='basic' 
+            accessoryLeft={trashIcon}
+            onPress={() => {
                 //createTwoButtonAlert(postID, navigation);
                 Alert.alert(
                     "Confirm Deletion",
@@ -61,18 +84,20 @@ const Footer = ({navigation, props, title, user, rate, text, review_id, index, c
                     { cancelable: false }
                 );
             }}>
-            Delete Review
+            
             </Button>
             <Button
             style={styles.footerControl}
-            size='small' onPress= {() => {
+            size='small' 
+            accessoryLeft={editIcon}
+            onPress= {() => {
                 navigation.navigate('EditReview', {review_title: title,
                     review_text: text,
                     index: index,
                     review_rate: rate,
                     review_id: review_id});
             }}>
-            Edit Review
+            
             </Button>
         </View>
     ) : (
@@ -111,11 +136,32 @@ export default showReviews = ({navigation, route }) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}> 
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+
                 <Layout style={styles.container} level={'1'} > 
+
+
+                    
                     <ScrollView contentContainerStyle={{flexGrow : 1, width : screenWidth, alignItems: 'center', justifyContent: 'center'}}>
+
+
+                    <Button style={{
+
+                        marginTop: 50
+                    }
+                        
+                    }
+                        title='Back'
+                        
+                        accessoryLeft={BackIcon}
+                        onPress = { () => {
+                            navigation.navigate('Buffer')
+                        }
+                            
+                        }
+                    />
                     <Text
                         style={{
-                            marginTop: 50,
+                            
                             marginBottom: 20,
                             fontSize: 36,
                             marginHorizontal: 2,
@@ -126,6 +172,7 @@ export default showReviews = ({navigation, route }) => {
                     </Text>
                     <Button
                         status='basic'
+                        accessoryLeft={plusIcon}
                         onPress={() => {
                             navigation.navigate('CreateReview', {
                                 index: index,
@@ -133,8 +180,7 @@ export default showReviews = ({navigation, route }) => {
                             });
                         }}
                         >
-                        {' '}
-                        Create{' '}
+                        
                     </Button>
                     <React.Fragment>
                         {reviews.map(function(review_id, i) {
@@ -170,6 +216,7 @@ export default showReviews = ({navigation, route }) => {
                                                   text: text,
                                                   review_id: review_id,
                                                   date: date,
+                                                  index: index
                                                 });
                                               }}
                                             >
@@ -195,22 +242,42 @@ export default showReviews = ({navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  card: {
+    container: {
       flex: 1,
-      margin: 2,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    inputBox: {
+      width: '90%',
+      margin: 0,
+      padding: 15,
+      fontSize: 16,
+      textAlign: 'center',
+    },
+    topContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    backButton: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start'
+
+    },
+    card: {
+      flex: 1,
+      margin: 7.5,
       minWidth: '95%',
       maxWidth: '95%',
-  },
-  inputBox: {
-    width: '90%',
-    margin: 0,
-    padding: 15,
-    fontSize: 16,
-    textAlign: 'center',
-  },
-});
+    },
+    footerContainer: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      margin: 3,
+    },
+    headerContainer: {
+      margin: 5,
+    },
+    footerControl: {
+      marginHorizontal: 2,
+    },
+  });

@@ -31,62 +31,50 @@ const BackIcon = (props) => (
   <Icon {...props} name='arrow-back'/>
 );
 
+const UpArrowIcon = (props) => (
+  <Icon {...props} name='arrow-upward-outline'/>
+);
+
+const DownArrowIcon = (props) => (
+  <Icon {...props} name='arrow-downward-outline'/>
+);
+
+
 const renderBackAction = () => (
     <TopNavigationAction icon={BackIcon}/>
   );
 
   const Header = ({props, title, user, date, rate}) => (
-    <View {...props}>
-        <Text category='h6'> Topic: {title} </Text>
-        <Text category='s1'> User: {user} </Text>
-        <Text category='s3'> Rating(#/10): {rate} </Text>
-        <Text category='h9'> Date: {date} </Text>
+    <View style={{flexDirection:'row', alignItems:'center', marginTop: '5%', marginBottom: '5%', justifyContent:'space-between', marginHorizontal: '5%'}}>
+      <View style={styles.controlContainer}>
+        <Text style={styles.review} status='control'>Review</Text>
+      </View>
+      <Text category='s1' style={styles.text}> {title} </Text>
+      <Text category='h5' style={styles.text} status='success'> ({rate}/10)</Text>
     </View>
+
 );
 
 const Footer = ({navigation, props, title, user, rate, text, review_id}) => (
     <View {...props} style={[styles.footerContainer]}>
-        <Button
-        style={styles.footerControl}
-        size='small'
-        status='basic' onPress={() => {
-            //createTwoButtonAlert(postID, navigation);
-            Alert.alert(
-                "Confirm Deletion",
-                "Are you sure you want to delete this review?",
-                [
-                {
-                    text: "No",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
-                },
-                { text: "Yes", onPress: () => {
-                    Firebase.database().ref('Classes Reviews/' + review_id).remove();
-                    navigation.navigate('ShowReviews');
-                }}
-                ],
-                { cancelable: false }
-            );
-        }}>
-        Delete Review
-        </Button>
-        <Button
-        style={styles.footerControl}
-        size='small' onPress= {() => {
-            navigation.navigate('EditReview', {review_title: title,
-                review_text: text,
-                review_type: 2,
-                review_rate: rate,
-                review_id: review_id});
-        }}>
-        Edit Review
-        </Button>
+    <View style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center', marginHorizontal: 16}}>
+        <Button size='small' accessoryLeft={UpArrowIcon}></Button>
+        <Text>300</Text>
+        <Button size='small' accessoryLeft={DownArrowIcon}></Button>
+
+        <Text status='info' category='s1'>by: {user}</Text>
+        <Text status='success' category='s1'>9d</Text>
+
+    </View>
+
     </View>
 );
 
 
 export default readReview = ({ route, navigation }) => {
-    const { title, user, rate, text, review_id, date } = route.params;
+    const { title, user, rate, text, review_id, date, index } = route.params;
+    console.log("This is read review: ");
+    console.log(index);
 
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
@@ -99,68 +87,51 @@ export default readReview = ({ route, navigation }) => {
 
                 <Layout style={styles.container} level={'1'}>
 
-                <TopNavigation
-                  title='Back'
-                  accessoryLeft={renderBackAction}
-                />
                     <ScrollView contentContainerStyle={{flexGrow : 1}}>
-                    <Card style={styles.card} 
+
+                    <Button style={{
+
+                        marginTop: 50
+                        }
+
+                        }
+                        title='Back'
+
+                        accessoryLeft={BackIcon}
+                        onPress = { () => {
+                          navigation.navigate('ShowReviews', {
+                            index: index
+                          });
+                        }
+                          
+                        }
+                      />
+
+                    <Card style={styles.card}
                     header={(props) => <Header {...props} title={title} user={user} date={date} rate={rate}/> }
                     footer={(props) => <Footer {...props} title={title} user={user} rate={rate} text={text} review_id={review_id} navigation={navigation}/>}>
-                      <Text style={styles.text} category='s2'>
+                      <Text style={styles.text} category='p1'>
                         {text}
                       </Text>
                     </Card>
-                    {/* <React.Fragment>
-                      <View style={styles.details}>
-                        <Text style={styles.title} category='h6'>Comment</Text>
-                      </View>
-                      <Divider/>
-                    </React.Fragment>
-                    <React.Fragment>
-                      <View style={styles.details}>
-                        <Text style={styles.title} category='h6'>Comment</Text>
-                      </View>
-                      <Divider/>
-                    </React.Fragment>
-                    <React.Fragment>
-                      <View style={styles.details}>
-                        <Text style={styles.title} category='h6'>Comment</Text>
-                      </View>
-                      <Divider/>
-                    </React.Fragment>
-                    <React.Fragment>
-                      <View style={styles.details}>
-                        <Text style={styles.title} category='h6'>Comment</Text>
-                      </View>
-                      <Divider/>
-                    </React.Fragment> */}
-                    <React.Fragment>
-                      <View style={styles.details}>
-                        <Text style={{marginBottom: 50}}></Text>
-                        <Text style={styles.title} category='h6'>Example Comment</Text>
-                        <Card style={styles.card}>
-                        </Card>
-                        <Text style={{marginBottom: 50}}></Text>
-                      </View>
-                      <Divider/>
 
-                    </React.Fragment>
+                    <React.Fragment>
+                        <View style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center', marginTop: 8}}>
+                          <Text style={styles.commentLeft} status='info' category='s1'>PurdueUser44</Text>
+                          <Text style={styles.commentRight} category='s1' status='success'>3h</Text>
+                        </View>
+                        <Text style={{marginLeft: 16, marginBottom: 8}}>Agreed! I love meal swipes. Check out cosi for some real value!</Text>
+                        <Divider/>
+                      </React.Fragment>
 
-                    <Button
-                        style={styles.footerControl}
-                        size='medium' onPress= {() => {
-                            navigation.navigate('ShowReviews');
-                        }}>
-                        Done viewing review
-                    </Button>
-
-                        {/*<TouchableOpacity
-                           style={{ color: 'white', marginTop: 120  }}
-                           onPress={() => navigation.navigate('ShowReviews')}
-                        >
-                        <Button style={styles.button} size='medium'> Done viewing review </Button>
-                        </TouchableOpacity>*/}
+                      <React.Fragment>
+                        <View style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center', marginTop: 8}}>
+                          <Text style={styles.commentLeft} status='info' category='s1'>JohnDoe77</Text>
+                          <Text style={styles.commentRight} category='s1' status='success'>1h</Text>
+                        </View>
+                        <Text style={{marginLeft: 16, marginBottom: 8}}>I disagree... meal swipes SUCK!</Text>
+                        <Divider/>
+                      </React.Fragment>
                     </ScrollView>
                 </Layout>
             </TouchableWithoutFeedback>
@@ -183,15 +154,10 @@ const styles = StyleSheet.create({
     width: '20%',
     backgroundColor: '#3366FF',
   },
-  details: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 4,
+  commentLeft: {
+    margin: 8,
   },
-  title: {
-    marginHorizontal: 8,
-  },
-  installButton: {
-    marginVertical: 4,
+  commentRight: {
+    margin: 8,
   },
 });

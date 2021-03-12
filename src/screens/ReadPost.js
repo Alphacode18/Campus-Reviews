@@ -17,35 +17,44 @@ const BackIcon = (props) => (
   <Icon {...props} name='arrow-back'/>
 );
 
+const UpArrowIcon = (props) => (
+  <Icon {...props} name='arrow-upward-outline'/>
+);
+
+const DownArrowIcon = (props) => (
+  <Icon {...props} name='arrow-downward-outline'/>
+);
+
 const renderBackAction = () => (
     <TopNavigationAction icon={BackIcon}/>
   );
 
-  const Header = ({props, title}) => (
-    <View style={{flexDirection:'row', alignItems:'center'}}>
-      <View style={styles.controlContainer}>
-        <Text style={styles.review} status='control'>Review</Text>
+const Header = ({props, title}) => (
+      <View style={{flexDirection:'row', alignItems:'center', marginTop: '5%', marginBottom: '5%'}}>
+        <View style={styles.controlContainer}>
+          <Text style={styles.review} status='control'>Review</Text>
+        </View>
+        <Text category='h5' style={styles.text} status='danger'> {title} </Text>
       </View>
-      <Text category='h6' style={styles.text} status='danger'> {title} </Text>
-    </View>
   );
 
-  const Footer = (props) => (
-    <View {...props} style={[props.style, styles.footerContainer]}>
-    <View style={{flexDirection:'row', alignItems:'center'}}>
-      <Text category='h6' style={styles.text} category='p1'>
-      <Text style={styles.text} status='info'>by: DarshDalal2001 </Text>
-      {/* <Text style={styles.text} status='success'>8 comments </Text>
-      <Text style={styles.text} status='danger'>1d</Text> */}
-      </Text>
-    </View>
+const Footer = ({props, user}) => (
+    <View {...props} style={[styles.footerContainer]}>
+        <View style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center'}}>
+            <Button size='small' accessoryLeft={UpArrowIcon}></Button>
+            <Text>300</Text>
+            <Button size='small' accessoryLeft={DownArrowIcon}></Button>
 
+            <Text status='info' category='s1'>by: {user}</Text>
+            <Text status='success' category='s1'>9d</Text>
+
+        </View>
     </View>
-  );
+);
 
 
 export default readPost = ({ route, navigation }) => {
-    const { title, post, postID, user } = route.params;
+    const { title, post, postID, user, index } = route.params;
 
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
@@ -58,61 +67,53 @@ export default readPost = ({ route, navigation }) => {
 
                 <Layout style={styles.container} level={'1'}>
 
-                <TopNavigation
-                  title='Back'
-                  accessoryLeft={renderBackAction}
+                
+                <ScrollView contentContainerStyle={{flexGrow : 1}}>
+                <Button style={{
+
+                    marginTop: 50
+                    }
+
+                    }
+                    title='Back'
+
+                    accessoryLeft={BackIcon}
+                    onPress = { () => {
+                      navigation.navigate('ShowPosts', {
+                        index: index
+                      });
+                    }
+                      
+                    }
                 />
-                    <ScrollView contentContainerStyle={{flexGrow : 1}}>
-                    <Card style={styles.card} 
-                    header={(props) => <Header {...props} title={title}/> }
-                    footer={(props) => <Footer {...props}/> }>
-                      <Text style={styles.text} category='s2'>
-                        {post}
-                      </Text>
-                    </Card>
-                    {/* <React.Fragment>
-                      <View style={styles.details}>
-                        <Text style={styles.title} category='h6'>Comment</Text>
-                      </View>
-                      <Divider/>
 
-                    </React.Fragment>
-                    <React.Fragment>
-                      <View style={styles.details}>
-                        <Text style={styles.title} category='h6'>Comment</Text>
-                      </View>
-                      <Divider/>
+                  <Card style={styles.card}
+                  header={(props) => <Header {...props} title={title}/> }
+                  footer={(props) => <Footer {...props} user={user}/> }>
+                    <Text style={styles.text} category='p1'>
+                      {post}
+                    </Text>
+                  </Card>
 
-                    </React.Fragment>
-                    <React.Fragment>
-                      <View style={styles.details}>
-                        <Text style={styles.title} category='h6'>Comment</Text>
-                      </View>
-                      <Divider/>
+                  <React.Fragment>
+                    <View style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center', marginTop: 8}}>
+                      <Text style={styles.commentLeft} status='info' category='s1'>PurdueUser44</Text>
+                      <Text style={styles.commentRight} category='s1' status='success'>3h</Text>
+                    </View>
+                    <Text style={{marginLeft: 16, marginBottom: 8}}>Agreed! I love meal swipes. Check out cosi for some real value!</Text>
+                    <Divider/>
+                  </React.Fragment>
 
-                    </React.Fragment>
-                    <React.Fragment>
-                      <View style={styles.details}>
-                        <Text style={styles.title} category='h6'>Comment</Text>
-                      </View>
-                      <Divider/>
+                  <React.Fragment>
+                    <View style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center', marginTop: 8}}>
+                      <Text style={styles.commentLeft} status='info' category='s1'>JohnDoe77</Text>
+                      <Text style={styles.commentRight} category='s1' status='success'>1h</Text>
+                    </View>
+                    <Text style={{marginLeft: 16, marginBottom: 8}}>I disagree... meal swipes SUCK!</Text>
+                    <Divider/>
+                  </React.Fragment>
 
-                    </React.Fragment> */}
-                    <React.Fragment>
-                      <View style={styles.details}>
-                        <Text style={styles.title} category='h6'>Comment</Text>
-                      </View>
-                      <Divider/>
-
-                    </React.Fragment>
-
-                        <TouchableOpacity
-                           style={{ color: 'white', marginTop: 120  }}
-                           onPress={() => navigation.navigate('Home')}
-                        >
-                        <Button style={styles.button} size='medium'> Done viewing post </Button>
-                       </TouchableOpacity>
-                    </ScrollView>
+                </ScrollView>
                 </Layout>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
@@ -134,15 +135,10 @@ const styles = StyleSheet.create({
     width: '20%',
     backgroundColor: '#3366FF',
   },
-  details: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 4,
+  commentLeft: {
+    margin: 8,
   },
-  title: {
-    marginHorizontal: 8,
-  },
-  installButton: {
-    marginVertical: 4,
+  commentRight: {
+    margin: 8,
   },
 });
