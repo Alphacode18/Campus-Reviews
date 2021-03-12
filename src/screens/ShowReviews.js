@@ -140,8 +140,18 @@ export default showReviews = ({navigation, route }) => {
                 <Layout style={styles.container} level={'1'} > 
 
 
-                    <Button
+                    
+                    <ScrollView contentContainerStyle={{flexGrow : 1, width : screenWidth, alignItems: 'center', justifyContent: 'center'}}>
+
+
+                    <Button style={{
+
+                        marginTop: 50
+                    }
+                        
+                    }
                         title='Back'
+                        
                         accessoryLeft={BackIcon}
                         onPress = { () => {
                             navigation.navigate('Buffer')
@@ -149,10 +159,9 @@ export default showReviews = ({navigation, route }) => {
                             
                         }
                     />
-                    <ScrollView contentContainerStyle={{flexGrow : 1, width : screenWidth, alignItems: 'center', justifyContent: 'center'}}>
                     <Text
                         style={{
-                            marginTop: 50,
+                            
                             marginBottom: 20,
                             fontSize: 36,
                             marginHorizontal: 2,
@@ -207,6 +216,7 @@ export default showReviews = ({navigation, route }) => {
                                                   text: text,
                                                   review_id: review_id,
                                                   date: date,
+                                                  index: index
                                                 });
                                               }}
                                             >
@@ -247,6 +257,11 @@ const styles = StyleSheet.create({
     topContainer: {
       flexDirection: 'row',
       justifyContent: 'space-between',
+    },
+    backButton: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start'
+
     },
     card: {
       flex: 1,

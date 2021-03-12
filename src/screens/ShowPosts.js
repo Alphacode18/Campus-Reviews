@@ -163,15 +163,7 @@ export default showPosts = ({ navigation, route }) => {
 
           
           
-        <Button
-              title='Back'
-              accessoryLeft={renderBackAction}
-              onPress = { () => {
-                navigation.navigate('Buffer')
-              }
-                  
-              }
-          />
+        
 
 
           <ScrollView
@@ -183,13 +175,23 @@ export default showPosts = ({ navigation, route }) => {
             }}
           >
 
-            {/* <Button 
-                onPress = {
-                  navigation.navigate('Buffer');
-                }
+          <Button style={{
 
-            /> */}
+              marginTop: 50
+         }
 
+            }
+            title='Back'
+
+            accessoryLeft={BackIcon}
+            onPress = { () => {
+                navigation.navigate('Buffer')
+            }
+                
+            }
+            />
+
+            
           
             <Text
               style={{
@@ -277,7 +279,9 @@ export default showPosts = ({ navigation, route }) => {
                             title: title,
                             post: postText,
                             postId: post,
-                            user: user
+                            user: user,
+                            index: index
+              
                           });
                         }}
                       >

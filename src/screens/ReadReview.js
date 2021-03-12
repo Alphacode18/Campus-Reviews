@@ -72,7 +72,9 @@ const Footer = ({navigation, props, title, user, rate, text, review_id}) => (
 
 
 export default readReview = ({ route, navigation }) => {
-    const { title, user, rate, text, review_id, date } = route.params;
+    const { title, user, rate, text, review_id, date, index } = route.params;
+    console.log("This is read review: ");
+    console.log(index);
 
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
@@ -85,11 +87,26 @@ export default readReview = ({ route, navigation }) => {
 
                 <Layout style={styles.container} level={'1'}>
 
-                <TopNavigation
-                  title='Back'
-                  accessoryLeft={renderBackAction}
-                />
                     <ScrollView contentContainerStyle={{flexGrow : 1}}>
+
+                    <Button style={{
+
+                        marginTop: 50
+                        }
+
+                        }
+                        title='Back'
+
+                        accessoryLeft={BackIcon}
+                        onPress = { () => {
+                          navigation.navigate('ShowReviews', {
+                            index: index
+                          });
+                        }
+                          
+                        }
+                      />
+
                     <Card style={styles.card}
                     header={(props) => <Header {...props} title={title} user={user} date={date} rate={rate}/> }
                     footer={(props) => <Footer {...props} title={title} user={user} rate={rate} text={text} review_id={review_id} navigation={navigation}/>}>

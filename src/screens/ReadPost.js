@@ -38,14 +38,14 @@ const Header = ({props, title}) => (
       </View>
   );
 
-const Footer = (props) => (
-    <View {...props} style={[props.style, styles.footerContainer]}>
+const Footer = ({props, user}) => (
+    <View {...props} style={[styles.footerContainer]}>
         <View style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center'}}>
             <Button size='small' accessoryLeft={UpArrowIcon}></Button>
             <Text>300</Text>
             <Button size='small' accessoryLeft={DownArrowIcon}></Button>
 
-            <Text status='info' category='s1'>by: DarshDalal2001</Text>
+            <Text status='info' category='s1'>by: {user}</Text>
             <Text status='success' category='s1'>9d</Text>
 
         </View>
@@ -54,7 +54,7 @@ const Footer = (props) => (
 
 
 export default readPost = ({ route, navigation }) => {
-    const { title, post, postID, user } = route.params;
+    const { title, post, postID, user, index } = route.params;
 
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
@@ -67,15 +67,29 @@ export default readPost = ({ route, navigation }) => {
 
                 <Layout style={styles.container} level={'1'}>
 
-                <TopNavigation
-                  title='Back'
-                  accessoryLeft={renderBackAction}
-                  
-                />
+                
                 <ScrollView contentContainerStyle={{flexGrow : 1}}>
+                <Button style={{
+
+                    marginTop: 50
+                    }
+
+                    }
+                    title='Back'
+
+                    accessoryLeft={BackIcon}
+                    onPress = { () => {
+                      navigation.navigate('ShowPosts', {
+                        index: index
+                      });
+                    }
+                      
+                    }
+                />
+
                   <Card style={styles.card}
                   header={(props) => <Header {...props} title={title}/> }
-                  footer={(props) => <Footer {...props}/> }>
+                  footer={(props) => <Footer {...props} user={user}/> }>
                     <Text style={styles.text} category='p1'>
                       {post}
                     </Text>
