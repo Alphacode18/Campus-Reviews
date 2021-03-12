@@ -6,11 +6,15 @@ import { Layout, Button, Input, Text, Spinner, Icon } from '@ui-kitten/component
 import Firebase from '../../config/firebase';
 
 export default editUsername = ({navigation}) =>  {
+  const [currentUserName, setCurrentUserName] = useState('');
   const [userName, setUsername] = useState('');
   const [confirmUsername , setConfirmUsername] = useState('');
 
   //TODO: Add implementationa and integrate with Firebase
   const handleEditUsername = () => {
+  if (currentUserName === userName) {
+    Alert.alert("New Username must be different from current Username.");
+  }
 
   };
 
@@ -20,6 +24,12 @@ export default editUsername = ({navigation}) =>  {
         <Text category='h1' style={{ padding: 20, marginTop: 50 }}>
           Edit your User Name
         </Text>
+        <Input
+          style={styles.inputBox}
+          placeholder='Current User Name'
+          value={currentUserName}
+          onChangeText={(currentUserName) => setCurrentUserName(currentUserName)}
+          />
         <Input
           style={styles.inputBox}
           placeholder='New User Name'
