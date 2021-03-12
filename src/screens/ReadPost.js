@@ -32,7 +32,7 @@ const renderBackAction = () => (
 const Header = ({props, title}) => (
       <View style={{flexDirection:'row', alignItems:'center', marginTop: '5%', marginBottom: '5%'}}>
         <View style={styles.controlContainer}>
-          <Text style={styles.review} status='control'>Review</Text>
+          <Text style={styles.review} status='control'>Post</Text>
         </View>
         <Text category='h5' style={styles.text} status='danger'> {title} </Text>
       </View>
@@ -100,7 +100,7 @@ export default readPost = ({ route, navigation }) => {
                       <Text style={styles.commentLeft} status='info' category='s1'>PurdueUser44</Text>
                       <Text style={styles.commentRight} category='s1' status='success'>3h</Text>
                     </View>
-                    <Text style={{marginLeft: 16, marginBottom: 8}}>Agreed! I love meal swipes. Check out cosi for some real value!</Text>
+                    <Text style={{marginLeft: 16, marginBottom: 8}}>New comment added!</Text>
                     <Divider/>
                   </React.Fragment>
 
