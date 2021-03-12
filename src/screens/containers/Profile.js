@@ -91,10 +91,10 @@ export default ProfileScreen = ({ navigation }) => {
               justifyContent: 'center',
             }}
           >
-
+      
       <Button
         onPress={handleLogout}
-        style={{ width: '50%', borderRadius: 5 }}
+        style={{ width: '50%', borderRadius: 5, marginTop:50 }}
         appearance='outline'
       >
         {loading === false ? <Text>Logout</Text> : <Spinner size='small' />}
@@ -110,7 +110,7 @@ export default ProfileScreen = ({ navigation }) => {
           <Spinner size='small' />
         )}
       </Button>
-        <Text category='h1' style={{ padding: 10, marginTop: 15 }}>
+        <Text  style={{ padding: 4, marginTop: 15 }}>
           Change your Password
         </Text>
         <Input
@@ -138,7 +138,7 @@ export default ProfileScreen = ({ navigation }) => {
             Change Password
           </Text>
         </Button>
-        <Text category='h1' style={{ padding: 10, marginTop: 15 }}>
+        <Text  style={{ padding: 4, marginTop: 15 }}>
           Edit your User Name
         </Text>
         <Input
