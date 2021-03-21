@@ -133,6 +133,7 @@ export default showPosts = ({ navigation, route }) => {
   const screenHeight = Dimensions.get('window').height;
   let posts = [];
   let fields = [];
+  let postSnaps = [];
 
   Firebase.database()
     .ref(types[index] + ' Posts/')
@@ -142,15 +143,13 @@ export default showPosts = ({ navigation, route }) => {
       snapshot.forEach(function (data) {
         console.log('data');
         console.log(data);
+        console.log(data.toJSON().title);
         posts.push(data.key);
       });
     });
 
   const currentUser = Firebase.auth().currentUser.providerData[0].email;
-  console.log('posts');
-  console.log(index);
-  console.log(currentUser);
-  console.log(posts);
+  
 
   return (
 
@@ -225,17 +224,23 @@ export default showPosts = ({ navigation, route }) => {
 
             <React.Fragment>
               {posts.map(function (post, i) {
+                console.log("test");
+                console.log(posts[i]);
                 Firebase.database()
                   .ref(types[index] + ' Posts/' + post)
                   .on('value', (snapshot) => {
                     console.log(types[index] + ' Posts' + post);
                     let i = 0;
+                    console.log(snapshot);
+                    postSnaps.push(snapshot);
+                    console.log("snap test");
+                    console.log(snapshot.title);
                     snapshot.forEach(function (data) {
                       fields.push(data);
                       // console.log(data);
                       i++;
                     });
-                    // console.log(fields[0]);
+                    console.log(fields[0]);
                   });
 
                 let user = JSON.stringify(fields[3 * i + 2]);
