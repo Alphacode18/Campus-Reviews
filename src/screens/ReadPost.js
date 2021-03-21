@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ScrollView, TextInput, KeyboardAvoidingView, textarea} from 'react-native';
+import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ScrollView, TextInput, KeyboardAvoidingView, Alert} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Layout, Text, Button, Card, Divider, Input, Select, SelectItem, IndexPath, TopNavigation, TopNavigationAction, Icon } from '@ui-kitten/components';
 import InputScrollView from 'react-native-input-scroll-view';
@@ -111,21 +111,27 @@ export default readPost = ({ route, navigation }) => {
                         status='basic'
                         accessoryLeft = {plusIcon}
                         onPress={() => {
-                          Firebase.database().ref('/' + types[index] + ' Posts/' + postId + '/Comments/').push({
-                            commentText: commentText,
-                            user: user,
-                            createTimestamp: time,
-                            edited: false,
-                            editTimestamp: time
-                          });
-
-                          navigation.navigate('NewLoading', {
-                            title: title,
-                            post: post,
-                            postId: postId,
-                            user: user,
-                            index: index
-                          });
+                          if (!(commentText === '')) {
+                            Firebase.database().ref('/' + types[index] + ' Posts/' + postId + '/Comments/').push({
+                              commentText: commentText,
+                              user: user,
+                              createTimestamp: time,
+                              edited: false,
+                              editTimestamp: time
+                            });
+  
+                            navigation.navigate('NewLoading', {
+                              title: title,
+                              post: post,
+                              postId: postId,
+                              user: user,
+                              index: index
+                            });
+                          }
+                          else {
+                            Alert.alert('Please add text to your comment!');
+                          }
+                          
                         }}
                       >
                         {' '}
