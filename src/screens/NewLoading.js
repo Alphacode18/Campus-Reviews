@@ -32,35 +32,56 @@ import { render } from 'react-dom';
 
 const types = ['Dining', 'On-Campus Facilities', 'Classes', 'Professors'];
 
-export default buffer = (props) => {
-  console.log('Buffer Index');
-  console.log(props.route.params);
-  console.log(props.route.params.index);
+export default loading = ({ navigation, route }) => {
+  const {title, post, postId, user, index} = route.params;
+
+  setTimeout(() => {  
+    navigation.navigate('ReadPost', {
+      title: title,
+      post: post,
+      postId: postId,
+      user: user,
+      index: index
+    });
+  }, 2000);
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <Layout style={styles.container} level={'1'}>
-            <Button onPress={() => {
-                  props.navigation.navigate('Loading', {
-                    index: props.route.params.index,
-                    postType: 'Reviews'
-                  });
-            }}> Reviews </Button>
-            <Button onPress={() => {
-                  props.navigation.navigate('Loading', {
-                    index: props.route.params.index,
-                    postType: 'Posts'
-                  });
-            }}> Posts </Button>
+            <Spinner size='small' />
         </Layout>
     </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-    }
-  });
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inputBox: {
+    width: '90%',
+    margin: 0,
+    padding: 15,
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  topContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  card: {
+    flex: 1,
+    margin: 2,
+    minWidth: '95%',
+    maxWidth: '95%',
+  },
+  footerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  footerControl: {
+    marginHorizontal: 2,
+  },
+});

@@ -5,16 +5,16 @@ import { Layout, Text, Button, Card, Divider, Input, Select, SelectItem, IndexPa
 import InputScrollView from 'react-native-input-scroll-view';
 import { Dimensions, View } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
+import Firebase from '../../config/firebase';
 
-const data = [
-    'Dining',
-    'On-Campus Facilities',
-    'Classes',
-    'Professors'
-  ];
+const types = ['Dining', 'On-Campus Facilities', 'Classes', 'Professors'];
 
 const BackIcon = (props) => (
   <Icon {...props} name='arrow-back'/>
+);
+
+const plusIcon = (props) => (
+  <Icon {...props} name='plus'/>
 );
 
 const UpArrowIcon = (props) => (
@@ -54,10 +54,13 @@ const Footer = ({props, user}) => (
 
 
 export default readPost = ({ route, navigation }) => {
-    const { title, post, postID, user, index } = route.params;
+    const { title, post, postId, user, index } = route.params;
 
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
+    const [commentText, setCommentText] = useState('');
+    const today = new Date();
+    const time = today.getTime();
 
     return (
         <KeyboardAvoidingView
@@ -94,7 +97,44 @@ export default readPost = ({ route, navigation }) => {
                       {post}
                     </Text>
                   </Card>
+                  
+                  <React.Fragment>
+                  <View style={{flexDirection:'row',justifyContent:'space-between', marginTop: 8}}>
+                    <Input
+                        multiline={true}
+                        textStyle={{ minHeight: 32, maxHeight: 128, minWidth: 0.8 * screenWidth, maxWidth: 0.8 * screenWidth}}
+                        placeholder='Add a comment...'
+                        value={commentText}
+                        onChangeText={(commentText) => setCommentText(commentText)}  
+                      />
+                      <Button
+                        status='basic'
+                        accessoryLeft = {plusIcon}
+                        onPress={() => {
+                          Firebase.database().ref('/' + types[index] + ' Posts/' + postId + '/Comments/').push({
+                            commentText: commentText,
+                            user: user,
+                            createTimestamp: time,
+                            edited: false,
+                            editTimestamp: time
+                          });
 
+                          navigation.navigate('NewLoading', {
+                            title: title,
+                            post: post,
+                            postId: postId,
+                            user: user,
+                            index: index
+                          });
+                        }}
+                      >
+                        {' '}
+                        Create{' '}
+                      </Button>
+                  </View>
+                    
+                    
+                  </React.Fragment>
                   <React.Fragment>
                     <View style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center', marginTop: 8}}>
                       <Text style={styles.commentLeft} status='info' category='s1'>PurdueUser44</Text>

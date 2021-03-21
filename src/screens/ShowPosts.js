@@ -131,9 +131,8 @@ export default showPosts = ({ navigation, route }) => {
   const index = route.params.index;
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
+  let postIDs = [];
   let posts = [];
-  let fields = [];
-  let postSnaps = [];
 
   Firebase.database()
     .ref(types[index] + ' Posts/')
@@ -144,7 +143,8 @@ export default showPosts = ({ navigation, route }) => {
         console.log('data');
         console.log(data);
         console.log(data.toJSON().title);
-        posts.push(data.key);
+        posts.push(data.toJSON());
+        postIDs.push(data.key);
       });
     });
 
@@ -159,12 +159,6 @@ export default showPosts = ({ navigation, route }) => {
     >
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <Layout style={styles.container} level={'1'}>
-
-          
-          
-        
-
-
           <ScrollView
             contentContainerStyle={{
               flexGrow: 1,
@@ -190,8 +184,6 @@ export default showPosts = ({ navigation, route }) => {
             }
             />
 
-            
-          
             <Text
               style={{
                 marginTop: 50,
@@ -224,38 +216,16 @@ export default showPosts = ({ navigation, route }) => {
 
             <React.Fragment>
               {posts.map(function (post, i) {
-                console.log("test");
-                console.log(posts[i]);
-                Firebase.database()
-                  .ref(types[index] + ' Posts/' + post)
-                  .on('value', (snapshot) => {
-                    console.log(types[index] + ' Posts' + post);
-                    let i = 0;
-                    console.log(snapshot);
-                    postSnaps.push(snapshot);
-                    console.log("snap test");
-                    console.log(snapshot.title);
-                    snapshot.forEach(function (data) {
-                      fields.push(data);
-                      // console.log(data);
-                      i++;
-                    });
-                    console.log(fields[0]);
-                  });
-
-                let user = JSON.stringify(fields[3 * i + 2]);
+                let user = post.user;
                 console.log('user');
-                console.log(user.replace(/\"/g, ''));
-                user = user.replace(/\"/g, '');
+                console.log(user);
 
-                let title = JSON.parse(JSON.stringify(fields[3 * i + 1]));
+                let title = post.title;
                 console.log('title');
                 console.log(title);
 
-                let postText = JSON.stringify(fields[3 * i]);
+                let postText = post.post;
                 console.log('postText');
-                console.log(postText.replace(/\"/g, ''));
-                postText = postText.replace(/\"/g, '');
                 console.log(postText);
 
                 return (
@@ -271,7 +241,7 @@ export default showPosts = ({ navigation, route }) => {
                             {...props}
                             title={title}
                             user={user}
-                            postID={post}
+                            postID={postIDs[i]}
                             post={postText}
                             navigation={navigation}
                             index={index}
@@ -283,7 +253,7 @@ export default showPosts = ({ navigation, route }) => {
                           navigation.navigate('ReadPost', {
                             title: title,
                             post: postText,
-                            postId: post,
+                            postId: postIDs[i],
                             user: user,
                             index: index
               
