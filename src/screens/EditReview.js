@@ -121,12 +121,11 @@ export default editReview = ({ route, navigation }) => {
                                 }
                                 
                                 else {
-                                    var today = new Date();
-                                    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-                                    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-                                    var datetime = date+' '+time;
+                                    const today = new Date();
+                                    const datetime = today.getTime();
                                     let updates = {};
-                                    updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'date_time'] = datetime;
+                                    updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'edited_time'] = datetime;
+                                    updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'edited'] = true;
                                     updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'review_rate'] = selectedIndex_rate.row;
                                     updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'review_text'] = reviewText;
                                     updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'review_title'] = titleText;
