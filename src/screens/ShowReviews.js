@@ -48,20 +48,24 @@ const types = [
     <Icon icon={BackIcon}/>
   );
 
-  const showTime = ({date, datetime}) => {
-    let diff = Math.floor((datetime - date)/1000);
-    let ret = '';
+  const showTime = (date, datetime) => {
+    const timediff = Math.floor((datetime - date)/1000);
+    let retString = '';
 
-    if (diff < 3600) {
-      ret = Math.floor(diff/60) + ' mins';
-    } else if (diff < 24*3600) {
-      ret = Math.floor(diff/(3600)) + ' hrs';
-    } else if (diff < 365*24*3600) {
-      ret = Math.floor(diff/(24*3600)) + ' days';
+    if (timediff < 3600) {
+      retString = Math.floor(timediff/60) + ' mins';
+
+    } else if (timediff < 24*3600) {
+      retString = Math.floor(timediff/(3600)) + ' hrs';
+
+    } else if (timediff < 365*24*3600) {
+      retString = Math.floor(timediff/(24*3600)) + ' days';
+
     } else {
-      ret = Math.floor(diff/(365*24*3600)) + ' yrs';
+      retString = Math.floor(timediff/(365*24*3600)) + ' yrs';
+
     }
-    return ret;
+    return retString;
   }
 
 const Header = ({props, title, user, date, rate, edited, edited_time}) => {
@@ -69,10 +73,10 @@ const Header = ({props, title, user, date, rate, edited, edited_time}) => {
   const today = new Date();
   const datetime = today.getTime();
   if (edited) {
-    dateString = showTime(date, datetime) + " (edited: "+ showTime(edited_time, datetime) + ")";
+    dateString = "Created: "+showTime(date, datetime) + "ago (Edited: "+ showTime(edited_time, datetime) + " ago)";
   }
   else {
-    dateString = showTime(date, datetime);
+    dateString = "Created: "+showTime(date, datetime);
   }
   return (
     <View {...props} style={[styles.headerContainer]}>
