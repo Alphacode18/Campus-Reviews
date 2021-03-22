@@ -1,16 +1,16 @@
-//TODO: Integrate with the latest version of homescreen
+
 import React, { useState } from 'react';
 import { StyleSheet, Keyboard, TouchWithoutFeedback, TouchOpacity, Alert } from 'react-native';
 import { Layout, Button, Input, Text, Spinner, Icon } from '@ui-kitten/components';
 
 import Firebase from '../../config/firebase';
 
-export default editUsername = ({navigation}) =>  {
+export default userReport = ({navigation}) =>  {
   const [userName, setUsername] = useState('');
-  const [confirmUsername , setConfirmUsername] = useState('');
+  const [reason , setReason] = useState('');
 
   //TODO: Add implementationa and integrate with Firebase
-  const handleEditUsername = () => {
+  const handleUserReport = () => {
 
   };
 
@@ -18,27 +18,27 @@ export default editUsername = ({navigation}) =>  {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <Layout style={styles.container} level={'1'}>
         <Text category='h1' style={{ padding: 20, marginTop: 50 }}>
-          Edit your User Name
+          Report a User
         </Text>
         <Input
           style={styles.inputBox}
-          placeholder='New User Name'
+          placeholder='The user you would like to report'
           value={userName}
           onChangeText={(userName) => setUsername(userName)}
         />
         <Input
           style={styles.inputBox}
-          placeholder='Confirm User Name'
-          value={confirmUsername}
-          onChangeText={(confirmUserName) => setConfirmUsername(confirmUsername)}
+          placeholder='The reason for your report.'
+          value={reason}
+          onChangeText={(reason) => setReason(reason)}
         />
         <Button
-          onPress={handleEditUsername}
+          onPress={handleUserReport}
           style={{ width: '50%', borderRadius: 20, marginTop: 20 }}
           appearance='outline'
         >
           <Text>
-            Change User Name
+            Submit User Report
           </Text>
         </Button>
       </Layout>
