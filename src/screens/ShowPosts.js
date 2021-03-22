@@ -55,12 +55,46 @@ const renderBackAction = () => (
   <TopNavigationAction icon={BackIcon}/>
 );
 
-const Header = ({ props, title, user }) => (
-  <View {...props} style={[styles.headerContainer]}>
-    <Text category='h6'> {'   ' + title} </Text>
-    <Text category='s1'> {'   ' + user} </Text>
-  </View>
-);
+const getDisplayTime = (curTime, time) => {
+  const diff = Math.floor((curTime - time) / 1000);
+  console.log('getdisplay');
+  console.log(curTime);
+  console.log(time);
+  console.log(diff);
+  let ret = '';
+
+  if (diff < 3600) {
+    ret = Math.floor(diff/60) + 'm';
+  } else if (diff < 24*3600) {
+    ret = Math.floor(diff/3600) + 'h';
+  } else if (diff < 365 * 24 * 3600) {
+    ret = Math.floor(diff/(24*3600)) + 'd'
+  } else {
+    ret = Math.floor(diff/(365 * 24 * 3600)) + 'y';
+  }
+  console.log(ret);
+  return ret;
+}
+
+const Header = ({ props, title, user, edited, editTime, createTime }) => {
+  const today = new Date();
+  const curTime = today.getTime();
+  console.log("curTime edit time");
+  console.log(curTime);
+  console.log(editTime);
+  const editDisplayTime = getDisplayTime(curTime, editTime);
+  const createDisplayTime = getDisplayTime(curTime, createTime);
+  let headerString = headerString = '   ' + user + ' | ' + createDisplayTime;
+  if (edited) {
+    headerString += ' | ' + "(edited " + editDisplayTime + ")";
+  } 
+  return (
+    <View {...props} style={[styles.headerContainer]}>
+      <Text category='h6'> {'   ' + title} </Text>
+      <Text category='s1'> {headerString} </Text>
+    </View>
+  )
+};
 
 const Footer = ({ props, title, post, postID, navigation, index, user, currentUser }) => {
   return user == currentUser ? (
@@ -234,7 +268,7 @@ export default showPosts = ({ navigation, route }) => {
                       <Card
                         style={styles.card}
                         header={(props) => (
-                          <Header {...props} title={title} user={user} />
+                          <Header {...props} title={title} user={user} edited={post.edited} createTime={post.createTimestamp} editTime={post.editTimestamp} />
                         )}
                         footer={(props) => (
                           <Footer
