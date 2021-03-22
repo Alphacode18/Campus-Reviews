@@ -69,6 +69,15 @@ export default readPost = ({ route, navigation }) => {
                   title='Back'
                   accessoryLeft={renderBackAction}
                 />
+                <Button onPress={() => /* doSort() */}>sort</Button>
+                <Layout style={styles.container} level='1'>
+                  <Select
+                    selectedIndex={selectedIndex}
+                    onSelect={index => setSelectedIndex(index)}>
+                    <SelectItem title='Sort oldest first'/>
+                    <SelectItem title='Sort latest first'/>
+                  </Select>
+                </Layout>
                     <ScrollView contentContainerStyle={{flexGrow : 1}}>
                       <Card style={styles.card}
                       header={(props) => <Header {...props} title={title}/> }
