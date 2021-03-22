@@ -32,7 +32,7 @@ import { render } from 'react-dom';
 
 const types = ['Dining', 'On-Campus Facilities', 'Classes', 'Professors'];
 
-export default loading = ({ navigation, route }) => {
+export default newLoading = ({ navigation, route }) => {
   const {title, post, postId, user, index} = route.params;
 
   setTimeout(() => {  

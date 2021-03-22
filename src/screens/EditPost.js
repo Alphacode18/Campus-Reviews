@@ -22,6 +22,8 @@ export default editPost = ({ route, navigation }) => {
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
     const displayValue = types[selectedIndex.row];
+    const today = new Date();
+    const time = today.getTime();
 
     const changeSelection = (selectedIndex) => {
         setSelectedIndex(selectedIndex);
@@ -69,6 +71,8 @@ export default editPost = ({ route, navigation }) => {
                                     let updates = {};
                                     updates['/' + types[index] + ' Posts/' + postID + '/' + 'post'] = newPost;
                                     updates['/' + types[index] + ' Posts/' + postID + '/' + 'title'] = newTitle;
+                                    updates['/' + types[index] + ' Posts/' + postID + '/' + 'edited'] = true;
+                                    updates['/' + types[index] + ' Posts/' + postID + '/' + 'editTimeStamp'] = time;
                                     Firebase.database().ref().update(updates);
                                     navigation.navigate('Loading', {index : index, postType: 'Posts'});
                                 } 

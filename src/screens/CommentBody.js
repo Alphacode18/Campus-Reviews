@@ -7,10 +7,22 @@ import { Dimensions, View } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
 import Firebase from '../../config/firebase';
 
-export default CommentBody = ({commentText, postId, commentID, navigation}) => {
+const types = ['Dining', 'On-Campus Facilities', 'Classes', 'Professors'];
+
+const editIcon = (props) => (
+  <Icon {...props} name='edit-outline'/>
+);
+
+const checkIcon = (props) => (
+  <Icon {...props} name='checkmark-outline'/>
+);
+
+export default CommentBody = ({commentText, postId, commentID, index, navigation, title, user, post}) => {
     const [editCommentText, setEditCommentText] = useState(commentText);
     const [editing, setEditing] = useState(false);
-    if (editing) {
+    const screenWidth = Dimensions.get('window').width;
+
+    return editing ? (
       <React.Fragment>
         <View style={{flexDirection:'row',justifyContent:'space-between', marginTop: 8}}>
           <Input
@@ -54,8 +66,7 @@ export default CommentBody = ({commentText, postId, commentID, navigation}) => {
         </View>
       </React.Fragment>
 
-    }
-    else {
+    ) : (
       <React.Fragment>
         <View style={{flexDirection:'row',justifyContent:'space-between', marginTop: 8}}>
           <Text style={{marginLeft: 16, marginBottom: 8}}>{editCommentText}</Text>
@@ -70,5 +81,28 @@ export default CommentBody = ({commentText, postId, commentID, navigation}) => {
           </Button>
         </View>
       </React.Fragment>
-    }
+    )
   };
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    review: {
+      margin: 4,
+      textAlign: 'center',
+    },
+    controlContainer: {
+      borderRadius: 4,
+      margin: 4,
+      padding: 4,
+      width: '20%',
+      backgroundColor: '#3366FF',
+    },
+    commentLeft: {
+      margin: 8,
+    },
+    commentRight: {
+      margin: 8,
+    },
+  });
