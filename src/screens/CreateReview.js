@@ -129,7 +129,7 @@ export default createReview = ({ navigation, route }) => {
                                         user: currentUser,
                                         date_time: datetime,
                                         edited: false,
-                                        edited_time: time 
+                                        edited_time: datetime 
                                     });
 
                                     navigation.navigate('ShowReviews', {
