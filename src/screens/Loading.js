@@ -40,6 +40,7 @@ export default loading = ({ navigation, route }) => {
   let fields = [];
   // readData(diningPosts);
   setTimeout(() => {
+    console.log("stuck");
     db.ref(types[index] + ' ' + postType).on('value', (snapshot) => {
         console.log('snapshot');
         console.log(snapshot);
@@ -54,6 +55,7 @@ export default loading = ({ navigation, route }) => {
                 });
             });
         })
+        console.log("unstuck");
         navigation.navigate('Show' + postType, {
             index: index,
         });

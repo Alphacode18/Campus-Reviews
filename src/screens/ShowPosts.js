@@ -22,7 +22,9 @@ import {
   Icon,
   Card,
   TopNavigation,
-  TopNavigationAction
+  TopNavigationAction,
+  List,
+  Divider
 
 } from '@ui-kitten/components';
 import InputScrollView from 'react-native-input-scroll-view';
@@ -34,6 +36,8 @@ import { render } from 'react-dom';
 // import Post from './Post.js';
 
 const types = ['Dining', 'On-Campus Facilities', 'Classes', 'Professors'];
+let posts = [];
+let postIDs = [];
 
 const trashIcon = (props) => (
   <Icon {...props} name='trash-2'/>
@@ -97,6 +101,8 @@ const Header = ({ props, title, user, edited, editTime, createTime }) => {
 };
 
 const Footer = ({ props, title, post, postID, navigation, index, user, currentUser }) => {
+  console.log("editing");
+  console.log(postID);
   return user == currentUser ? (
     <View {...props} style={[styles.footerContainer]}>
       <Button
@@ -146,6 +152,7 @@ const Footer = ({ props, title, post, postID, navigation, index, user, currentUs
   )
 }
 
+
 const renderIcon = ({ props, navigation }) => (
   <TouchableWithoutFeedback
     onPress={() => {
@@ -165,24 +172,71 @@ export default showPosts = ({ navigation, route }) => {
   const index = route.params.index;
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
-  let postIDs = [];
-  let posts = [];
+  
 
   Firebase.database()
     .ref(types[index] + ' Posts/')
     .on('value', (snapshot) => {
       console.log('snapshot');
       console.log(snapshot);
+      let n = posts.length;
+      for (let i = 0; i < n; i++) {
+        posts.pop();
+        postIDs.pop();
+      }
+      let index = 0;
       snapshot.forEach(function (data) {
         console.log('data');
         console.log(data);
         console.log(data.toJSON().title);
         posts.push(data.toJSON());
         postIDs.push(data.key);
+        index++;
       });
-    });
+      console.log(postIDs);
+  });
 
   const currentUser = Firebase.auth().currentUser.providerData[0].email;
+
+  const renderItem = (info) => {
+    let i = info.index;
+    let item = info.item;
+    console.log("postid");
+    console.log(item.key);
+    return (
+      <Card
+        style={styles.card}
+        header={(props) => (
+          <Header {...props} title={item.title} user={item.user} edited={item.edited} createTime={item.createTimestamp} editTime={item.editTimestamp} />
+        )}
+        footer={(props) => (
+          <Footer
+            {...props}
+            title={item.title}
+            user={item.user}
+            postID={postIDs[i]}
+            post={item.post}
+            navigation={navigation}
+            index={index}
+            user={item.user}
+            currentUser={currentUser}
+          />
+        )}
+        onPress={() => {
+          navigation.navigate('ReadPost', {
+            title: item.title,
+            post: item.post,
+            postId: postIDs[i],
+            user: item.user,
+            index: index
+    
+          });
+        }}
+      >
+        <Text>{item.post}</Text>
+      </Card>
+    )
+  };
   
 
   return (
@@ -229,11 +283,6 @@ export default showPosts = ({ navigation, route }) => {
               {' '}
               {types[index]}{' '}
             </Text>
-            {/* <Button
-                            style={styles.button}
-                            appearance='ghost'
-                            accessoryARight={renderIcon}
-                        /> */}
             <Button
               status='basic'
               accessoryLeft = {plusIcon}
@@ -247,60 +296,15 @@ export default showPosts = ({ navigation, route }) => {
               {' '}
               Create{' '}
             </Button>
-
-            <React.Fragment>
-              {posts.map(function (post, i) {
-                let user = post.user;
-                console.log('user');
-                console.log(user);
-
-                let title = post.title;
-                console.log('title');
-                console.log(title);
-
-                let postText = post.post;
-                console.log('postText');
-                console.log(postText);
-
-                return (
-                  <Layout style={styles.container} level={'1'}>
-                    <TouchableOpacity>
-                      <Card
-                        style={styles.card}
-                        header={(props) => (
-                          <Header {...props} title={title} user={user} edited={post.edited} createTime={post.createTimestamp} editTime={post.editTimestamp} />
-                        )}
-                        footer={(props) => (
-                          <Footer
-                            {...props}
-                            title={title}
-                            user={user}
-                            postID={postIDs[i]}
-                            post={postText}
-                            navigation={navigation}
-                            index={index}
-                            user={user}
-                            currentUser={currentUser}
-                          />
-                        )}
-                        onPress={() => {
-                          navigation.navigate('ReadPost', {
-                            title: title,
-                            post: postText,
-                            postId: postIDs[i],
-                            user: user,
-                            index: index
-              
-                          });
-                        }}
-                      >
-                        <Text>{postText}</Text>
-                      </Card>
-                    </TouchableOpacity>
-                  </Layout>
-                );
-              })}
-            </React.Fragment>
+            <TouchableOpacity>
+              <List
+                style={{maxHeight : 0.6*screenHeight}}
+                data={posts}
+                ItemSeparatorComponent={Divider}
+                // renderItem={<renderItem navigation={navigation} currentUser={currentUser} postIDs={...postIDs} index={index}/>}
+                renderItem={renderItem}
+              />
+            </TouchableOpacity>       
             <Text style={{ marginBottom: 20 }}></Text>
           </ScrollView>
         </Layout>
