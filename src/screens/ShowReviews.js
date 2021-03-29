@@ -1,6 +1,6 @@
 import React, { useState, ReactDOM } from 'react';
 import { StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView, TextInput, KeyboardAvoidingView, View, TouchableOpacity} from 'react-native';
-import { Layout, Text, Button, Input, Select, SelectItem, IndexPath, Icon, Card } from '@ui-kitten/components';
+import { TopNavigationAction, List, Divider, Layout, Text, Button, Input, Select, SelectItem, IndexPath, Icon, Card } from '@ui-kitten/components';
 import { Dimensions, Alert } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
 import Firebase from '../../config/firebase';
@@ -26,6 +26,10 @@ const types = [
     '9',
     '10'
   ];
+
+  const reviews = [];
+  const reviewIDs = [];
+
 
 
   const trashIcon = (props) => (
@@ -145,24 +149,57 @@ export default showReviews = ({navigation, route }) => {
     const index = route.params.index;
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
-    let reviews = [];
-    let reviewIDs = [];
 
     Firebase.database()
     .ref(types[index] + ' Reviews/')
     .on('value', (snapshot) => {
       console.log('snapshot');
       console.log(snapshot);
+      let n = reviews.length;
+      for (let i = 0; i < n; i++) {
+        reviews.pop();
+        reviewIDs.pop();
+      }
+      let index = 0;
       snapshot.forEach(function (data) {
         console.log('data');
         reviews.push(data.toJSON());
         console.log(data);
         reviewIDs.push(data.key);
+        index++;
       });
     });
 
     const currentUser = Firebase.auth().currentUser.providerData[0].email;
        
+    const renderItem = (info) => {
+      let i = info.index;
+      let item = info.item;
+      return (
+        <Card
+          style={styles.card}
+          header={(props) => <Header {...props} title={item.review_title} user={item.user} date={item.date_time} rate={item.review_rate} edited={item.edited} edited_time={item.edited_time}/> }
+          footer={(props) => <Footer {...props} title={item.review_title} user={item.user} rate={item.review_rate} text={item.review_text} review_id={reviewIDs[i]} navigation={navigation} index={index} currentUser={currentUser}/>}
+          onPress={() => {
+            navigation.navigate('ReadReview', {
+              title: item.review_title,
+              user: item.user,
+              rate: item.review_rate,
+              text: item.review_text,
+              review_id: reviewIDs[i],
+              date: item.date_time,
+              index: index
+            });
+          }}
+        >
+          <Text>{item.review_text}</Text>
+        </Card>
+      )
+    };
+
+
+
+
     return (
         <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -214,48 +251,14 @@ export default showReviews = ({navigation, route }) => {
                         >
                         
                     </Button>
-                    <React.Fragment>
-                        {reviews.map(function(review, i) {
-
-                          let title = review.review_title;
-                          let user = review.user;
-                          let date = review.date_time;
-                          let rate = review.review_rate;
-                          let text = review.review_text;
-                          let edited = review.edited;
-                          let edited_time = review.edited_time;
-                                
-                                return  (
-                                    <Layout style={styles.container} level={'1'} > 
-                                        <TouchableOpacity>
-                                            <Card style={styles.card}
-                                            header={(props) => <Header {...props} title={title} user={user} date={date} rate={rate} edited={edited} edited_time={edited_time}/> }
-                                            footer={(props) => <Footer {...props} title={title} user={user} rate={rate} text={text} review_id={reviewIDs[i]} navigation={navigation} index={index} currentUser={currentUser}/>}
-                                            onPress={() => {
-                                                navigation.navigate('ReadReview', {
-                                                  title: title,
-                                                  user: user,
-                                                  rate: rate,
-                                                  text: text,
-                                                  review_id: reviewIDs[i],
-                                                  date: date,
-                                                  index: index
-                                                });
-                                              }}
-                                            >
-                                                <Text>
-                                                    {text}
-                                                </Text>
-                                            </Card>
-                                        </TouchableOpacity>
-                                    </Layout> 
-                                )
-                                
-                                // ReactDOM.render(card, document.getElementById('root'));
-    
-                            })
-                        }
-                    </React.Fragment>
+                    <TouchableOpacity>
+                      <List
+                        style={{maxHeight : 0.6*screenHeight}}
+                        data={reviews}
+                        ItemSeparatorComponent={Divider}
+                        renderItem={renderItem}
+                      />
+                    </TouchableOpacity> 
                     <Text style={{marginBottom: 20}}></Text>
                     </ScrollView>
                 </Layout>
