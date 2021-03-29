@@ -28,7 +28,7 @@ export default userReport = ({navigation}) =>  {
         />
         <Input
           style={styles.inputBox}
-          placeholder='The reason for your report.'
+          placeholder='The reason for your report. (Make this section as detailed as possible, including prior incidents of this nature where applicable)'
           value={reason}
           onChangeText={(reason) => setReason(reason)}
         />
