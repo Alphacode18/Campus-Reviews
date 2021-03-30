@@ -9,6 +9,7 @@ let isValid = false;
 
 app.get('/api/:id', (req, res, next) => {
   const email = req.params.id;
+  res.send('<h1>Weclome To The Purdue Directory Validation API</h1>');
   run(url, email, res);
   setTimeout(() => {
     res.json({ isValid: isValid });
