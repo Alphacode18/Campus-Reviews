@@ -7,9 +7,13 @@ const _port = 3000 || process.env.PORT;
 const url = 'https://www.purdue.edu/directory/';
 let isValid = false;
 
-app.get('/api/:id', (req, res, next) => {
-  const email = req.params.id;
+app.get('/', (req, res, next) => {
   res.send('<h1>Weclome To The Purdue Directory Validation API</h1>');
+  next();
+});
+
+app.get('/:id', (req, res, next) => {
+  const email = req.params.id;
   run(url, email, res);
   setTimeout(() => {
     res.json({ isValid: isValid });
