@@ -196,9 +196,34 @@ const Footer = ({ props, title, post, postID, navigation, index, user, currentUs
     <React.Fragment>
       <View style={{flexDirection: 'row', margin: 3,}}>
         <View {...props} style={{flexDirection: 'row', flex: 0.5, margin: 3}} >
-          <Button size='small' appearance='outline' accessoryLeft={upIcon}></Button>
+        <Button size='small' appearance='outline' accessoryLeft={upIcon} onPress={() => {
+              delete downvoteSet[currentAlias];
+              upvoteSet[currentAlias] = true;
+              let updates = {};
+              let newTotalVotes = Object.keys(upvoteSet).length - Object.keys(downvoteSet).length;
+              updates['/' + types[index] + ' Posts/' + postID + '/' + 'upvoteSet'] = upvoteSet;
+              updates['/' + types[index] + ' Posts/' + postID + '/' + 'downvoteSet'] = downvoteSet;
+              updates['/' + types[index] + ' Posts/' + postID + '/' + 'votes'] = newTotalVotes;
+              Firebase.database().ref().update(updates);
+              posts[i].upvoteSet = upvoteSet;
+              posts[i].downvoteSet = downvoteSet;
+              setTotalVotes(newTotalVotes);
+              
+          }}></Button>
           <Text style={{marginLeft: 5, marginRight: 5, marginTop: 5}}>{totalVotes}</Text>
-          <Button size='small' appearance='outline' accessoryLeft={downIcon}></Button>
+          <Button size='small' appearance='outline' accessoryLeft={downIcon} onPress={() => {
+              delete upvoteSet[currentAlias];
+              downvoteSet[currentAlias] = true;
+              let updates = {};
+              let newTotalVotes = Object.keys(upvoteSet).length - Object.keys(downvoteSet).length;
+              updates['/' + types[index] + ' Posts/' + postID + '/' + 'upvoteSet'] = upvoteSet;
+              updates['/' + types[index] + ' Posts/' + postID + '/' + 'downvoteSet'] = downvoteSet;
+              updates['/' + types[index] + ' Posts/' + postID + '/' + 'votes'] = newTotalVotes;
+              Firebase.database().ref().update(updates);
+              posts[i].upvoteSet = upvoteSet;
+              posts[i].downvoteSet = downvoteSet;
+              setTotalVotes(newTotalVotes);
+          }}></Button>
         </View>
         <View {...props} style={{flexDirection: 'row', flex: 0.5, justifyContent: 'flex-end', margin: 3, }}>
           <Button appearance='ghost'></Button>
