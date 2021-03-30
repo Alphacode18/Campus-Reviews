@@ -13,6 +13,10 @@ const editIcon = (props) => (
   <Icon {...props} name='edit-outline'/>
 );
 
+const trashIcon = (props) => (
+  <Icon {...props} name='trash-2'/>
+);
+
 const checkIcon = (props) => (
   <Icon {...props} name='checkmark-outline'/>
 );
@@ -76,6 +80,16 @@ export default CommentBody = ({commentText, postId, commentID, index, navigation
           accessoryLeft={editIcon}
           onPress= {() => {
               setEditing(true);
+          }}>
+          
+          </Button>
+
+          <Button
+          style={styles.footerControl}
+          size='small' 
+          accessoryLeft={trashIcon}
+          onPress= {() => {
+              //setEditing(true);
           }}>
           
           </Button>
