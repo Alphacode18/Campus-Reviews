@@ -10,6 +10,9 @@ import CommentBody from './CommentBody.js';
 
 const types = ['Dining', 'On-Campus Facilities', 'Classes', 'Professors'];
 
+let comments = []
+let commentIDs = []
+
 const BackIcon = (props) => (
   <Icon {...props} name='arrow-back'/>
 );
@@ -70,6 +73,48 @@ export default readPost = ({ route, navigation }) => {
     const [commentText, setCommentText] = useState('');
     const today = new Date();
     const time = today.getTime();
+
+    Firebase.database()
+    .ref('/' + types[index] + ' Posts/' + postId + '/Comments/')
+    .on('value', (snapshot) => {
+      console.log('snapshot');
+      console.log(snapshot);
+      let n = comments.length;
+      for (let i = 0; i < n; i++) {
+        comments.pop();
+        commentIDs.pop();
+      }
+      let index = 0;
+      snapshot.forEach(function (data) {
+        console.log('data');
+        console.log(data);
+        console.log(data.toJSON().title);
+        comments.push(data.toJSON());
+        commentIDs.push(data.key);
+        index++;
+      });
+      console.log(postId);
+    });
+
+    const currentUser = Firebase.auth().currentUser.providerData[0].email;
+
+    const renderItem = (info) => {
+      let i = info.index;
+      let item = info.item;
+      //console.log("postid");
+      //console.log(item.key);
+      return (
+        <React.Fragment>
+          <View style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center', marginTop: 8}}>
+            <Text style={styles.commentLeft} status='info' category='s1'>{item.user}</Text>
+            <Text style={styles.commentRight} category='s1' status='success'>{item.createTimestamp}</Text>
+           </View>
+          <CommentBody commentText={item.commentText} postId={postId} commentID={commentIDs[i]} index={index} navigation={navigation} title={title} user={user} post={post}/>
+           <Divider/>
+        </React.Fragment>
+
+      )
+    };
 
     return (
         <KeyboardAvoidingView
@@ -147,26 +192,20 @@ export default readPost = ({ route, navigation }) => {
                         Create{' '}
                       </Button>
                   </View>
-                    
-                    
-                  </React.Fragment>
-                  <React.Fragment>
-                    <View style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center', marginTop: 8}}>
-                      <Text style={styles.commentLeft} status='info' category='s1'>PurdueUser44</Text>
-                      <Text style={styles.commentRight} category='s1' status='success'>3h</Text>
-                    </View>
-                      <CommentBody commentText={'hello test'} postId={postId} commentID={'-MWLs-jPybGMi0BpfqyB'} index={index} navigation={navigation} title={title} user={user} post={post}/>
-                    <Divider/>
-                  </React.Fragment>
 
-                  <React.Fragment>
-                    <View style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center', marginTop: 8}}>
-                      <Text style={styles.commentLeft} status='info' category='s1'>JohnDoe77</Text>
-                      <Text style={styles.commentRight} category='s1' status='success'>1h</Text>
-                    </View>
-                    <Text style={{marginLeft: 16, marginBottom: 8}}>I disagree... meal swipes SUCK!</Text>
-                    <Divider/>
+                    
+                    
                   </React.Fragment>
+                  <TouchableOpacity>
+                    <List
+                      style={{maxHeight : 0.6*screenHeight}}
+                      data={comments}
+                      ItemSeparatorComponent={Divider}
+                      // renderItem={<renderItem navigation={navigation} currentUser={currentUser} postIDs={...postIDs} index={index}/>}
+                      renderItem={renderItem}
+                    />
+                  </TouchableOpacity>  
+                  
 
                 </ScrollView>
                 </Layout>
