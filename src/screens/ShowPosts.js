@@ -197,7 +197,7 @@ const Footer = ({ props, title, post, postID, navigation, index, user, currentUs
       <View style={{flexDirection: 'row', margin: 3,}}>
         <View {...props} style={{flexDirection: 'row', flex: 0.5, margin: 3}} >
           <Button size='small' appearance='outline' accessoryLeft={upIcon}></Button>
-          <Text style={{marginLeft: 5, marginRight: 5, marginTop: 5}}>100</Text>
+          <Text style={{marginLeft: 5, marginRight: 5, marginTop: 5}}>{totalVotes}</Text>
           <Button size='small' appearance='outline' accessoryLeft={downIcon}></Button>
         </View>
         <View {...props} style={{flexDirection: 'row', flex: 0.5, justifyContent: 'flex-end', margin: 3, }}>
