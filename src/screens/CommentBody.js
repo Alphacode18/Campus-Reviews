@@ -89,7 +89,22 @@ export default CommentBody = ({commentText, postId, commentID, index, navigation
           size='small' 
           accessoryLeft={trashIcon}
           onPress= {() => {
-              //setEditing(true);
+            Alert.alert(
+              "Confirm Deletion",
+              "Are you sure you want to delete this Comment?",
+              [
+              {
+                  text: "Cancel",
+                  onPress: () => console.log("Cancel Pressed"),
+                  style: "cancel"
+              },
+              { text: "Delete", onPress: () => {
+                  //Firebase.database().ref(types[index] + ' Posts/' + postID).remove();
+                  navigation.navigate('ShowPosts');
+              }}
+              ],
+              { cancelable: false }
+          );
           }}>
           
           </Button>
