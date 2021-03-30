@@ -39,6 +39,7 @@ const types = ['Dining', 'On-Campus Facilities', 'Classes', 'Professors'];
 let posts = [];
 let postIDs = [];
 
+
 const trashIcon = (props) => (
   <Icon {...props} name='trash-2'/>
 );
@@ -53,6 +54,14 @@ const plusIcon = (props) => (
 
 const BackIcon = (props) => (
   <Icon {...props} name='arrow-back'/>
+);
+
+const upIcon = (props) => (
+  <Icon {...props} name='arrow-upward-outline'/>
+);
+
+const downIcon = (props) => (
+  <Icon {...props} name='arrow-downward-outline'/>
 );
 
 const renderBackAction = () => (
@@ -95,62 +104,112 @@ const Header = ({ props, title, user, edited, editTime, createTime }) => {
   return (
     <View {...props} style={[styles.headerContainer]}>
       <Text category='h6'> {'   ' + title} </Text>
-      <Text category='s1'> {headerString} </Text>
+      <Text category='s5' style={{fontSize: 16}}> {headerString} </Text>
     </View>
   )
 };
 
-const Footer = ({ props, title, post, postID, navigation, index, user, currentUser }) => {
+const Footer = ({ props, title, post, postID, navigation, index, user, currentUser, upvoteSet, downvoteSet, i }) => {
+  let upvotes = Object.keys(upvoteSet).length;
+  let downvotes = Object.keys(downvoteSet).length;  
+  const [totalVotes, setTotalVotes] = useState(upvotes - downvotes);
+  let currentAlias = currentUser.substr(0, currentUser.indexOf("@"));
   console.log("editing");
   console.log(postID);
   return user == currentUser ? (
-    <View {...props} style={[styles.footerContainer]}>
-      <Button
-        style={styles.footerControl}
-        size='small'
-        accessoryLeft = {trashIcon}
-        status='basic' onPress={() => {
-            Alert.alert(
-                "Confirm Deletion",
-                "Are you sure you want to delete this post?",
-                [
-                {
-                    text: "Cancel",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
-                },
-                { text: "Delete", onPress: () => {
-                    Firebase.database().ref(types[index] + ' Posts/' + postID).remove();
-                    navigation.navigate('ShowPosts');
-                }}
-                ],
-                { cancelable: false }
-            );
-        }}>
-        </Button>
-        <Button
-        style={styles.footerControl}
-        size='small' 
-        accessoryLeft= {editIcon}
-        onPress= {() => {
-            navigation.navigate('EditPost', {
-                title: title,
-                post: post,
-                postID: postID,
-                index: index
-            });
-        }}>
-        </Button>
-    </View>
+    <React.Fragment>
+      <View style={{flexDirection: 'row', margin: 3,}}>
+        <View {...props} style={{flexDirection: 'row', flex: 0.5, margin: 3}} >
+          <Button size='small' appearance='outline' accessoryLeft={upIcon} onPress={() => {
+              delete downvoteSet[currentAlias];
+              upvoteSet[currentAlias] = true;
+              let updates = {};
+              let newTotalVotes = Object.keys(upvoteSet).length - Object.keys(downvoteSet).length;
+              updates['/' + types[index] + ' Posts/' + postID + '/' + 'upvoteSet'] = upvoteSet;
+              updates['/' + types[index] + ' Posts/' + postID + '/' + 'downvoteSet'] = downvoteSet;
+              updates['/' + types[index] + ' Posts/' + postID + '/' + 'votes'] = newTotalVotes;
+              Firebase.database().ref().update(updates);
+              posts[i].upvoteSet = upvoteSet;
+              posts[i].downvoteSet = downvoteSet;
+              setTotalVotes(newTotalVotes);
+              
+          }}></Button>
+          <Text style={{marginLeft: 5, marginRight: 5, marginTop: 5}}>{totalVotes}</Text>
+          <Button size='small' appearance='outline' accessoryLeft={downIcon} onPress={() => {
+              delete upvoteSet[currentAlias];
+              downvoteSet[currentAlias] = true;
+              let updates = {};
+              let newTotalVotes = Object.keys(upvoteSet).length - Object.keys(downvoteSet).length;
+              updates['/' + types[index] + ' Posts/' + postID + '/' + 'upvoteSet'] = upvoteSet;
+              updates['/' + types[index] + ' Posts/' + postID + '/' + 'downvoteSet'] = downvoteSet;
+              updates['/' + types[index] + ' Posts/' + postID + '/' + 'votes'] = newTotalVotes;
+              Firebase.database().ref().update(updates);
+              posts[i].upvoteSet = upvoteSet;
+              posts[i].downvoteSet = downvoteSet;
+              setTotalVotes(newTotalVotes);
+          }}></Button>
+        </View>
+        <View {...props} style={{flexDirection: 'row', justifyContent: 'flex-end', flex: 0.5, margin: 3}}>
+          <Button
+            style={styles.footerControl}
+            size='small'
+            accessoryLeft = {trashIcon}
+            status='basic' onPress={() => {
+                Alert.alert(
+                    "Confirm Deletion",
+                    "Are you sure you want to delete this post?",
+                    [
+                    {
+                        text: "Cancel",
+                        onPress: () => console.log("Cancel Pressed"),
+                        style: "cancel"
+                    },
+                    { text: "Delete", onPress: () => {
+                        Firebase.database().ref(types[index] + ' Posts/' + postID).remove();
+                        navigation.navigate('ShowPosts');
+                    }}
+                    ],
+                    { cancelable: false }
+                );
+            }}>
+          </Button>
+          <Button
+            style={styles.footerControl}
+            size='small' 
+            accessoryLeft= {editIcon}
+            
+            onPress= {() => {
+                navigation.navigate('EditPost', {
+                    title: title,
+                    post: post,
+                    postID: postID,
+                    index: index
+                });
+            }}>
+          </Button>
+        </View>
+      </View>
+      
+    </React.Fragment>
+    
   ) : (
-    <View {...props} style={[styles.footerContainer]}>
-      <Button Button appearance='ghost'>
-      </Button>
-      <Button appearance='ghost'>
-      </Button>
-    </View>
+    <React.Fragment>
+      <View style={{flexDirection: 'row', margin: 3,}}>
+        <View {...props} style={{flexDirection: 'row', flex: 0.5, margin: 3}} >
+          <Button size='small' appearance='outline' accessoryLeft={upIcon}></Button>
+          <Text style={{marginLeft: 5, marginRight: 5, marginTop: 5}}>100</Text>
+          <Button size='small' appearance='outline' accessoryLeft={downIcon}></Button>
+        </View>
+        <View {...props} style={{flexDirection: 'row', flex: 0.5, justifyContent: 'flex-end', margin: 3, }}>
+          <Button appearance='ghost'></Button>
+          <Button appearance='ghost'></Button>
+        </View>
+      </View>
+      
+    </React.Fragment>
+    
   )
-}
+};
 
 
 const renderIcon = ({ props, navigation }) => (
@@ -196,7 +255,8 @@ export default showPosts = ({ navigation, route }) => {
       console.log(postIDs);
   });
 
-  const currentUser = Firebase.auth().currentUser.providerData[0].email;
+  const currentUser = (Firebase.auth().currentUser.providerData[0].email).toString();
+  // currentUser = currentUser.substr(0, currentUser.indexOf("@"));
 
   const renderItem = (info) => {
     let i = info.index;
@@ -220,6 +280,9 @@ export default showPosts = ({ navigation, route }) => {
             index={index}
             user={item.user}
             currentUser={currentUser}
+            upvoteSet={item.upvoteSet}
+            downvoteSet={item.downvoteSet}
+            i={i}
           />
         )}
         onPress={() => {
@@ -237,6 +300,7 @@ export default showPosts = ({ navigation, route }) => {
       </Card>
     )
   };
+
   
 
   return (

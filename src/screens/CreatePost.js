@@ -77,7 +77,10 @@ export default createPost = ({ navigation, route }) => {
                                         user: currentUser,
                                         createTimestamp: time,
                                         edited: false,
-                                        editTimestamp: time
+                                        editTimestamp: time,
+                                        votes: 0,
+                                        upvoteSet: {temp: true},
+                                        downvoteSet: {temp: true}
                                     });
                                     
                                     navigation.navigate('ShowPosts', {

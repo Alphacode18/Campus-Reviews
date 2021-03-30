@@ -18,11 +18,11 @@ const plusIcon = (props) => (
   <Icon {...props} name='plus'/>
 );
 
-const UpArrowIcon = (props) => (
+const upIcon = (props) => (
   <Icon {...props} name='arrow-upward-outline'/>
 );
 
-const DownArrowIcon = (props) => (
+const downIcon = (props) => (
   <Icon {...props} name='arrow-downward-outline'/>
 );
 
@@ -49,13 +49,18 @@ const Header = ({props, title}) => (
 
 const Footer = ({props, user}) => (
     <View {...props} style={[styles.footerContainer]}>
-        <View style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center'}}>
-            <Button size='small' accessoryLeft={UpArrowIcon}></Button>
-            <Text>300</Text>
-            <Button size='small' accessoryLeft={DownArrowIcon}></Button>
-
-            <Text status='info' category='s1'>by: {user}</Text>
+        <View style={{flexDirection: 'row', margin: 3,}}>
+          <View {...props} style={{flexDirection: 'row', flex: 0.4, margin: 3}} >
+            <Button size='small' appearance='outline' accessoryLeft={upIcon}></Button>
+            <Text style={{marginLeft: 5, marginRight: 5, marginTop: 5}}>100</Text>
+            <Button size='small' appearance='outline' accessoryLeft={downIcon}></Button>
+          </View>
+          <View {...props} style={{flexDirection: 'row', justifyContent: 'flex-left', flex: 0.6, margin: 3}}>
+            <Text status='info' category='s1' style={{marginLeft: 5, marginRight: 10, marginTop: 5}}>by: {user}</Text>
             <Text status='success' category='s1'>9d</Text>
+          </View>
+
+            
 
         </View>
     </View>
