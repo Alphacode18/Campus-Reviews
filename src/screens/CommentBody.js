@@ -72,20 +72,23 @@ export default CommentBody = ({commentText, postId, commentID, index, navigation
 
     ) : (
       <React.Fragment>
-        <View style={{flexDirection:'row',justifyContent:'space-between', marginTop: 8}}>
-          <Text style={{marginLeft: 16, marginBottom: 8}}>{editCommentText}</Text>
+        <View style={{flexDirection:'row',justifyContent:'flex-end', marginTop: 10, marginBottom: 10}}>
+          <Text style={{marginLeft: 16, marginBottom: 10, marginRight:190}}>{editCommentText}</Text>
           <Button
-          style={styles.footerControl}
+          style={{
+            marginRight:10
+          }
+            
+          }
           size='small' 
           accessoryLeft={editIcon}
           onPress= {() => {
               setEditing(true);
           }}>
-          
           </Button>
 
           <Button
-          style={styles.footerControl}
+          
           size='small' 
           accessoryLeft={trashIcon}
           onPress= {() => {
@@ -99,8 +102,14 @@ export default CommentBody = ({commentText, postId, commentID, index, navigation
                   style: "cancel"
               },
               { text: "Delete", onPress: () => {
-                  //Firebase.database().ref(types[index] + ' Posts/' + postID).remove();
-                  navigation.navigate('ShowPosts');
+                  Firebase.database().ref(types[index] + ' Posts/' + postId + '/Comments/' + commentID).remove();
+                  navigation.navigate('NewLoading', {
+                    title: title,
+                    post: post,
+                    postId: postId,
+                    user: user,
+                    index: index
+                  });
               }}
               ],
               { cancelable: false }
@@ -133,5 +142,8 @@ export default CommentBody = ({commentText, postId, commentID, index, navigation
     },
     commentRight: {
       margin: 8,
+    },
+    footerControl: {
+      marginHorizontal: 2,
     },
   });
