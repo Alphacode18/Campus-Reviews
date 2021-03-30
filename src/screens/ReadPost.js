@@ -13,6 +13,27 @@ const types = ['Dining', 'On-Campus Facilities', 'Classes', 'Professors'];
 let comments = []
 let commentIDs = []
 
+const getDisplayTime = (curTime, time) => {
+  const diff = Math.floor((curTime - time) / 1000);
+  console.log('getdisplay');
+  console.log(curTime);
+  console.log(time);
+  console.log(diff);
+  let ret = '';
+
+  if (diff < 3600) {
+    ret = Math.floor(diff/60) + 'm';
+  } else if (diff < 24*3600) {
+    ret = Math.floor(diff/3600) + 'h';
+  } else if (diff < 365 * 24 * 3600) {
+    ret = Math.floor(diff/(24*3600)) + 'd'
+  } else {
+    ret = Math.floor(diff/(365 * 24 * 3600)) + 'y';
+  }
+  console.log(ret);
+  return ret;
+}
+
 const BackIcon = (props) => (
   <Icon {...props} name='arrow-back'/>
 );
@@ -103,11 +124,19 @@ export default readPost = ({ route, navigation }) => {
       let item = info.item;
       //console.log("postid");
       //console.log(item.key);
+      const today = new Date();
+      const curTime = today.getTime();
+      const editDisplayTime = getDisplayTime(curTime, item.editTimestamp);
+      const createDisplayTime = getDisplayTime(curTime, item.createTimestamp);
+      let headerString = headerString = createDisplayTime;
+      if (item.edited) {
+        headerString += ' | ' + "(edited " + editDisplayTime + ")";
+      } 
       return (
         <React.Fragment>
           <View style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center', marginTop: 8}}>
             <Text style={styles.commentLeft} status='info' category='s1'>{item.user}</Text>
-            <Text style={styles.commentRight} category='s1' status='success'>{item.createTimestamp}</Text>
+            <Text style={styles.commentRight} category='s1' status='success'>{headerString}</Text>
            </View>
           <CommentBody commentText={item.commentText} postId={postId} commentID={commentIDs[i]} index={index} navigation={navigation} title={title} user={user} post={post}/>
            <Divider/>
