@@ -1,11 +1,14 @@
 const express = require('express');
 const puppeteer = require('puppeteer');
+const cors = require('cors');
 
 const app = express();
 
 const _port = 3000 || process.env.PORT;
 const url = 'https://www.purdue.edu/directory/';
 let isValid = false;
+
+app.use(cors());
 
 app.get('/', (req, res, next) => {
   res.send('<h1>Weclome To The Purdue Directory Validation API</h1>');
@@ -22,11 +25,7 @@ app.get('/:id', (req, res, next) => {
 });
 
 async function run(url, email) {
-  const browser = await puppeteer.launch({
-    'args' : [
-    '--no-sandbox',
-    '--disable-setuid-sandbox']
-  });
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(url);
   await page.type('input[name=SearchString]', email);
@@ -41,3 +40,4 @@ async function run(url, email) {
 }
 
 app.listen(_port);
+
