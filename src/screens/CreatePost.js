@@ -25,6 +25,8 @@ export default createPost = ({ navigation, route }) => {
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
     const displayValue = types[selectedIndex.row];
+    const today = new Date();
+    const time = today.getTime();
         
     return (
         <KeyboardAvoidingView
@@ -72,7 +74,13 @@ export default createPost = ({ navigation, route }) => {
                                     Firebase.database().ref('/' + types[selectedIndex.row] + ' Posts').push({
                                         title: title,
                                         post: post,
-                                        user: currentUser
+                                        user: currentUser,
+                                        createTimestamp: time,
+                                        edited: false,
+                                        editTimestamp: time,
+                                        votes: 0,
+                                        upvoteSet: {temp: true},
+                                        downvoteSet: {temp: true}
                                     });
                                     
                                     navigation.navigate('ShowPosts', {

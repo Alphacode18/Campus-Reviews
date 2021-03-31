@@ -38,22 +38,18 @@ export default loading = ({ navigation, route }) => {
   const db = Firebase.database();
   let posts = [];
   let fields = [];
-  // readData(diningPosts);
+
   setTimeout(() => {
     db.ref(types[index] + ' ' + postType).on('value', (snapshot) => {
-        console.log('snapshot');
-        console.log(snapshot);
         snapshot.forEach(function (data) {
-            console.log('data');
-            console.log(data);
             posts.push(data.key);
             db.ref(types[index] + ' ' + postType + '/' + data.key).on('value', (snapshot) => {
-                console.log(types[index] + ' ' + postType + '/' + data.key);
                 snapshot.forEach(function (field) {
                     fields.push(field);
                 });
             });
         })
+
         navigation.navigate('Show' + postType, {
             index: index,
         });

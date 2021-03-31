@@ -7,7 +7,7 @@ import ReadPost from '../src/screens/ReadPost';
 import CreatePost from '../src/screens/CreatePost';
 import Loading from '../src/screens/Loading';
 import Buffer from '../src/screens/Buffer';
-import NewBuffer from '../src/screens/NewBuffer';
+import NewLoading from '../src/screens/NewLoading';
 import CreateReview from '../src/screens/CreateReview.js';
 import EditReview from '../src/screens/EditReview.js';
 import ShowReviews from '../src/screens/ShowReviews.js';
@@ -70,11 +70,10 @@ function profNavigator() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name='NewBuffer'
-          component={NewBuffer}
-          initialParams={{ index: 0 }}
+          name='NewLoading'
+          component={NewLoading}
           options={{ headerShown: false }}
-      />
+        />
     </Stack.Navigator>
   );
 }
