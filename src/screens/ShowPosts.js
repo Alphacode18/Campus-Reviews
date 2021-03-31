@@ -22,8 +22,7 @@ import {
   Icon,
   Card,
   TopNavigation,
-  TopNavigationAction
-
+  TopNavigationAction,
 } from '@ui-kitten/components';
 import InputScrollView from 'react-native-input-scroll-view';
 import { Dimensions } from 'react-native';
@@ -35,25 +34,15 @@ import { render } from 'react-dom';
 
 const types = ['Dining', 'On-Campus Facilities', 'Classes', 'Professors'];
 
-const trashIcon = (props) => (
-  <Icon {...props} name='trash-2'/>
-);
+const trashIcon = (props) => <Icon {...props} name='trash-2' />;
 
-const editIcon = (props) => (
-  <Icon {...props} name='edit-outline'/>
-);
+const editIcon = (props) => <Icon {...props} name='edit-outline' />;
 
-const plusIcon = (props) => (
-  <Icon {...props} name='plus'/>
-);
+const plusIcon = (props) => <Icon {...props} name='plus' />;
 
-const BackIcon = (props) => (
-  <Icon {...props} name='arrow-back'/>
-);
+const BackIcon = (props) => <Icon {...props} name='arrow-back' />;
 
-const renderBackAction = () => (
-  <TopNavigationAction icon={BackIcon}/>
-);
+const renderBackAction = () => <TopNavigationAction icon={BackIcon} />;
 
 const Header = ({ props, title, user }) => (
   <View {...props} style={[styles.headerContainer]}>
@@ -62,55 +51,68 @@ const Header = ({ props, title, user }) => (
   </View>
 );
 
-const Footer = ({ props, title, post, postID, navigation, index, user, currentUser }) => {
+const Footer = ({
+  props,
+  title,
+  post,
+  postID,
+  navigation,
+  index,
+  user,
+  currentUser,
+}) => {
   return user == currentUser ? (
     <View {...props} style={[styles.footerContainer]}>
       <Button
         style={styles.footerControl}
         size='small'
-        accessoryLeft = {trashIcon}
-        status='basic' onPress={() => {
-            Alert.alert(
-                "Confirm Deletion",
-                "Are you sure you want to delete this post?",
-                [
-                {
-                    text: "Cancel",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
+        accessoryLeft={trashIcon}
+        status='basic'
+        onPress={() => {
+          Alert.alert(
+            'Confirm Deletion',
+            'Are you sure you want to delete this post?',
+            [
+              {
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+              },
+              {
+                text: 'Delete',
+                onPress: () => {
+                  Firebase.database()
+                    .ref(types[index] + ' Posts/' + postID)
+                    .remove();
+                  navigation.navigate('ShowPosts');
                 },
-                { text: "Delete", onPress: () => {
-                    Firebase.database().ref(types[index] + ' Posts/' + postID).remove();
-                    navigation.navigate('ShowPosts');
-                }}
-                ],
-                { cancelable: false }
-            );
-        }}>
-        </Button>
-        <Button
+              },
+            ],
+            { cancelable: false }
+          );
+        }}
+      ></Button>
+      <Button
         style={styles.footerControl}
-        size='small' 
-        accessoryLeft= {editIcon}
-        onPress= {() => {
-            navigation.navigate('EditPost', {
-                title: title,
-                post: post,
-                postID: postID,
-                index: index
-            });
-        }}>
-        </Button>
+        size='small'
+        accessoryLeft={editIcon}
+        onPress={() => {
+          navigation.navigate('EditPost', {
+            title: title,
+            post: post,
+            postID: postID,
+            index: index,
+          });
+        }}
+      ></Button>
     </View>
   ) : (
     <View {...props} style={[styles.footerContainer]}>
-      <Button Button appearance='ghost'>
-      </Button>
-      <Button appearance='ghost'>
-      </Button>
+      <Button Button appearance='ghost'></Button>
+      <Button appearance='ghost'></Button>
     </View>
-  )
-}
+  );
+};
 
 const renderIcon = ({ props, navigation }) => (
   <TouchableWithoutFeedback
@@ -125,7 +127,6 @@ const renderIcon = ({ props, navigation }) => (
     <Icon {...props} name={'plus-outline'} />
   </TouchableWithoutFeedback>
 );
-
 
 export default showPosts = ({ navigation, route }) => {
   const index = route.params.index;
@@ -153,19 +154,12 @@ export default showPosts = ({ navigation, route }) => {
   console.log(posts);
 
   return (
-
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <Layout style={styles.container} level={'1'}>
-
-          
-          
-        
-
-
           <ScrollView
             contentContainerStyle={{
               flexGrow: 1,
@@ -174,25 +168,17 @@ export default showPosts = ({ navigation, route }) => {
               justifyContent: 'center',
             }}
           >
-
-          <Button style={{
-
-              marginTop: 50
-         }
-
-            }
-            title='Back'
-
-            accessoryLeft={BackIcon}
-            onPress = { () => {
-                navigation.navigate('Buffer')
-            }
-                
-            }
+            <Button
+              style={{
+                marginTop: 50,
+              }}
+              title='Back'
+              accessoryLeft={BackIcon}
+              onPress={() => {
+                navigation.navigate('Buffer');
+              }}
             />
 
-            
-          
             <Text
               style={{
                 marginTop: 50,
@@ -211,11 +197,11 @@ export default showPosts = ({ navigation, route }) => {
                         /> */}
             <Button
               status='basic'
-              accessoryLeft = {plusIcon}
+              accessoryLeft={plusIcon}
               onPress={() => {
                 navigation.navigate('CreatePost', {
                   index: index,
-                  currentUser: currentUser
+                  currentUser: currentUser,
                 });
               }}
             >
@@ -280,8 +266,7 @@ export default showPosts = ({ navigation, route }) => {
                             post: postText,
                             postId: post,
                             user: user,
-                            index: index
-              
+                            index: index,
                           });
                         }}
                       >

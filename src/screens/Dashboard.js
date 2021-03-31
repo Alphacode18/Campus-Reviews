@@ -5,6 +5,7 @@ import {
   BottomNavigation,
   BottomNavigationTab,
   Icon,
+  Layout,
 } from '@ui-kitten/components';
 import ProfessorsNavigator from '../../navigation/ProfNavigator';
 import ClassNavigator from '../../navigation/ClassNavigator';
@@ -21,24 +22,26 @@ const DiningIcon = (props) => <Icon {...props} name='car-outline' />;
 const FacilitiesIcon = (props) => <Icon {...props} name='globe-outline' />;
 
 const BottomTabBar = ({ navigation, state }) => (
-  <BottomNavigation
-    selectedIndex={state.index}
-    onSelect={(index) => navigation.navigate(state.routeNames[index])}
-    style={{ marginBottom: 25 }}
-  >
-    <BottomNavigationTab title='PROF' icon={ProfessorIcon}  />
-    <BottomNavigationTab title='CLASS' icon={ClassIcon} />
-    <BottomNavigationTab title='FACILITES' icon={FacilitiesIcon} />
-    <BottomNavigationTab title='DINE' icon={DiningIcon} />
-    <BottomNavigationTab title='PROFILE' icon={PersonIcon} />
-  </BottomNavigation>
+  <Layout>
+    <BottomNavigation
+      selectedIndex={state.index}
+      onSelect={(index) => navigation.navigate(state.routeNames[index])}
+      style={{ marginBottom: 25 }}
+    >
+      <BottomNavigationTab title='PROF' icon={ProfessorIcon} />
+      <BottomNavigationTab title='CLASS' icon={ClassIcon} />
+      <BottomNavigationTab title='FACILITES' icon={FacilitiesIcon} />
+      <BottomNavigationTab title='DINE' icon={DiningIcon} />
+      <BottomNavigationTab title='PROFILE' icon={PersonIcon} />
+    </BottomNavigation>
+  </Layout>
 );
 
 const TabNavigator = () => (
   <Navigator tabBar={(props) => <BottomTabBar {...props} />}>
-    <Screen name='Professors' component={ProfessorsNavigator} index={3}/>
-    <Screen name='Classes' component={ClassNavigator} index={2}/>
-    <Screen name='Facilities' component={FacilitiesNavigator} index={1}/>
+    <Screen name='Professors' component={ProfessorsNavigator} index={3} />
+    <Screen name='Classes' component={ClassNavigator} index={2} />
+    <Screen name='Facilities' component={FacilitiesNavigator} index={1} />
     <Screen name='Dining' component={DiningNavigator} index={0} />
     <Screen name='Profile' component={ProfileScreen} />
   </Navigator>
