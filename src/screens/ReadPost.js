@@ -10,6 +10,14 @@ import CommentBody from './CommentBody.js';
 
 const types = ['Dining', 'On-Campus Facilities', 'Classes', 'Professors'];
 
+const upIcon = (props) => (
+  <Icon {...props} name='arrow-upward-outline'/>
+);
+
+const downIcon = (props) => (
+  <Icon {...props} name='arrow-downward-outline'/>
+);
+
 const BackIcon = (props) => (
   <Icon {...props} name='arrow-back'/>
 );
