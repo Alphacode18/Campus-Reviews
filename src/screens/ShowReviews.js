@@ -29,16 +29,6 @@ const types = [
 
   const reviews = [];
   const reviewIDs = [];
-
-
-
-  const upIcon = (props) => (
-    <Icon {...props} name='arrow-upward-outline'/>
-  );
-  
-  const downIcon = (props) => (
-    <Icon {...props} name='arrow-downward-outline'/>
-  );
   
   const trashIcon = (props) => (
     <Icon {...props} name='trash-2'/>
@@ -103,15 +93,36 @@ const Header = ({props, title, user, date, rate, edited, edited_time}) => {
 const Footer = ({navigation, props, title, user, rate, text, review_id, index, currentUser, upvoteSet, downvoteSet, i}) => {
   let upvotes = Object.keys(upvoteSet).length;
   let downvotes = Object.keys(downvoteSet).length;  
+  let dir = 0;
   const [totalVotes, setTotalVotes] = useState(upvotes - downvotes);
-  let currentAlias = currentUser.substr(0, currentUser.indexOf("@"));  
+  let voteString = totalVotes + "";
+  if (totalVotes >= 1000) {
+    voteString = (totalVotes/1000).toFixed(1) + "k";
+  }
+  let currentAlias = currentUser.substr(0, currentUser.indexOf("@"));
+  if (upvoteSet[currentAlias] == true)
+  dir = 1;
+  if (downvoteSet[currentAlias] == true)
+    dir = -1;
+
+  const upIcon = (props) => (
+    <Icon {...props} name='arrow-upward-outline'/>
+  );
+
+  const downIcon = (props) => (
+    <Icon {...props} name='arrow-downward-outline'/>
+  );
   return user == currentUser ? (
     <React.Fragment>
       <View style={{flexDirection: 'row', margin: 3,}}>
         <View {...props} style={{flexDirection: 'row', flex: 0.5, margin: 3}} >
-          <Button size='small' appearance='outline' accessoryLeft={upIcon} onPress={() => {
+        <Button size={dir > 0 ? 'small' : 'small'} status={dir > 0 ? 'warning' : 'basic'} appearance={dir > 0 ? 'outline' : 'outline'} accessoryLeft={upIcon} onPress={() => {
               delete downvoteSet[currentAlias];
               upvoteSet[currentAlias] = true;
+              if (dir == 1) {
+                delete upvoteSet[currentAlias];
+                dir = 0;
+              }
               let updates = {};
               let newTotalVotes = Object.keys(upvoteSet).length - Object.keys(downvoteSet).length;
               updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'upvoteSet'] = upvoteSet;
@@ -123,10 +134,14 @@ const Footer = ({navigation, props, title, user, rate, text, review_id, index, c
               setTotalVotes(newTotalVotes);
 
           }}></Button>
-          <Text style={{marginLeft: 5, marginRight: 5, marginTop: 5}}>{totalVotes}</Text>
-          <Button size='small' appearance='outline' accessoryLeft={downIcon} onPress={() => {
+          <Text style={{marginLeft: 5, marginRight: 5, marginTop: 5}}>{voteString}</Text>
+          <Button size={dir > 0 ? 'small' : 'small'} status={dir < 0 ? 'warning' : 'basic'} appearance={dir > 0 ? 'outline' : 'outline'} accessoryLeft={downIcon} onPress={() => {
               delete upvoteSet[currentAlias];
               downvoteSet[currentAlias] = true;
+              if (dir == -1) {
+                delete downvoteSet[currentAlias];
+                dir = 0;
+              }
               let updates = {};
               let newTotalVotes = Object.keys(upvoteSet).length - Object.keys(downvoteSet).length;
               updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'upvoteSet'] = upvoteSet;
@@ -183,9 +198,13 @@ const Footer = ({navigation, props, title, user, rate, text, review_id, index, c
       <React.Fragment>
       <View style={{flexDirection: 'row', margin: 3,}}>
         <View {...props} style={{flexDirection: 'row', flex: 0.5, margin: 3}} >
-        <Button size='small' appearance='outline' accessoryLeft={upIcon} onPress={() => {
+        <Button size={dir > 0 ? 'small' : 'small'} status={dir > 0 ? 'warning' : 'basic'} appearance={dir > 0 ? 'outline' : 'outline'} accessoryLeft={upIcon} onPress={() => {
               delete downvoteSet[currentAlias];
               upvoteSet[currentAlias] = true;
+              if (dir == 1) {
+                delete upvoteSet[currentAlias];
+                dir = 0;
+              }
               let updates = {};
               let newTotalVotes = Object.keys(upvoteSet).length - Object.keys(downvoteSet).length;
               updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'upvoteSet'] = upvoteSet;
@@ -197,10 +216,14 @@ const Footer = ({navigation, props, title, user, rate, text, review_id, index, c
               setTotalVotes(newTotalVotes);
 
           }}></Button>
-          <Text style={{marginLeft: 5, marginRight: 5, marginTop: 5}}>{totalVotes}</Text>
-          <Button size='small' appearance='outline' accessoryLeft={downIcon} onPress={() => {
+          <Text style={{marginLeft: 5, marginRight: 5, marginTop: 5}}>{voteString}</Text>
+          <Button size={dir < 0 ? 'small' : 'small'} status={dir < 0 ? 'warning' : 'basic'} appearance={dir < 0 ? 'outline' : 'outline'} accessoryLeft={downIcon} onPress={() => {
               delete upvoteSet[currentAlias];
               downvoteSet[currentAlias] = true;
+              if (dir == -1) {
+                delete downvoteSet[currentAlias];
+                dir = 0;
+              }
               let updates = {};
               let newTotalVotes = Object.keys(upvoteSet).length - Object.keys(downvoteSet).length;
               updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'upvoteSet'] = upvoteSet;
@@ -224,14 +247,24 @@ const Footer = ({navigation, props, title, user, rate, text, review_id, index, c
 
 export default showReviews = ({navigation, route }) => {
     const index = route.params.index;
+    let {tempReviews, tempReviewIDs} = route.params;
+    if (tempReviews != undefined && tempReviews.length > 0) {
+      reviews = tempReviews;
+      reviewIDs = tempReviewIDs;
+    }
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
+    const ref = Firebase.database().ref(types[index] + ' Reviews/');
 
-    Firebase.database()
-    .ref(types[index] + ' Reviews/')
-    .on('value', (snapshot) => {
-      console.log('snapshot');
-      console.log(snapshot);
+    let reviewIDsToReviewsMap = new Map();
+    if (tempReviews != undefined && tempReviews.length > 0) {
+      for (let idx = 0; idx < tempReviews.length; idx++) {
+        reviewIDsToReviewsMap[reviewIDs[idx]] = reviews[idx];
+      }
+    }
+
+
+    ref.on('value', (snapshot) => {
       let n = reviews.length;
       for (let i = 0; i < n; i++) {
         reviews.pop();
@@ -239,13 +272,32 @@ export default showReviews = ({navigation, route }) => {
       }
       let index = 0;
       snapshot.forEach(function (data) {
-        console.log('data');
         reviews.push(data.toJSON());
-        console.log(data);
         reviewIDs.push(data.key);
+        reviewIDsToReviewsMap[reviewIDs[index]] = reviews[index];
         index++;
       });
     });
+    ref.off();
+
+    console.log(reviewIDsToReviewsMap[reviewIDs[0]]);
+    reviewIDs.sort(function(b2,a2) {
+      let b = reviewIDsToReviewsMap[b2];
+      let a = reviewIDsToReviewsMap[a2];
+      if(a.votes == b.votes) {
+        return a.createTimestamp > b.createTimestamp ? 1 : a.createTimestamp < b.createTimestamp ? -1 : 0;
+      }
+  
+      return a.votes > b.votes ? 1 : -1;
+    });;
+  
+    reviews.sort(function(b,a) {
+      if(a.votes == b.votes) {
+        return a.createTimestamp > b.createTimestamp ? 1 : a.createTimestamp < b.createTimestamp ? -1 : 0;
+      }
+  
+      return a.votes > b.votes ? 1 : -1;
+    });;
 
     const currentUser = (Firebase.auth().currentUser.providerData[0].email).toString();
        
@@ -265,7 +317,13 @@ export default showReviews = ({navigation, route }) => {
               text: item.review_text,
               review_id: reviewIDs[i],
               date: item.date_time,
-              index: index
+              index: index,
+              currentUser: currentUser,
+              upvoteSet: posts[i].upvoteSet,
+              downvoteSet: posts[i].downvoteSet,
+              i: i,
+              reviews: reviews,
+              reviewIDs: reviewIDs
             });
           }}
         >
@@ -282,27 +340,19 @@ export default showReviews = ({navigation, route }) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}> 
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-
                 <Layout style={styles.container} level={'1'} > 
-
-
-                    
                     <ScrollView contentContainerStyle={{flexGrow : 1, width : screenWidth, alignItems: 'center', justifyContent: 'center'}}>
 
-
                     <Button style={{
-
                         marginTop: 50
                     }
-                        
+                      
                     }
                         title='Back'
-                        
                         accessoryLeft={BackIcon}
                         onPress = { () => {
                             navigation.navigate('Buffer')
                         }
-                            
                         }
                     />
                     <Text
