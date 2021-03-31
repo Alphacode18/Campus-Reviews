@@ -48,6 +48,29 @@ const BackIcon = (props) => <Icon {...props} name='arrow-back' />;
 
 const renderBackAction = () => <TopNavigationAction icon={BackIcon} />;
 
+const renderHeader = () => (
+  <Layout
+    style={{
+      backgroundColor: '#fff',
+      padding: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}
+  >
+    <Input
+      autoCapitalize='none'
+      status='info'
+      placeholder='Search'
+      style={{
+        borderRadius: 25,
+        borderColor: '#333',
+        backgroundColor: '#fff',
+      }}
+      textStyle={{ color: '#000' }}
+    />
+  </Layout>
+);
+
 const getDisplayTime = (curTime, time) => {
   const diff = Math.floor((curTime - time) / 1000);
   let ret = '';
@@ -517,6 +540,7 @@ export default showPosts = ({ navigation, route }) => {
                 ItemSeparatorComponent={Divider}
                 // renderItem={<renderItem navigation={navigation} currentUser={currentUser} postIDs={...postIDs} index={index}/>}
                 renderItem={renderItem}
+                ListHeaderComponent={renderHeader}
               />
             </TouchableOpacity>
             <Text style={{ marginBottom: 20 }}></Text>
