@@ -56,13 +56,7 @@ const BackIcon = (props) => (
   <Icon {...props} name='arrow-back'/>
 );
 
-const upIcon = (props) => (
-  <Icon {...props} name='arrow-upward-outline'/>
-);
 
-const downIcon = (props) => (
-  <Icon {...props} name='arrow-downward-outline'/>
-);
 
 const renderBackAction = () => (
   <TopNavigationAction icon={BackIcon}/>
@@ -112,17 +106,38 @@ const Header = ({ props, title, user, edited, editTime, createTime }) => {
 const Footer = ({ props, title, post, postID, navigation, index, user, currentUser, upvoteSet, downvoteSet, i }) => {
   let upvotes = Object.keys(upvoteSet).length;
   let downvotes = Object.keys(downvoteSet).length;  
+  let dir = 0;
+  
   const [totalVotes, setTotalVotes] = useState(upvotes - downvotes);
+  let voteString = totalVotes + "";
+  if (totalVotes >= 1000) {
+    voteString = (totalVotes/1000).toFixed(1) + "k";
+  }
   let currentAlias = currentUser.substr(0, currentUser.indexOf("@"));
-  console.log("editing");
-  console.log(postID);
+  if (upvoteSet[currentAlias] == true)
+    dir = 1;
+  if (downvoteSet[currentAlias] == true)
+    dir = -1;
+  
+  const upIcon = (props) => (
+    <Icon {...props} name='arrow-upward-outline'/>
+  );
+  
+  const downIcon = (props) => (
+    <Icon {...props} name='arrow-downward-outline'/>
+  );
+
   return user == currentUser ? (
     <React.Fragment>
       <View style={{flexDirection: 'row', margin: 3,}}>
         <View {...props} style={{flexDirection: 'row', flex: 0.5, margin: 3}} >
-          <Button size='small' appearance='outline' accessoryLeft={upIcon} onPress={() => {
+          <Button size={dir > 0 ? 'small' : 'small'} status={dir > 0 ? 'warning' : 'basic'} appearance={dir > 0 ? 'outline' : 'outline'} accessoryLeft={upIcon} onPress={() => {
               delete downvoteSet[currentAlias];
               upvoteSet[currentAlias] = true;
+              if (dir == 1) {
+                delete upvoteSet[currentAlias];
+                dir = 0;
+              }
               let updates = {};
               let newTotalVotes = Object.keys(upvoteSet).length - Object.keys(downvoteSet).length;
               updates['/' + types[index] + ' Posts/' + postID + '/' + 'upvoteSet'] = upvoteSet;
@@ -134,10 +149,14 @@ const Footer = ({ props, title, post, postID, navigation, index, user, currentUs
               setTotalVotes(newTotalVotes);
               
           }}></Button>
-          <Text style={{marginLeft: 5, marginRight: 5, marginTop: 5}}>{totalVotes}</Text>
-          <Button size='small' appearance='outline' accessoryLeft={downIcon} onPress={() => {
+          <Text style={{marginLeft: 5, marginRight: 5, marginTop: 5}}>{voteString}</Text>
+          <Button size={dir > 0 ? 'small' : 'small'} status={dir < 0 ? 'warning' : 'basic'} appearance={dir > 0 ? 'outline' : 'outline'} accessoryLeft={downIcon} onPress={() => {
               delete upvoteSet[currentAlias];
               downvoteSet[currentAlias] = true;
+              if (dir == -1) {
+                delete downvoteSet[currentAlias];
+                dir = 0;
+              }
               let updates = {};
               let newTotalVotes = Object.keys(upvoteSet).length - Object.keys(downvoteSet).length;
               updates['/' + types[index] + ' Posts/' + postID + '/' + 'upvoteSet'] = upvoteSet;
@@ -196,9 +215,13 @@ const Footer = ({ props, title, post, postID, navigation, index, user, currentUs
     <React.Fragment>
       <View style={{flexDirection: 'row', margin: 3,}}>
         <View {...props} style={{flexDirection: 'row', flex: 0.5, margin: 3}} >
-        <Button size='small' appearance='outline' accessoryLeft={upIcon} onPress={() => {
+        <Button size={dir > 0 ? 'small' : 'small'} status={dir > 0 ? 'warning' : 'basic'} appearance={dir > 0 ? 'outline' : 'outline'} accessoryLeft={upIcon} onPress={() => {
               delete downvoteSet[currentAlias];
               upvoteSet[currentAlias] = true;
+              if (dir == 1) {
+                delete upvoteSet[currentAlias];
+                dir = 0;
+              }
               let updates = {};
               let newTotalVotes = Object.keys(upvoteSet).length - Object.keys(downvoteSet).length;
               updates['/' + types[index] + ' Posts/' + postID + '/' + 'upvoteSet'] = upvoteSet;
@@ -210,10 +233,14 @@ const Footer = ({ props, title, post, postID, navigation, index, user, currentUs
               setTotalVotes(newTotalVotes);
               
           }}></Button>
-          <Text style={{marginLeft: 5, marginRight: 5, marginTop: 5}}>{totalVotes}</Text>
-          <Button size='small' appearance='outline' accessoryLeft={downIcon} onPress={() => {
+          <Text style={{marginLeft: 5, marginRight: 5, marginTop: 5}}>{voteString}</Text>
+          <Button size={dir < 0 ? 'small' : 'small'} status={dir < 0 ? 'warning' : 'basic'} appearance={dir < 0 ? 'outline' : 'outline'} accessoryLeft={downIcon} onPress={() => {
               delete upvoteSet[currentAlias];
               downvoteSet[currentAlias] = true;
+              if (dir == -1) {
+                delete downvoteSet[currentAlias];
+                dir = 0;
+              }
               let updates = {};
               let newTotalVotes = Object.keys(upvoteSet).length - Object.keys(downvoteSet).length;
               updates['/' + types[index] + ' Posts/' + postID + '/' + 'upvoteSet'] = upvoteSet;
@@ -256,29 +283,29 @@ export default showPosts = ({ navigation, route }) => {
   const index = route.params.index;
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
-  
+  const ref = Firebase.database().ref(types[index] + ' Posts/');
 
-  Firebase.database()
-    .ref(types[index] + ' Posts/')
-    .on('value', (snapshot) => {
-      console.log('snapshot');
-      console.log(snapshot);
-      let n = posts.length;
-      for (let i = 0; i < n; i++) {
-        posts.pop();
-        postIDs.pop();
-      }
-      let index = 0;
-      snapshot.forEach(function (data) {
-        console.log('data');
-        console.log(data);
-        console.log(data.toJSON().title);
-        posts.push(data.toJSON());
-        postIDs.push(data.key);
-        index++;
-      });
-      console.log(postIDs);
+  
+  ref.on('value', (snapshot) => {
+    console.log('snapshot');
+    console.log(snapshot);
+    let n = posts.length;
+    for (let i = 0; i < n; i++) {
+      posts.pop();
+      postIDs.pop();
+    }
+    let index = 0;
+    snapshot.forEach(function (data) {
+      console.log('data');
+      console.log(data);
+      console.log(data.toJSON().title);
+      posts.push(data.toJSON());
+      postIDs.push(data.key);
+      index++;
+    });
+    console.log(postIDs);
   });
+  ref.off();
 
   const currentUser = (Firebase.auth().currentUser.providerData[0].email).toString();
   // currentUser = currentUser.substr(0, currentUser.indexOf("@"));
@@ -314,9 +341,15 @@ export default showPosts = ({ navigation, route }) => {
           navigation.navigate('ReadPost', {
             title: item.title,
             post: item.post,
-            postId: postIDs[i],
+            postID: postIDs[i],
             user: item.user,
-            index: index
+            index: index,
+            currentUser: currentUser,
+            upvoteSet: posts[i].upvoteSet,
+            downvoteSet: posts[i].downvoteSet,
+            i: i,
+            posts: posts,
+            postIDs: postIDs
     
           });
         }}
