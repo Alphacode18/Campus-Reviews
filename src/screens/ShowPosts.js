@@ -64,10 +64,6 @@ const renderBackAction = () => (
 
 const getDisplayTime = (curTime, time) => {
   const diff = Math.floor((curTime - time) / 1000);
-  console.log('getdisplay');
-  console.log(curTime);
-  console.log(time);
-  console.log(diff);
   let ret = '';
 
   if (diff < 3600) {
@@ -79,16 +75,14 @@ const getDisplayTime = (curTime, time) => {
   } else {
     ret = Math.floor(diff/(365 * 24 * 3600)) + 'y';
   }
-  console.log(ret);
+
   return ret;
 }
 
 const Header = ({ props, title, user, edited, editTime, createTime }) => {
   const today = new Date();
   const curTime = today.getTime();
-  console.log("curTime edit time");
-  console.log(curTime);
-  console.log(editTime);
+
   const editDisplayTime = getDisplayTime(curTime, editTime);
   const createDisplayTime = getDisplayTime(curTime, createTime);
   let headerString = headerString = '   ' + user + ' | ' + createDisplayTime;
@@ -281,14 +275,29 @@ const renderIcon = ({ props, navigation }) => (
 
 export default showPosts = ({ navigation, route }) => {
   const index = route.params.index;
+  let {tempPosts, tempPostIDs} = route.params;
+  if (tempPosts != undefined && tempPosts.length > 0) {
+    posts = tempPosts;
+    postIDs = tempPostIDs;
+    console.log("if");
+    console.log(tempPosts)
+    console.log("posts");
+    console.log(posts);
+  }
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
   const ref = Firebase.database().ref(types[index] + ' Posts/');
+  let postIDsToPostsMap = new Map();
+  console.log("map");
+  console.log(postIDsToPostsMap);
+  if (tempPosts != undefined && tempPosts.length > 0) {
+    for (let idx = 0; idx < tempPosts.length; idx++) {
+      postIDsToPostsMap[postIDs[idx]] = posts[idx];
+    }
+  }
 
-  
   ref.on('value', (snapshot) => {
-    console.log('snapshot');
-    console.log(snapshot);
+    console.log("ref");
     let n = posts.length;
     for (let i = 0; i < n; i++) {
       posts.pop();
@@ -296,25 +305,39 @@ export default showPosts = ({ navigation, route }) => {
     }
     let index = 0;
     snapshot.forEach(function (data) {
-      console.log('data');
-      console.log(data);
-      console.log(data.toJSON().title);
       posts.push(data.toJSON());
       postIDs.push(data.key);
+      postIDsToPostsMap[postIDs[index]] = posts[index];
       index++;
     });
-    console.log(postIDs);
   });
   ref.off();
+  console.log("map");
+  console.log(postIDsToPostsMap[postIDs[0]]);
+  postIDs.sort(function(b2,a2) {
+    let b = postIDsToPostsMap[b2];
+    let a = postIDsToPostsMap[a2];
+    if(a.votes == b.votes) {
+      return a.createTimestamp > b.createTimestamp ? 1 : a.createTimestamp < b.createTimestamp ? -1 : 0;
+    }
+  
+    return a.votes > b.votes ? 1 : -1;
+  });;
+
+  posts.sort(function(b,a) {
+    if(a.votes == b.votes) {
+      return a.createTimestamp > b.createTimestamp ? 1 : a.createTimestamp < b.createTimestamp ? -1 : 0;
+    }
+  
+    return a.votes > b.votes ? 1 : -1;
+  });;
 
   const currentUser = (Firebase.auth().currentUser.providerData[0].email).toString();
-  // currentUser = currentUser.substr(0, currentUser.indexOf("@"));
 
   const renderItem = (info) => {
     let i = info.index;
     let item = info.item;
-    console.log("postid");
-    console.log(item.key);
+
     return (
       <Card
         style={styles.card}
@@ -341,7 +364,7 @@ export default showPosts = ({ navigation, route }) => {
           navigation.navigate('ReadPost', {
             title: item.title,
             post: item.post,
-            postID: postIDs[i],
+            postId: postIDs[i],
             user: item.user,
             index: index,
             currentUser: currentUser,

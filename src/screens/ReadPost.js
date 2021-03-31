@@ -206,9 +206,6 @@ const Header = ({props, title}) => (
 
 export default readPost = ({ route, navigation }) => {
     const { title, post, postId, user, index, currentUser, upvoteSet, downvoteSet, i, posts, postIDs } = route.params;
-    console.log('passed');
-    console.log(posts[0]);
-    console.log(postIDs[0]);
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
     const [commentText, setCommentText] = useState('');
@@ -236,7 +233,10 @@ export default readPost = ({ route, navigation }) => {
                     accessoryLeft={BackIcon}
                     onPress = { () => {
                       navigation.navigate('ShowPosts', {
-                        index: index
+                        index: index,
+                        tempPosts: posts,
+                        tempPostIDs: postIDs
+
                       });
                     }
                       
