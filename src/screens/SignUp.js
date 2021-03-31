@@ -6,6 +6,8 @@ import {
   Alert,
   Keyboard,
 } from 'react-native';
+import Constants from 'expo-constants';
+const { manifest } = Constants;
 import {
   Layout,
   Text,
@@ -15,6 +17,7 @@ import {
   Icon,
 } from '@ui-kitten/components';
 import Firebase from '../../config/firebase';
+import axios from 'axios';
 
 export default register = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -40,19 +43,32 @@ export default register = ({ navigation }) => {
   /*
    * Read Through Firebase Docs & firebase.config before implementation
    */
-  const handleRegistrations = () => {
+  const handleRegistrations = async () => {
+    const uri = `http://${manifest.debuggerHost
+      .split(':')
+      .shift()}:3000/${email}`;
     setLoading(true);
     if (username.length > 30) {
       setLoading(false);
       Alert.alert('Username longer than expected');
     } else if (password === confirmPassword) {
-      Firebase.auth()
-        .createUserWithEmailAndPassword(email, password)
-        .then(() => {})
-        .catch((error) => {
-          setLoading(false);
-          Alert.alert('Invalid Email or Incomplete Details'); //TODO: Alert text may need to be updated.
-        });
+      const res = await axios.get(uri);
+      const data = res.data;
+      console.log('Validation Successful?', data['isValid']);
+      if (res.data['isValid']) {
+        Firebase.auth()
+          .createUserWithEmailAndPassword(email, password)
+          .then(() => {})
+          .catch((error) => {
+            setLoading(false);
+            Alert.alert('Invalid Email or Incomplete Details'); //TODO: Alert text may need to be updated.
+          });
+      } else {
+        setLoading(false);
+        Alert.alert(
+          "We couldn't validate your purdue identity. Please try again"
+        );
+      }
     } else {
       setLoading(false);
       Alert.alert('Passwords Do Not Match');
