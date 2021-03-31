@@ -67,8 +67,12 @@ export default editPost = ({ route, navigation }) => {
                                 
                                 if (!(newTitle === '' || newPost === '')) {
                                     let updates = {};
+                                    const today = new Date();
+                                    const time = today.getTime();
                                     updates['/' + types[index] + ' Posts/' + postID + '/' + 'post'] = newPost;
                                     updates['/' + types[index] + ' Posts/' + postID + '/' + 'title'] = newTitle;
+                                    updates['/' + types[index] + ' Posts/' + postID + '/' + 'edited'] = true;
+                                    updates['/' + types[index] + ' Posts/' + postID + '/' + 'editTimestamp'] = time;
                                     Firebase.database().ref().update(updates);
                                     navigation.navigate('Loading', {index : index, postType: 'Posts'});
                                 } 

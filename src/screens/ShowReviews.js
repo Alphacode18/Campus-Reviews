@@ -1,6 +1,6 @@
 import React, { useState, ReactDOM } from 'react';
 import { StyleSheet, TouchableWithoutFeedback, Keyboard, ScrollView, TextInput, KeyboardAvoidingView, View, TouchableOpacity} from 'react-native';
-import { Layout, Text, Button, Input, Select, SelectItem, IndexPath, Icon, Card } from '@ui-kitten/components';
+import { TopNavigationAction, List, Divider, Layout, Text, Button, Input, Select, SelectItem, IndexPath, Icon, Card } from '@ui-kitten/components';
 import { Dimensions, Alert } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
 import Firebase from '../../config/firebase';
@@ -27,6 +27,10 @@ const types = [
     '10'
   ];
 
+  const reviews = [];
+  const reviewIDs = [];
+
+
 
   const trashIcon = (props) => (
     <Icon {...props} name='trash-2'/>
@@ -48,14 +52,45 @@ const types = [
     <Icon icon={BackIcon}/>
   );
 
-const Header = ({props, title, user, date, rate}) => (
+  const showTime = (date, datetime) => {
+    const timediff = Math.floor((datetime - date)/1000);
+    let retString = '';
+
+    if (timediff < 3600) {
+      retString = Math.floor(timediff/60) + ' mins';
+
+    } else if (timediff < 24*3600) {
+      retString = Math.floor(timediff/(3600)) + ' hrs';
+
+    } else if (timediff < 365*24*3600) {
+      retString = Math.floor(timediff/(24*3600)) + ' days';
+
+    } else {
+      retString = Math.floor(timediff/(365*24*3600)) + ' yrs';
+
+    }
+    return retString;
+  }
+
+const Header = ({props, title, user, date, rate, edited, edited_time}) => {
+  let dateString = "";
+  const today = new Date();
+  const datetime = today.getTime();
+  if (edited) {
+    dateString = "Created: "+showTime(date, datetime) + "ago (Edited: "+ showTime(edited_time, datetime) + " ago)";
+  }
+  else {
+    dateString = "Created: "+showTime(date, datetime);
+  }
+  return (
     <View {...props} style={[styles.headerContainer]}>
-        <Text category='h6'> Topic: {title} </Text>
-        <Text category='s1'> User: {user} </Text>
-        <Text category='s3'> Rating(#/10): {rate} </Text>
-        {/* <Text category='h9'> Date: {date} </Text> */}
+      <Text category='h6'> Topic: {title} </Text>
+      <Text category='s1'> User: {user} </Text>
+      <Text category='s3'> Rating(#/10): {rate} </Text>
+      <Text category='h9'> {dateString} </Text>
     </View>
-);
+  )
+};
 
 const Footer = ({navigation, props, title, user, rate, text, review_id, index, currentUser}) => {
     return user == currentUser ? (
@@ -114,23 +149,57 @@ export default showReviews = ({navigation, route }) => {
     const index = route.params.index;
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
-    let reviews = [];
-    let fields = [];
 
     Firebase.database()
     .ref(types[index] + ' Reviews/')
     .on('value', (snapshot) => {
       console.log('snapshot');
       console.log(snapshot);
+      let n = reviews.length;
+      for (let i = 0; i < n; i++) {
+        reviews.pop();
+        reviewIDs.pop();
+      }
+      let index = 0;
       snapshot.forEach(function (data) {
         console.log('data');
+        reviews.push(data.toJSON());
         console.log(data);
-        reviews.push(data.key);
+        reviewIDs.push(data.key);
+        index++;
       });
     });
 
     const currentUser = Firebase.auth().currentUser.providerData[0].email;
        
+    const renderItem = (info) => {
+      let i = info.index;
+      let item = info.item;
+      return (
+        <Card
+          style={styles.card}
+          header={(props) => <Header {...props} title={item.review_title} user={item.user} date={item.date_time} rate={item.review_rate} edited={item.edited} edited_time={item.edited_time}/> }
+          footer={(props) => <Footer {...props} title={item.review_title} user={item.user} rate={item.review_rate} text={item.review_text} review_id={reviewIDs[i]} navigation={navigation} index={index} currentUser={currentUser}/>}
+          onPress={() => {
+            navigation.navigate('ReadReview', {
+              title: item.review_title,
+              user: item.user,
+              rate: item.review_rate,
+              text: item.review_text,
+              review_id: reviewIDs[i],
+              date: item.date_time,
+              index: index
+            });
+          }}
+        >
+          <Text>{item.review_text}</Text>
+        </Card>
+      )
+    };
+
+
+
+
     return (
         <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -182,57 +251,14 @@ export default showReviews = ({navigation, route }) => {
                         >
                         
                     </Button>
-                    <React.Fragment>
-                        {reviews.map(function(review_id, i) {
-                                Firebase.database().ref(types[index] + ' Reviews/' + review_id).on('value', (snapshot) => {
-                                    console.log(types[index] + ' Reviews/' + review_id);
-                                    let i = 0;
-                                    snapshot.forEach(function(data) {
-                                        fields.push(data);
-                                        // console.log(data);
-                                        i++;
-                                    });
-                                    // console.log(fields[0]);
-                                    
-                                });
-
-                                let title = JSON.parse(JSON.stringify(fields[5 * i + 3]));
-                                let user = JSON.parse(JSON.stringify(fields[5 * i + 4]));
-                                let date = JSON.parse(JSON.stringify(fields[5 * i]));
-                                let rate = JSON.parse(JSON.stringify(fields[5 * i + 1]));
-                                let text = JSON.parse(JSON.stringify(fields[5 * i + 2]));
-                                
-                                return  (
-                                    <Layout style={styles.container} level={'1'} > 
-                                        <TouchableOpacity>
-                                            <Card style={styles.card}
-                                            header={(props) => <Header {...props} title={title} user={user} date={date} rate={rate}/> }
-                                            footer={(props) => <Footer {...props} title={title} user={user} rate={rate} text={text} review_id={review_id} navigation={navigation} index={index} currentUser={currentUser}/>}
-                                            onPress={() => {
-                                                navigation.navigate('ReadReview', {
-                                                  title: title,
-                                                  user: user,
-                                                  rate: rate,
-                                                  text: text,
-                                                  review_id: review_id,
-                                                  date: date,
-                                                  index: index
-                                                });
-                                              }}
-                                            >
-                                                <Text>
-                                                    {text}
-                                                </Text>
-                                            </Card>
-                                        </TouchableOpacity>
-                                    </Layout> 
-                                )
-                                
-                                // ReactDOM.render(card, document.getElementById('root'));
-    
-                            })
-                        }
-                    </React.Fragment>
+                    <TouchableOpacity>
+                      <List
+                        style={{maxHeight : 0.6*screenHeight}}
+                        data={reviews}
+                        ItemSeparatorComponent={Divider}
+                        renderItem={renderItem}
+                      />
+                    </TouchableOpacity> 
                     <Text style={{marginBottom: 20}}></Text>
                     </ScrollView>
                 </Layout>
