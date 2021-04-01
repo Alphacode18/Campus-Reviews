@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ScrollView, TextInput, KeyboardAvoidingView, Alert} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { Layout, Text, Button, Card, Divider, Input, Select, SelectItem, IndexPath, TopNavigation, TopNavigationAction, Icon } from '@ui-kitten/components';
+import { Layout, Text, Button, Card, Divider, Input, Select, SelectItem, IndexPath, TopNavigation, TopNavigationAction, Icon, List } from '@ui-kitten/components';
 import InputScrollView from 'react-native-input-scroll-view';
 import { Dimensions, View } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
@@ -9,6 +9,37 @@ import Firebase from '../../config/firebase';
 import CommentBody from './CommentBody.js';
 
 const types = ['Dining', 'On-Campus Facilities', 'Classes', 'Professors'];
+let comments = [];
+let commentIDs = [];
+
+const getDisplayTime = (curTime, time) => {
+  const diff = Math.floor((curTime - time) / 1000);
+  console.log('getdisplay');
+  console.log(curTime);
+  console.log(time);
+  console.log(diff);
+  let ret = '';
+
+  if (diff < 3600) {
+    ret = Math.floor(diff/60) + 'm';
+  } else if (diff < 24*3600) {
+    ret = Math.floor(diff/3600) + 'h';
+  } else if (diff < 365 * 24 * 3600) {
+    ret = Math.floor(diff/(24*3600)) + 'd'
+  } else {
+    ret = Math.floor(diff/(365 * 24 * 3600)) + 'y';
+  }
+  console.log(ret);
+  return ret;
+}
+
+const upIcon = (props) => (
+  <Icon {...props} name='arrow-upward-outline'/>
+);
+
+const downIcon = (props) => (
+  <Icon {...props} name='arrow-downward-outline'/>
+);
 
 const BackIcon = (props) => (
   <Icon {...props} name='arrow-back'/>
@@ -34,14 +65,26 @@ const renderBackAction = () => (
     <TopNavigationAction icon={BackIcon}/>
   );
 
-const Header = ({props, title}) => (
-      <View style={{flexDirection:'row', alignItems:'center', marginTop: '5%', marginBottom: '5%'}}>
-        <View style={styles.controlContainer}>
-          <Text style={styles.review} status='control'>Post</Text>
-        </View>
-        <Text category='h5' style={styles.text} status='danger'> {title} </Text>
+  const Header = ({ props, title, user, edited, editTime, createTime }) => {
+    const today = new Date();
+    const curTime = today.getTime();
+  
+    const editDisplayTime = getDisplayTime(curTime, editTime);
+    const createDisplayTime = getDisplayTime(curTime, createTime);
+    let headerString = (headerString = '   ' + user + ' | ' + createDisplayTime);
+    if (edited) {
+      headerString += ' | ' + '(edited ' + editDisplayTime + ')';
+    }
+    return (
+      <View {...props} style={[styles.headerContainer]}>
+        <Text category='h6'> {'   ' + title} </Text>
+        <Text category='s5' style={{ fontSize: 16 }}>
+          {' '}
+          {headerString}{' '}
+        </Text>
       </View>
-  );
+    );
+  };
 
   const Footer = ({ props, title, post, postID, navigation, index, user, currentUser, upvoteSet, downvoteSet, i, posts, postIDs }) => {
     let upvotes = Object.keys(upvoteSet).length;
@@ -212,6 +255,55 @@ export default readPost = ({ route, navigation }) => {
     const today = new Date();
     const time = today.getTime();
 
+    Firebase.database()
+    .ref('/' + types[index] + ' Posts/' + postId + '/Comments/')
+    .on('value', (snapshot) => {
+      console.log('snapshot');
+      console.log(snapshot);
+      let n = comments.length;
+      for (let i = 0; i < n; i++) {
+        comments.pop();
+        commentIDs.pop();
+      }
+      let index = 0;
+      snapshot.forEach(function (data) {
+        console.log('data');
+        console.log(data);
+        console.log(data.toJSON().title);
+        comments.push(data.toJSON());
+        commentIDs.push(data.key);
+        index++;
+      });
+      console.log(postId);
+    });
+
+
+    const renderItem = (info) => {
+      let i = info.index;
+      let item = info.item;
+      //console.log("postid");
+      //console.log(item.key);
+      const today = new Date();
+      const curTime = today.getTime();
+      const editDisplayTime = getDisplayTime(curTime, item.editTimestamp);
+      const createDisplayTime = getDisplayTime(curTime, item.createTimestamp);
+      let headerString = headerString = createDisplayTime;
+      if (item.edited) {
+        headerString += ' | ' + "(edited " + editDisplayTime + ")";
+      } 
+      return (
+        <React.Fragment>
+          <View style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center', marginTop: 8}}>
+            <Text style={styles.commentLeft} status='info' category='s1'>{item.user}</Text>
+            <Text style={styles.commentRight} category='s1' status='success'>{headerString}</Text>
+           </View>
+          <CommentBody commentText={item.commentText} postId={postId} commentID={commentIDs[i]} index={index} navigation={navigation} title={title} user={user} post={post} currentUser={currentUser} i={i} upvoteSet={upvoteSet} downvoteSet={downvoteSet} posts={posts} postIDs={postIDs}/>
+           <Divider/>
+        </React.Fragment>
+
+      )
+    };
+
     return (
         <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -244,7 +336,16 @@ export default readPost = ({ route, navigation }) => {
                 />
 
                   <Card style={styles.card}
-                  header={(props) => <Header {...props} title={title}/> }
+                  header={(props) => (
+                    <Header
+                      {...props}
+                      title={title}
+                      user={user}
+                      edited={posts[i].edited}
+                      createTime={posts[i].createTimestamp}
+                      editTime={posts[i].editTimestamp}
+                    />
+                  )}
                   footer={(props) => (
                     <Footer
                       {...props}
@@ -284,7 +385,7 @@ export default readPost = ({ route, navigation }) => {
                           if (!(commentText === '')) {
                             Firebase.database().ref('/' + types[index] + ' Posts/' + postId + '/Comments/').push({
                               commentText: commentText,
-                              user: user,
+                              user: currentUser,
                               createTimestamp: time,
                               edited: false,
                               editTimestamp: time
@@ -295,7 +396,13 @@ export default readPost = ({ route, navigation }) => {
                               post: post,
                               postId: postId,
                               user: user,
-                              index: index
+                              index: index,
+                              currentUser: currentUser,
+                              i: i,
+                              upvoteSet: upvoteSet,
+                              downvoteSet: downvoteSet,
+                              posts: posts, 
+                              postIDs: postIDs
                             });
                           }
                           else {
@@ -311,23 +418,17 @@ export default readPost = ({ route, navigation }) => {
                     
                     
                   </React.Fragment>
-                  <React.Fragment>
-                    <View style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center', marginTop: 8}}>
-                      <Text style={styles.commentLeft} status='info' category='s1'>PurdueUser44</Text>
-                      <Text style={styles.commentRight} category='s1' status='success'>3h</Text>
-                    </View>
-                      <CommentBody commentText={'hello test'} postId={postId} commentID={'-MWLs-jPybGMi0BpfqyB'} index={index} navigation={navigation} title={title} user={user} post={post}/>
-                    <Divider/>
-                  </React.Fragment>
+                  <TouchableOpacity>
+                    <List
+                      style={{maxHeight : 0.6*screenHeight}}
+                      data={comments}
+                      ItemSeparatorComponent={Divider}
+                      // renderItem={<renderItem navigation={navigation} currentUser={currentUser} postIDs={...postIDs} index={index}/>}
+                      renderItem={renderItem}
+                    />
+                  </TouchableOpacity>  
 
-                  <React.Fragment>
-                    <View style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center', marginTop: 8}}>
-                      <Text style={styles.commentLeft} status='info' category='s1'>JohnDoe77</Text>
-                      <Text style={styles.commentRight} category='s1' status='success'>1h</Text>
-                    </View>
-                    <Text style={{marginLeft: 16, marginBottom: 8}}>I disagree... meal swipes SUCK!</Text>
-                    <Divider/>
-                  </React.Fragment>
+
 
                 </ScrollView>
                 </Layout>

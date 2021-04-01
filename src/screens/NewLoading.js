@@ -33,7 +33,7 @@ import { render } from 'react-dom';
 const types = ['Dining', 'On-Campus Facilities', 'Classes', 'Professors'];
 
 export default newLoading = ({ navigation, route }) => {
-  const {title, post, postId, user, index} = route.params;
+  const {title, post, postId, user, index, currentUser, i, upvoteSet, downvoteSet, posts, postIDs} = route.params;
 
   setTimeout(() => {  
     navigation.navigate('ReadPost', {
@@ -41,7 +41,13 @@ export default newLoading = ({ navigation, route }) => {
       post: post,
       postId: postId,
       user: user,
-      index: index
+      index: index,
+      currentUser: currentUser,
+      i: i,
+      upvoteSet: upvoteSet,
+      downvoteSet: downvoteSet,
+      posts: posts, 
+      postIDs: postIDs
     });
   }, 2000);
 

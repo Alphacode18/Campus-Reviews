@@ -5,8 +5,9 @@ import { Layout, Text, Button, Card, Divider, Input, Select, SelectItem, IndexPa
 //import InputScrollView from 'react-native-input-scroll-view';
 import { Dimensions, View } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
+import Firebase from '../../config/firebase';
 
-const typeVal = [
+const types = [
     'Dining',
     'On-Campus Facilities',
     'Classes',
@@ -27,17 +28,25 @@ const typeVal = [
     '10'
   ];
 
-const BackIcon = (props) => (
-  <Icon {...props} name='arrow-back'/>
-);
-
-const UpArrowIcon = (props) => (
-  <Icon {...props} name='arrow-upward-outline'/>
-);
-
-const DownArrowIcon = (props) => (
-  <Icon {...props} name='arrow-downward-outline'/>
-);
+  const BackIcon = (props) => (
+    <Icon {...props} name='arrow-back'/>
+  );
+  
+  const plusIcon = (props) => (
+    <Icon {...props} name='plus'/>
+  );
+  
+  const checkIcon = (props) => (
+    <Icon {...props} name='checkmark-outline'/>
+  );
+  
+  const trashIcon = (props) => (
+    <Icon {...props} name='trash-2'/>
+  );
+  
+  const editIcon = (props) => (
+    <Icon {...props} name='edit-outline'/>
+  );
 
 
 const renderBackAction = () => (
@@ -55,24 +64,166 @@ const renderBackAction = () => (
 
 );
 
-const Footer = ({navigation, props, title, user, rate, text, review_id}) => (
-    <View {...props} style={[styles.footerContainer]}>
-    <View style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center', marginHorizontal: 16}}>
-        <Button size='small' accessoryLeft={UpArrowIcon}></Button>
-        <Text>300</Text>
-        <Button size='small' accessoryLeft={DownArrowIcon}></Button>
+const Footer = ({navigation, props, title, user, rate, text, review_id, upvoteSet, downvoteSet, i, currentUser, reviews, reviewIDs, index}) => {
+  let upvotes = Object.keys(upvoteSet).length;
+  let downvotes = Object.keys(downvoteSet).length;  
+  let dir = 0;
 
-        <Text status='info' category='s1'>by: {user}</Text>
-        <Text status='success' category='s1'>9d</Text>
+  const [totalVotes, setTotalVotes] = useState(upvotes - downvotes);
+  let voteString = totalVotes + "";
+  if (totalVotes >= 1000) {
+    voteString = (totalVotes/1000).toFixed(1) + "k";
+  }
+  let currentAlias = currentUser.substr(0, currentUser.indexOf("@"));
+  if (upvoteSet[currentAlias] == true)
+    dir = 1;
+  if (downvoteSet[currentAlias] == true)
+    dir = -1;
 
+  const upIcon = (props) => (
+    <Icon {...props} name='arrow-upward-outline'/>
+  );
+
+  const downIcon = (props) => (
+    <Icon {...props} name='arrow-downward-outline'/>
+  );
+
+  return user == currentUser ? (
+    <React.Fragment>
+      <View style={{flexDirection: 'row', margin: 3,}}>
+      <View {...props} style={{flexDirection: 'row', flex: 0.5, margin: 3}} >
+            <Button size={dir > 0 ? 'small' : 'small'} status={dir > 0 ? 'warning' : 'basic'} appearance={dir > 0 ? 'outline' : 'outline'} accessoryLeft={upIcon} onPress={() => {
+                delete downvoteSet[currentAlias];
+                upvoteSet[currentAlias] = true;
+                if (dir == 1) {
+                  delete upvoteSet[currentAlias];
+                  dir = 0;
+                }
+                let updates = {};
+                let newTotalVotes = Object.keys(upvoteSet).length - Object.keys(downvoteSet).length;
+                updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'upvoteSet'] = upvoteSet;
+                updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'downvoteSet'] = downvoteSet;
+                updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'votes'] = newTotalVotes;
+                Firebase.database().ref().update(updates);
+                reviews[i].upvoteSet = upvoteSet;
+                reviews[i].downvoteSet = downvoteSet;
+                setTotalVotes(newTotalVotes);
+
+            }}></Button>
+            <Text style={{marginLeft: 5, marginRight: 5, marginTop: 5}}>{voteString}</Text>
+            <Button size={dir > 0 ? 'small' : 'small'} status={dir < 0 ? 'warning' : 'basic'} appearance={dir > 0 ? 'outline' : 'outline'} accessoryLeft={downIcon} onPress={() => {
+                delete upvoteSet[currentAlias];
+                downvoteSet[currentAlias] = true;
+                if (dir == -1) {
+                  delete downvoteSet[currentAlias];
+                  dir = 0;
+                }
+                let updates = {};
+                let newTotalVotes = Object.keys(upvoteSet).length - Object.keys(downvoteSet).length;
+                updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'upvoteSet'] = upvoteSet;
+                updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'downvoteSet'] = downvoteSet;
+                updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'votes'] = newTotalVotes;
+                Firebase.database().ref().update(updates);
+                reviews[i].upvoteSet = upvoteSet;
+                reviews[i].downvoteSet = downvoteSet;
+                setTotalVotes(newTotalVotes);
+            }}></Button>
+          </View>
+          <View {...props} style={{flexDirection: 'row', justifyContent: 'flex-end', flex: 0.5, margin: 3}}>
+            <Button
+              style={styles.footerControl}
+              size='small'
+              accessoryLeft = {trashIcon}
+              status='basic' onPress={() => {
+                  Alert.alert(
+                      "Confirm Deletion",
+                      "Are you sure you want to delete this review?",
+                      [
+                      {
+                          text: "Cancel",
+                          onPress: () => console.log("Cancel Pressed"),
+                          style: "cancel"
+                      },
+                      { text: "Delete", onPress: () => {
+                          Firebase.database().ref(types[index] + ' Reviews/' + review_id).remove();
+                          navigation.navigate('ShowReviews');
+                      }}
+                      ],
+                      { cancelable: false }
+                  );
+              }}>
+            </Button>
+            <Button
+            style={styles.footerControl}
+            size='small' 
+            accessoryLeft={editIcon}
+            onPress= {() => {
+                navigation.navigate('EditReview', {review_title: title,
+                    review_text: text,
+                    index: index,
+                    review_rate: rate,
+                    review_id: review_id});
+            }}>
+            
+          </Button>
+            </View>
+          </View>
+    </React.Fragment>
+) : (
+  <React.Fragment>
+    <View style={{flexDirection: 'row', margin: 3,}}>
+      <View {...props} style={{flexDirection: 'row', flex: 0.5, margin: 3}} >
+      <Button size={dir > 0 ? 'small' : 'small'} status={dir > 0 ? 'warning' : 'basic'} appearance={dir > 0 ? 'outline' : 'outline'} accessoryLeft={upIcon} onPress={() => {
+            delete downvoteSet[currentAlias];
+            upvoteSet[currentAlias] = true;
+            if (dir == 1) {
+              delete upvoteSet[currentAlias];
+              dir = 0;
+            }
+            let updates = {};
+            let newTotalVotes = Object.keys(upvoteSet).length - Object.keys(downvoteSet).length;
+            updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'upvoteSet'] = upvoteSet;
+            updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'downvoteSet'] = downvoteSet;
+            updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'votes'] = newTotalVotes;
+            Firebase.database().ref().update(updates);
+            reviews[i].upvoteSet = upvoteSet;
+            reviews[i].downvoteSet = downvoteSet;
+            setTotalVotes(newTotalVotes);
+
+        }}></Button>
+        <Text style={{marginLeft: 5, marginRight: 5, marginTop: 5}}>{voteString}</Text>
+        <Button size={dir < 0 ? 'small' : 'small'} status={dir < 0 ? 'warning' : 'basic'} appearance={dir < 0 ? 'outline' : 'outline'} accessoryLeft={downIcon} onPress={() => {
+            delete upvoteSet[currentAlias];
+            downvoteSet[currentAlias] = true;
+            if (dir == -1) {
+              delete downvoteSet[currentAlias];
+              dir = 0;
+            }
+            let updates = {};
+            let newTotalVotes = Object.keys(upvoteSet).length - Object.keys(downvoteSet).length;
+            updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'upvoteSet'] = upvoteSet;
+            updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'downvoteSet'] = downvoteSet;
+            updates['/' + types[index] + ' Reviews/' + review_id + '/' + 'votes'] = newTotalVotes;
+            Firebase.database().ref().update(updates);
+            reviews[i].upvoteSet = upvoteSet;
+            reviews[i].downvoteSet = downvoteSet;
+            setTotalVotes(newTotalVotes);
+        }}></Button>
+      </View>
+      <View {...props} style={{flexDirection: 'row', flex: 0.5, justifyContent: 'flex-end', margin: 3, }}>
+        <Button appearance='ghost'></Button>
+        <Button appearance='ghost'></Button>
+      </View>
     </View>
 
-    </View>
-);
+  </React.Fragment>
+
+)
+};
 
 
 export default readReview = ({ route, navigation }) => {
-    const { title, user, rate, text, review_id, date, index } = route.params;
+    const { title, user, rate, text, review_id, date, index, currentUser, upvoteSet, downvoteSet, i, reviews, reviewIDs } = route.params;
     console.log("This is read review: ");
     console.log(index);
 
@@ -100,7 +251,9 @@ export default readReview = ({ route, navigation }) => {
                         accessoryLeft={BackIcon}
                         onPress = { () => {
                           navigation.navigate('ShowReviews', {
-                            index: index
+                            index: index,
+                            tempReviews: reviews,
+                            tempReviewIDs: reviewIDs
                           });
                         }
                           
@@ -109,7 +262,7 @@ export default readReview = ({ route, navigation }) => {
 
                     <Card style={styles.card}
                     header={(props) => <Header {...props} title={title} user={user} date={date} rate={rate}/> }
-                    footer={(props) => <Footer {...props} title={title} user={user} rate={rate} text={text} review_id={review_id} navigation={navigation}/>}>
+                    footer={(props) => <Footer {...props} title={title} user={user} rate={rate} text={text} review_id={review_id} navigation={navigation} index={index} currentUser={currentUser} upvoteSet={upvoteSet} downvoteSet={downvoteSet} i={i} reviews={reviews} reviewIDs={reviewIDs}/>}>
                       <Text style={styles.text} category='p1'>
                         {text}
                       </Text>

@@ -129,11 +129,15 @@ export default createReview = ({ navigation, route }) => {
                                         user: currentUser,
                                         date_time: datetime,
                                         edited: false,
-                                        edited_time: datetime 
+                                        edited_time: datetime,
+                                        votes: 0,
+                                        upvoteSet: {temp: true},
+                                        downvoteSet: {temp: true}
                                     });
 
-                                    navigation.navigate('ShowReviews', {
-                                        index: index
+                                    navigation.navigate('Loading', {
+                                        index: index,
+                                        postType: 'Reviews'
                                     });
                                 
                                 }

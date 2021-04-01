@@ -83,8 +83,9 @@ export default createPost = ({ navigation, route }) => {
                                         downvoteSet: {temp: true}
                                     });
                                     
-                                    navigation.navigate('ShowPosts', {
-                                        index: index
+                                    navigation.navigate('Loading', {
+                                        index: index,
+                                        postType: 'Posts'
                                     });
                                 } else {
                                     Alert.alert('Please fill in all the information for your post.');

@@ -13,11 +13,15 @@ const editIcon = (props) => (
   <Icon {...props} name='edit-outline'/>
 );
 
+const trashIcon = (props) => (
+  <Icon {...props} name='trash-2'/>
+);
+
 const checkIcon = (props) => (
   <Icon {...props} name='checkmark-outline'/>
 );
 
-export default CommentBody = ({commentText, postId, commentID, index, navigation, title, user, post}) => {
+export default CommentBody = ({commentText, postId, commentID, index, navigation, title, user, post, currentUser, i, upvoteSet, downvoteSet, posts, postIDs}) => {
     const [editCommentText, setEditCommentText] = useState(commentText);
     const [editing, setEditing] = useState(false);
     const screenWidth = Dimensions.get('window').width;
@@ -51,7 +55,13 @@ export default CommentBody = ({commentText, postId, commentID, index, navigation
                   post: post,
                   postId: postId,
                   user: user,
-                  index: index
+                  index: index,
+                  currentUser: currentUser,
+                  i: i,
+                  upvoteSet: upvoteSet,
+                  downvoteSet: downvoteSet,
+                  posts: posts, 
+                  postIDs: postIDs
                 });
               }
               else {
@@ -76,6 +86,42 @@ export default CommentBody = ({commentText, postId, commentID, index, navigation
           accessoryLeft={editIcon}
           onPress= {() => {
               setEditing(true);
+          }}>
+          
+          </Button>
+
+          <Button
+          size='small' 
+          accessoryLeft={trashIcon}
+          onPress= {() => {
+            Alert.alert(
+              "Confirm Deletion",
+              "Are you sure you want to delete this Comment?",
+              [
+              {
+                  text: "Cancel",
+                  onPress: () => console.log("Cancel Pressed"),
+                  style: "cancel"
+              },
+              { text: "Delete", onPress: () => {
+                  Firebase.database().ref(types[index] + ' Posts/' + postId + '/Comments/' + commentID).remove();
+                  navigation.navigate('NewLoading', {
+                    title: title,
+                    post: post,
+                    postId: postId,
+                    user: user,
+                    index: index,
+                    currentUser: currentUser,
+                    i: i,
+                    upvoteSet: upvoteSet,
+                    downvoteSet: downvoteSet,
+                    posts: posts, 
+                    postIDs: postIDs
+                  });
+              }}
+              ],
+              { cancelable: false }
+          );
           }}>
           
           </Button>

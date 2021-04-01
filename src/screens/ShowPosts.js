@@ -237,7 +237,10 @@ const Footer = ({
                       Firebase.database()
                         .ref(types[index] + ' Posts/' + postID)
                         .remove();
-                      navigation.navigate('ShowPosts');
+                      navigation.navigate('Loading', {
+                          index: index,
+                          postType: 'Posts'
+                      });
                     },
                   },
                 ],
