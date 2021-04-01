@@ -474,7 +474,7 @@ export default (readPost = ({ route, navigation }) => {
 						</React.Fragment>
 						<TouchableOpacity>
 							<List
-								style={{ maxHeight: 0.6 * screenHeight }}
+								style={{ flex: 1 }}
 								data={comments}
 								ItemSeparatorComponent={Divider}
 								// renderItem={<renderItem navigation={navigation} currentUser={currentUser} postIDs={...postIDs} index={index}/>}
