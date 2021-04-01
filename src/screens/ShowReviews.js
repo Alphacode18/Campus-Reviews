@@ -27,8 +27,8 @@ const types = [
     '10'
   ];
 
-  const reviews = [];
-  const reviewIDs = [];
+  let reviews = [];
+  let reviewIDs = [];
   
   const trashIcon = (props) => (
     <Icon {...props} name='trash-2'/>
@@ -170,7 +170,10 @@ const Footer = ({navigation, props, title, user, rate, text, review_id, index, c
                     },
                     { text: "Delete", onPress: () => {
                         Firebase.database().ref(types[index] + ' Reviews/' + review_id).remove();
-                        navigation.navigate('ShowReviews');
+                        navigation.navigate('Loading', {
+                          index: index,
+                          postType: 'Reviews'
+                      });
                     }}
                     ],
                     { cancelable: false }
@@ -262,7 +265,8 @@ export default showReviews = ({navigation, route }) => {
         reviewIDsToReviewsMap[reviewIDs[idx]] = reviews[idx];
       }
     }
-
+    console.log("map");
+    console.log(reviewIDsToReviewsMap);
 
     ref.on('value', (snapshot) => {
       let n = reviews.length;

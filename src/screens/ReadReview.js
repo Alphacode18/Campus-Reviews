@@ -5,8 +5,9 @@ import { Layout, Text, Button, Card, Divider, Input, Select, SelectItem, IndexPa
 //import InputScrollView from 'react-native-input-scroll-view';
 import { Dimensions, View } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
+import Firebase from '../../config/firebase';
 
-const typeVal = [
+const types = [
     'Dining',
     'On-Campus Facilities',
     'Classes',

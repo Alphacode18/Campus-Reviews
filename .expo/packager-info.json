@@ -2,9 +2,9 @@
   "devToolsPort": 19002,
   "expoServerPort": 19000,
   "packagerPort": 19000,
-  "expoServerNgrokUrl": "https://h4-b94.anonymous.campus-reviews.exp.direct",
-  "packagerNgrokUrl": "https://packager.h4-b94.anonymous.campus-reviews.exp.direct",
-  "ngrokPid": 17032,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null,
   "packagerPid": null,
   "webpackServerPort": null
 }

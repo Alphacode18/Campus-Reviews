@@ -135,8 +135,9 @@ export default createReview = ({ navigation, route }) => {
                                         downvoteSet: {temp: true}
                                     });
 
-                                    navigation.navigate('ShowReviews', {
-                                        index: index
+                                    navigation.navigate('Loading', {
+                                        index: index,
+                                        postType: 'Reviews'
                                     });
                                 
                                 }
