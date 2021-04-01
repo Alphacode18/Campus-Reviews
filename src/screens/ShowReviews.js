@@ -319,8 +319,8 @@ export default showReviews = ({navigation, route }) => {
               date: item.date_time,
               index: index,
               currentUser: currentUser,
-              upvoteSet: posts[i].upvoteSet,
-              downvoteSet: posts[i].downvoteSet,
+              upvoteSet: reviews[i].upvoteSet,
+              downvoteSet: reviews[i].downvoteSet,
               i: i,
               reviews: reviews,
               reviewIDs: reviewIDs
