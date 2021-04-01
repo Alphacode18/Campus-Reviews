@@ -130,7 +130,6 @@ const renderBackAction = () => (
                 posts[i].upvoteSet = upvoteSet;
                 posts[i].downvoteSet = downvoteSet;
                 setTotalVotes(newTotalVotes);
-                
             }}></Button>
             <Text style={{marginLeft: 5, marginRight: 5, marginTop: 5}}>{voteString}</Text>
             <Button size={dir > 0 ? 'small' : 'small'} status={dir < 0 ? 'warning' : 'basic'} appearance={dir > 0 ? 'outline' : 'outline'} accessoryLeft={downIcon} onPress={() => {
@@ -390,6 +389,8 @@ export default readPost = ({ route, navigation }) => {
                               edited: false,
                               editTimestamp: time
                             });
+
+                            setCommentText('');
   
                             navigation.navigate('NewLoading', {
                               title: title,
