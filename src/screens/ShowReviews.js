@@ -48,7 +48,6 @@ const renderBackAction = () => <Icon icon={BackIcon} />;
 const renderHeader = () => (
   <Layout
     style={{
-      backgroundColor: '#fff',
       padding: 10,
       alignItems: 'center',
       justifyContent: 'center',
@@ -61,7 +60,6 @@ const renderHeader = () => (
       style={{
         borderRadius: 25,
         borderColor: '#333',
-        backgroundColor: '#fff',
       }}
       textStyle={{ color: '#000' }}
     />
