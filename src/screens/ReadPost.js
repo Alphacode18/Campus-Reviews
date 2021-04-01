@@ -65,14 +65,26 @@ const renderBackAction = () => (
     <TopNavigationAction icon={BackIcon}/>
   );
 
-const Header = ({props, title}) => (
-      <View style={{flexDirection:'row', alignItems:'center', marginTop: '5%', marginBottom: '5%'}}>
-        <View style={styles.controlContainer}>
-          <Text style={styles.review} status='control'>Post</Text>
-        </View>
-        <Text category='h5' style={styles.text} status='danger'> {title} </Text>
+  const Header = ({ props, title, user, edited, editTime, createTime }) => {
+    const today = new Date();
+    const curTime = today.getTime();
+  
+    const editDisplayTime = getDisplayTime(curTime, editTime);
+    const createDisplayTime = getDisplayTime(curTime, createTime);
+    let headerString = (headerString = '   ' + user + ' | ' + createDisplayTime);
+    if (edited) {
+      headerString += ' | ' + '(edited ' + editDisplayTime + ')';
+    }
+    return (
+      <View {...props} style={[styles.headerContainer]}>
+        <Text category='h6'> {'   ' + title} </Text>
+        <Text category='s5' style={{ fontSize: 16 }}>
+          {' '}
+          {headerString}{' '}
+        </Text>
       </View>
-  );
+    );
+  };
 
   const Footer = ({ props, title, post, postID, navigation, index, user, currentUser, upvoteSet, downvoteSet, i, posts, postIDs }) => {
     let upvotes = Object.keys(upvoteSet).length;
@@ -324,7 +336,16 @@ export default readPost = ({ route, navigation }) => {
                 />
 
                   <Card style={styles.card}
-                  header={(props) => <Header {...props} title={title}/> }
+                  header={(props) => (
+                    <Header
+                      {...props}
+                      title={title}
+                      user={user}
+                      edited={posts[i].edited}
+                      createTime={posts[i].createTimestamp}
+                      editTime={posts[i].editTimestamp}
+                    />
+                  )}
                   footer={(props) => (
                     <Footer
                       {...props}
@@ -364,7 +385,7 @@ export default readPost = ({ route, navigation }) => {
                           if (!(commentText === '')) {
                             Firebase.database().ref('/' + types[index] + ' Posts/' + postId + '/Comments/').push({
                               commentText: commentText,
-                              user: user,
+                              user: currentUser,
                               createTimestamp: time,
                               edited: false,
                               editTimestamp: time
