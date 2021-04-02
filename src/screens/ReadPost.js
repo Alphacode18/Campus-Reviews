@@ -34,6 +34,10 @@ import CommentBody from './CommentBody.js';
 const types = [ 'Dining', 'On-Campus Facilities', 'Classes', 'Professors' ];
 let comments = [];
 let commentIDs = [];
+const sortVals = [
+	'Recent',
+	'Oldest'
+];
 
 const getDisplayTime = (curTime, time) => {
 	const diff = Math.floor((curTime - time) / 1000);
@@ -287,29 +291,152 @@ export default (readPost = ({ route, navigation }) => {
 	const screenWidth = Dimensions.get('window').width;
 	const screenHeight = Dimensions.get('window').height;
 	const [ commentText, setCommentText ] = useState('');
+	const [ sortVal, setSortVal ] = React.useState("Recent");
 	const today = new Date();
 	const time = today.getTime();
 
-	Firebase.database().ref('/' + types[index] + ' Posts/' + postId + '/Comments/').on('value', (snapshot) => {
-		console.log('snapshot');
-		console.log(snapshot);
-		let n = comments.length;
-		for (let i = 0; i < n; i++) {
-			comments.pop();
-			commentIDs.pop();
-		}
-		let index = 0;
-		snapshot.forEach(function(data) {
-			console.log('data');
-			console.log(data);
-			console.log(data.toJSON().title);
-			comments.push(data.toJSON());
-			commentIDs.push(data.key);
-			index++;
-		});
-		console.log(postId);
-	});
+	const [selectedIndex, setSelectedIndex] = React.useState(new IndexPath(0));
 
+	let { tempComments, tempCommentIDs } = route.params;
+	if (tempComments != undefined && tempComments.length > 0) {
+		comments = tempComments;
+		commentIDs = tempCommentIDs;
+		console.log('if');
+		console.log(tempComments);
+		console.log('posts');
+		console.log(commnets);
+	}
+
+	const ref = Firebase.database().ref(types[index] + ' Posts/' + postId + '/Comments');
+	let commentIDstoCommentsMap = new Map();
+	console.log('map');
+	
+	if (tempComments != undefined && tempComments.length > 0) {
+	  for (let idx = 0; idx < tempComments.length; idx++) {
+		commentIDstoCommentsMap[commentIDs[idx]] = comments[idx];
+	  }
+	} else {
+		for (let idx = 0; idx < comments.length; idx++) {
+			commentIDstoCommentsMap[commentIDs[idx]] = comments[idx];
+		  }
+	}
+  
+	ref.on('value', (snapshot) => {
+	  console.log('ref');
+	  let n = comments.length;
+	  for (let i = 0; i < n; i++) {
+		comments.pop();
+		commentIDs.pop();
+	  }
+	  let index = 0;
+	  snapshot.forEach(function (data) {
+		comments.push(data.toJSON());
+		commentIDs.push(data.key);
+		commentIDstoCommentsMap[commentIDs[index]] = comments[index];
+		index++;
+	  });
+	});
+	ref.off();
+	console.log('map');
+	console.log(commentIDstoCommentsMap[commentIDs[0]]);
+	console.log(commentIDstoCommentsMap);
+	if (sortVal == "Recent") {
+	  commentIDs.sort(function (b2, a2) {
+		let b = commentIDstoCommentsMap[b2];
+		let a = commentIDstoCommentsMap[a2];  
+		//console.log("a:b");
+		console.log("b coming up");
+		console.log(b);
+		console.log(a.createTimestamp);
+		console.log(b.createTimestamp);
+		
+		return a.createTimestamp > b.createTimestamp
+		  ? 1
+		  : a.createTimestamp < b.createTimestamp
+		  ? -1
+		  : 0;
+	  });
+  
+	  comments.sort(function (b, a) {
+		return a.createTimestamp > b.createTimestamp
+		  ? 1
+		  : a.createTimestamp < b.createTimestamp
+		  ? -1
+		  : 0;
+		
+  
+	  });
+	} else if (sortVal == "Oldest") {
+	  commentIDs.sort(function (b2, a2) {
+		let b = commentIDstoCommentsMap[b2];
+		let a = commentIDstoCommentsMap[a2];
+		
+		console.log("a:b");
+		console.log(a.createTimestamp);
+		console.log(b.createTimestamp);
+  
+		return a.createTimestamp > b.createTimestamp
+		  ? -1
+		  : a.createTimestamp < b.createTimestamp
+		  ? 1
+		  : 0;
+	  });
+  
+	  comments.sort(function (b, a) {
+		return a.createTimestamp > b.createTimestamp
+		  ? -1
+		  : a.createTimestamp < b.createTimestamp
+		  ? 1
+		  : 0;
+	  });
+	} else if (sortVal == "Votes") {
+		commentIDs.sort(function (b2, a2) {
+			let b = commentIDstoCommentsMap[b2];
+			let a = commentIDstoCommentsMap[a2];  
+			console.log("a:b");
+			console.log(a.createTimestamp);
+			console.log(b.createTimestamp);
+			
+			return a.createTimestamp > b.createTimestamp
+			  ? 1
+			  : a.createTimestamp < b.createTimestamp
+			  ? -1
+			  : 0;
+		  });
+	  
+		  comments.sort(function (b, a) {
+			return a.createTimestamp > b.createTimestamp
+			  ? 1
+			  : a.createTimestamp < b.createTimestamp
+			  ? -1
+			  : 0;
+			
+	  
+		  });
+	} else {
+		commentIDs.sort(function (b2, a2) {
+			let b = commentIDstoCommentsMap[b2];
+			let a = commentIDstoCommentsMap[a2];  
+
+			return a.createTimestamp > b.createTimestamp
+			  ? 1
+			  : a.createTimestamp < b.createTimestamp
+			  ? -1
+			  : 0;
+		  });
+	  
+		  comments.sort(function (b, a) {
+			return a.createTimestamp > b.createTimestamp
+			  ? 1
+			  : a.createTimestamp < b.createTimestamp
+			  ? -1
+			  : 0;
+			
+	  
+		  });
+	}
+	console.log(commentIDstoCommentsMap);
+	
 	const renderItem = (info) => {
 		let i = info.index;
 		let item = info.item;
@@ -380,8 +507,8 @@ export default (readPost = ({ route, navigation }) => {
 									tempPostIDs: postIDs
 								});
 							}}
-						/>
-
+						/>	
+						
 						<Card
 							style={styles.card}
 							header={(props) => (
@@ -417,6 +544,25 @@ export default (readPost = ({ route, navigation }) => {
 								{post}
 							</Text>
 						</Card>
+						
+						<Select 
+						value={sortVal}
+						
+						style= {
+						{minWidth: screenWidth, marginTop: 10, marginBottom: 10} 
+						}
+						
+						selectedIndex={selectedIndex}
+						onSelect={setIndex => setSelectedIndex(setIndex)}>
+
+						<SelectItem title='Recent' onPress={() => {
+							setSortVal("Recent");
+						}}/>
+						<SelectItem title='Oldest' onPress={() => {
+							setSortVal("Oldest");
+						}}/>
+						
+						</Select>
 
 						<React.Fragment>
 							<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 }}>
@@ -448,20 +594,6 @@ export default (readPost = ({ route, navigation }) => {
 												});
 
 											setCommentText('');
-
-											// navigation.navigate('NewLoading', {
-											// 	title: title,
-											// 	post: post,
-											// 	postId: postId,
-											// 	user: user,
-											// 	index: index,
-											// 	currentUser: currentUser,
-											// 	i: i,
-											// 	upvoteSet: upvoteSet,
-											// 	downvoteSet: downvoteSet,
-											// 	posts: posts,
-											// 	postIDs: postIDs
-											// });
 										} else {
 											Alert.alert('Please add text to your comment!');
 										}
@@ -472,6 +604,7 @@ export default (readPost = ({ route, navigation }) => {
 								</Button>
 							</View>
 						</React.Fragment>
+						
 						<TouchableOpacity>
 							<List
 								style={{ flex: 1 }}

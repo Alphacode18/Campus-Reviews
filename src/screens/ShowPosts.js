@@ -32,11 +32,18 @@ import { HeaderHeightContext } from '@react-navigation/stack';
 import Firebase from '../../config/firebase';
 import { useScrollToTop } from '@react-navigation/native';
 import { render } from 'react-dom';
+import { Circle } from 'react-native-svg';
 // import Post from './Post.js';
 
 const types = ['Dining', 'On-Campus Facilities', 'Classes', 'Professors'];
 let posts = [];
 let postIDs = [];
+
+const sortVals = [
+  'Votes',
+  'Recent',
+  'Oldest'
+];
 
 const trashIcon = (props) => <Icon {...props} name='trash-2' />;
 
@@ -45,6 +52,12 @@ const editIcon = (props) => <Icon {...props} name='edit-outline' />;
 const plusIcon = (props) => <Icon {...props} name='plus' />;
 
 const BackIcon = (props) => <Icon {...props} name='arrow-back' />;
+
+const upIcon = (props) => <Icon {...props} name='arrow-upward-outline' />;
+
+const downIcon = (props) => <Icon {...props} name='arrow-downward-outline' />;
+
+
 
 const renderBackAction = () => <TopNavigationAction icon={BackIcon} />;
 
@@ -107,6 +120,8 @@ const Header = ({ props, title, user, edited, editTime, createTime }) => {
   );
 };
 
+
+
 const Footer = ({
   props,
   title,
@@ -137,7 +152,9 @@ const Footer = ({
 
   const downIcon = (props) => <Icon {...props} name='arrow-downward-outline' />;
 
+
   return user == currentUser ? (
+    
     <React.Fragment>
       <View style={{ flexDirection: 'row', margin: 3 }}>
         <View {...props} style={{ flexDirection: 'row', flex: 0.5, margin: 3 }}>
@@ -363,6 +380,12 @@ const renderIcon = ({ props, navigation }) => (
 
 export default showPosts = ({ navigation, route }) => {
   const index = route.params.index;
+  const [selectedIndex, setSelectedIndex] = React.useState(new IndexPath(0));
+  const [dispVal, setDispVal] = React.useState("Votes");
+  console.log("Index path: ");
+  console.log(selectedIndex.row);
+  
+  const sort = route.params.sort;
   let { tempPosts, tempPostIDs } = route.params;
   if (tempPosts != undefined && tempPosts.length > 0) {
     posts = tempPosts;
@@ -378,12 +401,19 @@ export default showPosts = ({ navigation, route }) => {
   let postIDsToPostsMap = new Map();
   console.log('map');
   console.log(postIDsToPostsMap);
+  console.log(posts);
   if (tempPosts != undefined && tempPosts.length > 0) {
     for (let idx = 0; idx < tempPosts.length; idx++) {
       postIDsToPostsMap[postIDs[idx]] = posts[idx];
     }
+  
+  } else {
+    for (let idx = 0; idx < posts.length; idx++) {
+      postIDsToPostsMap[postIDs[idx]] = posts[idx];
+    }
+  
   }
-
+  
   ref.on('value', (snapshot) => {
     console.log('ref');
     let n = posts.length;
@@ -402,31 +432,116 @@ export default showPosts = ({ navigation, route }) => {
   ref.off();
   console.log('map');
   console.log(postIDsToPostsMap[postIDs[0]]);
-  postIDs.sort(function (b2, a2) {
-    let b = postIDsToPostsMap[b2];
-    let a = postIDsToPostsMap[a2];
-    if (a.votes == b.votes) {
+  console.log(postIDsToPostsMap);
+  if (dispVal === "Recent") {
+    postIDs.sort(function (b2, a2) {
+      
+      let b = postIDsToPostsMap[b2];
+      let a = postIDsToPostsMap[a2];
+
+      console.log("postsorting");
+      //console.log(a.createTimestamp);
+      //console.log(b.createTimestamp);
+      
       return a.createTimestamp > b.createTimestamp
         ? 1
         : a.createTimestamp < b.createTimestamp
         ? -1
         : 0;
-    }
+    });
 
-    return a.votes > b.votes ? 1 : -1;
-  });
-
-  posts.sort(function (b, a) {
-    if (a.votes == b.votes) {
+    posts.sort(function (b, a) {
+      console.log("postIdssorting");
       return a.createTimestamp > b.createTimestamp
         ? 1
         : a.createTimestamp < b.createTimestamp
         ? -1
         : 0;
-    }
+      
 
-    return a.votes > b.votes ? 1 : -1;
-  });
+    });
+  } else if (dispVal === "Oldest") {
+    postIDs.sort(function (b2, a2) {
+      let b = postIDsToPostsMap[b2];
+      let a = postIDsToPostsMap[a2];
+      
+      
+      // console.log("a:b");
+      // console.log(a.createTimestamp);
+      // console.log(b.createTimestamp);
+
+      return a.createTimestamp > b.createTimestamp
+        ? -1
+        : a.createTimestamp < b.createTimestamp
+        ? 1
+        : 0;
+    });
+
+    posts.sort(function (b, a) {
+      return a.createTimestamp > b.createTimestamp
+        ? -1
+        : a.createTimestamp < b.createTimestamp
+        ? 1
+        : 0;
+      
+
+    });
+  } else if (dispVal === "Votes") {
+    postIDs.sort(function (b2, a2) {
+      let b = postIDsToPostsMap[b2];
+      let a = postIDsToPostsMap[a2];
+      if (a.votes == b.votes) {
+        return a.createTimestamp > b.createTimestamp
+          ? 1
+          : a.createTimestamp < b.createTimestamp
+          ? -1
+          : 0;
+      }
+
+      return a.votes > b.votes ? 1 : -1;
+    });
+
+    posts.sort(function (b, a) {
+      if (a.votes == b.votes) {
+        return a.createTimestamp > b.createTimestamp
+          ? 1
+          : a.createTimestamp < b.createTimestamp
+          ? -1
+          : 0;
+      }
+
+      return a.votes > b.votes ? 1 : -1;
+    });
+
+  } else {
+    postIDs.sort(function (b2, a2) {
+      let b = postIDsToPostsMap[b2];
+      let a = postIDsToPostsMap[a2];
+      if (a.votes == b.votes) {
+        return a.createTimestamp > b.createTimestamp
+          ? 1
+          : a.createTimestamp < b.createTimestamp
+          ? -1
+          : 0;
+      }
+
+      return a.votes > b.votes ? 1 : -1;
+    });
+
+    posts.sort(function (b, a) {
+      if (a.votes == b.votes) {
+        return a.createTimestamp > b.createTimestamp
+          ? 1
+          : a.createTimestamp < b.createTimestamp
+          ? -1
+          : 0;
+      }
+
+      return a.votes > b.votes ? 1 : -1;
+    });
+
+
+  }
 
   const currentUser = Firebase.auth().currentUser.providerData[0].email.toString();
 
@@ -510,6 +625,7 @@ export default showPosts = ({ navigation, route }) => {
               }}
             />
 
+
             <Text
               style={{
                 marginTop: 50,
@@ -534,6 +650,42 @@ export default showPosts = ({ navigation, route }) => {
               {' '}
               Create{' '}
             </Button>
+            <Select 
+            value={dispVal}
+            
+            style= {
+              {minWidth: screenWidth, marginTop: 10, marginBottom: 10} 
+            }
+              
+              selectedIndex={selectedIndex}
+              onSelect={setIndex => setSelectedIndex(setIndex)}>
+
+              <SelectItem title='Votes' onPress={() => {
+                  setDispVal("Votes");
+                // navigation.navigate('Loading', {
+                //   index: index,
+                //   postType: 'Posts',
+                //   sort: 0,
+                // });
+              }}/>
+              <SelectItem title='Recent' onPress={() => {
+                setDispVal("Recent");
+                // navigation.navigate('Loading', {
+                //   index: index,
+                //   postType: 'Posts',
+                //   sort: 1,
+                // });
+              }}/>
+              <SelectItem title='Oldest' onPress={() => {
+                setDispVal("Oldest");
+                // navigation.navigate('Loading', {
+                //   index: index,
+                //   postType: 'Posts',
+                //   sort: 2,
+                // });
+              }}/>
+              
+            </Select>
             <TouchableOpacity>
               <List
                 style={{ maxHeight: 0.6 * screenHeight }}
@@ -545,6 +697,8 @@ export default showPosts = ({ navigation, route }) => {
               />
             </TouchableOpacity>
             <Text style={{ marginBottom: 20 }}></Text>
+            
+
           </ScrollView>
         </Layout>
       </TouchableWithoutFeedback>

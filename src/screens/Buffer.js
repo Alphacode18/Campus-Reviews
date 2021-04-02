@@ -46,7 +46,9 @@ export default buffer = (props) => {
                     postType: 'Reviews'
                   });
             }}> Reviews </Button>
-            <Button onPress={() => {
+            <Button style={
+              {marginTop: 20}
+            } onPress={() => {
                   props.navigation.navigate('Loading', {
                     index: props.route.params.index,
                     postType: 'Posts'
