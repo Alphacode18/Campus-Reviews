@@ -492,16 +492,24 @@ export default (showReviews = ({ navigation, route }) => {
 							justifyContent: 'center'
 						}}
 					>
+						
 						<Button
-							style={{
-								marginTop: 50
-							}}
 							title="Back"
+							appearance={'ghost'}
+							size={'large'}
+							style={{
+								justifyContent: 'center',
+								marginLeft: 0.02 * screenWidth,
+								marginTop: 0.05 * screenHeight,
+								maxWidth: 0.1 * screenWidth,
+								maxHeight: 0.1 * screenHeight
+							}}
 							accessoryLeft={BackIcon}
 							onPress={() => {
 								navigation.navigate('Buffer');
 							}}
 						/>
+
 						<Text
 							style={{
 								marginBottom: 20,

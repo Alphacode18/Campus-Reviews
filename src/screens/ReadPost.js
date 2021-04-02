@@ -494,11 +494,18 @@ export default (readPost = ({ route, navigation }) => {
 			<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
 				<Layout style={styles.container} level={'1'}>
 					<ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+						
 						<Button
-							style={{
-								marginTop: 50
-							}}
 							title="Back"
+							appearance={'ghost'}
+							size={'large'}
+							style={{
+								justifyContent: 'center',
+								marginLeft: 0.02 * screenWidth,
+								marginTop: 0.05 * screenHeight,
+								maxWidth: 0.1 * screenWidth,
+								maxHeight: 0.1 * screenHeight
+							}}
 							accessoryLeft={BackIcon}
 							onPress={() => {
 								navigation.navigate('ShowPosts', {
@@ -507,7 +514,7 @@ export default (readPost = ({ route, navigation }) => {
 									tempPostIDs: postIDs
 								});
 							}}
-						/>	
+						/>
 						
 						<Card
 							style={styles.card}
