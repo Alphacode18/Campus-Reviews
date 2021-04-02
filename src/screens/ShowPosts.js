@@ -46,6 +46,12 @@ const plusIcon = (props) => <Icon {...props} name='plus' />;
 
 const BackIcon = (props) => <Icon {...props} name='arrow-back' />;
 
+const upIcon = (props) => <Icon {...props} name='arrow-upward-outline' />;
+
+const downIcon = (props) => <Icon {...props} name='arrow-downward-outline' />;
+
+
+
 const renderBackAction = () => <TopNavigationAction icon={BackIcon} />;
 
 const renderHeader = () => (
@@ -107,6 +113,8 @@ const Header = ({ props, title, user, edited, editTime, createTime }) => {
   );
 };
 
+
+
 const Footer = ({
   props,
   title,
@@ -137,7 +145,9 @@ const Footer = ({
 
   const downIcon = (props) => <Icon {...props} name='arrow-downward-outline' />;
 
+
   return user == currentUser ? (
+    
     <React.Fragment>
       <View style={{ flexDirection: 'row', margin: 3 }}>
         <View {...props} style={{ flexDirection: 'row', flex: 0.5, margin: 3 }}>
@@ -363,6 +373,8 @@ const renderIcon = ({ props, navigation }) => (
 
 export default showPosts = ({ navigation, route }) => {
   const index = route.params.index;
+  const [selectedIndex, setSelectedIndex] = React.useState(new IndexPath(0));
+  const sort = route.params.sort;
   let { tempPosts, tempPostIDs } = route.params;
   if (tempPosts != undefined && tempPosts.length > 0) {
     posts = tempPosts;
@@ -402,31 +414,112 @@ export default showPosts = ({ navigation, route }) => {
   ref.off();
   console.log('map');
   console.log(postIDsToPostsMap[postIDs[0]]);
-  postIDs.sort(function (b2, a2) {
-    let b = postIDsToPostsMap[b2];
-    let a = postIDsToPostsMap[a2];
-    if (a.votes == b.votes) {
+  if (sort == 1) {
+    postIDs.sort(function (b2, a2) {
+      let b = postIDsToPostsMap[b2];
+      let a = postIDsToPostsMap[a2];
+
+      console.log("a:b");
+      console.log(a.createTimestamp);
+      console.log(b.createTimestamp);
+      
       return a.createTimestamp > b.createTimestamp
         ? 1
         : a.createTimestamp < b.createTimestamp
         ? -1
         : 0;
-    }
+    });
 
-    return a.votes > b.votes ? 1 : -1;
-  });
-
-  posts.sort(function (b, a) {
-    if (a.votes == b.votes) {
+    posts.sort(function (b, a) {
       return a.createTimestamp > b.createTimestamp
         ? 1
         : a.createTimestamp < b.createTimestamp
         ? -1
         : 0;
-    }
+      
 
-    return a.votes > b.votes ? 1 : -1;
-  });
+    });
+  } else if (sort == 2) {
+    postIDs.sort(function (b2, a2) {
+      let b = postIDsToPostsMap[b2];
+      let a = postIDsToPostsMap[a2];
+      
+      console.log("a:b");
+      console.log(a.createTimestamp);
+      console.log(b.createTimestamp);
+
+      return a.createTimestamp > b.createTimestamp
+        ? -1
+        : a.createTimestamp < b.createTimestamp
+        ? 1
+        : 0;
+    });
+
+    posts.sort(function (b, a) {
+      return a.createTimestamp > b.createTimestamp
+        ? -1
+        : a.createTimestamp < b.createTimestamp
+        ? 1
+        : 0;
+      
+
+    });
+  } else if (sort == undefined) {
+    postIDs.sort(function (b2, a2) {
+      let b = postIDsToPostsMap[b2];
+      let a = postIDsToPostsMap[a2];
+      if (a.votes == b.votes) {
+        return a.createTimestamp > b.createTimestamp
+          ? 1
+          : a.createTimestamp < b.createTimestamp
+          ? -1
+          : 0;
+      }
+
+      return a.votes > b.votes ? 1 : -1;
+    });
+
+    posts.sort(function (b, a) {
+      if (a.votes == b.votes) {
+        return a.createTimestamp > b.createTimestamp
+          ? 1
+          : a.createTimestamp < b.createTimestamp
+          ? -1
+          : 0;
+      }
+
+      return a.votes > b.votes ? 1 : -1;
+    });
+
+  } else {
+    postIDs.sort(function (b2, a2) {
+      let b = postIDsToPostsMap[b2];
+      let a = postIDsToPostsMap[a2];
+      if (a.votes == b.votes) {
+        return a.createTimestamp > b.createTimestamp
+          ? 1
+          : a.createTimestamp < b.createTimestamp
+          ? -1
+          : 0;
+      }
+
+      return a.votes > b.votes ? 1 : -1;
+    });
+
+    posts.sort(function (b, a) {
+      if (a.votes == b.votes) {
+        return a.createTimestamp > b.createTimestamp
+          ? 1
+          : a.createTimestamp < b.createTimestamp
+          ? -1
+          : 0;
+      }
+
+      return a.votes > b.votes ? 1 : -1;
+    });
+
+
+  }
 
   const currentUser = Firebase.auth().currentUser.providerData[0].email.toString();
 
@@ -509,6 +602,53 @@ export default showPosts = ({ navigation, route }) => {
                 navigation.navigate('Buffer');
               }}
             />
+
+            <Select style= {
+              {minWidth: screenWidth}
+
+            }
+              selectedIndex={selectedIndex}
+              onSelect={index => setSelectedIndex(index)}>
+              <SelectItem title='Most Recent'/>
+              <SelectItem title='Oldest'/>
+              <SelectItem title='None'/>
+            </Select>
+
+            <Button
+              style={{
+                marginTop: 50,
+              }}
+              title='Back'
+              accessoryLeft={upIcon}
+              onPress={() => {
+                navigation.navigate('Loading', {
+                  index: index,
+                  postType: 'Posts',
+                  sort: 1,
+                });
+              }}
+            />
+
+            <Button
+              style={{
+                marginTop: 50,
+              }}
+              title='Back'
+              accessoryLeft={downIcon}
+              onPress={() => {
+                navigation.navigate('Loading', {
+                  index: index,
+                  postType: 'Posts',
+                  sort: 2,
+                });
+              }}
+            />
+
+            
+
+            
+
+            
 
             <Text
               style={{
