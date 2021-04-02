@@ -15,67 +15,27 @@ import ReadReview from '../src/screens/ReadReview.js';
 
 const Stack = createStackNavigator();
 
-function classNavigator() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name='Buffer'
-        component={Buffer}
-        initialParams={{ index: 2 }}
-        options={{ headerShown: false }}
-      />
-       <Stack.Screen
-        name='Loading'
-        component={Loading}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name='ShowPosts'
-        component={ShowPosts}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name='CreatePost'
-        component={CreatePost}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name='EditPost'
-        component={EditPost}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name='ReadPost'
-        component={ReadPost}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-          name='CreateReview'
-          component={CreateReview}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name='EditReview'
-          component={EditReview}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name='ShowReviews'
-          component={ShowReviews}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name='ReadReview'
-          component={ReadReview}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name='NewLoading'
-          component={NewLoading}
-          options={{ headerShown: false }}
-        />
-    </Stack.Navigator>
-  );
+function classNavigator(props) {
+	return (
+		<Stack.Navigator>
+			<Stack.Screen
+				name="Buffer"
+				component={Buffer}
+				initialParams={{ index: 2, postType: props.route.name }}
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen name="Loading" component={Loading} options={{ headerShown: false }} />
+			<Stack.Screen name="ShowPosts" component={ShowPosts} options={{ headerShown: false }} />
+			<Stack.Screen name="CreatePost" component={CreatePost} options={{ headerShown: false }} />
+			<Stack.Screen name="EditPost" component={EditPost} options={{ headerShown: false }} />
+			<Stack.Screen name="ReadPost" component={ReadPost} options={{ headerShown: false }} />
+			<Stack.Screen name="CreateReview" component={CreateReview} options={{ headerShown: false }} />
+			<Stack.Screen name="EditReview" component={EditReview} options={{ headerShown: false }} />
+			<Stack.Screen name="ShowReviews" component={ShowReviews} options={{ headerShown: false }} />
+			<Stack.Screen name="ReadReview" component={ReadReview} options={{ headerShown: false }} />
+			<Stack.Screen name="NewLoading" component={NewLoading} options={{ headerShown: false }} />
+		</Stack.Navigator>
+	);
 }
 
 export default classNavigator;

@@ -15,17 +15,16 @@ import ReadReview from '../src/screens/ReadReview.js';
 
 const Stack = createStackNavigator();
 
-function facilitiesNavigator(props) {
-	console.log('postTypeNavigator');
-	console.log(props.route.name);
+function diningNavigatorR(props) {
 	return (
 		<Stack.Navigator>
 			<Stack.Screen
 				name="Buffer"
 				component={Buffer}
-				initialParams={{ index: 1, postType: props.route.name }}
-				options={{ headerShown: false }}
+				initialParams={{ index: 0 }}
+				options={{ headerShown: false, postType: props.route.name }}
 			/>
+
 			<Stack.Screen name="Loading" component={Loading} options={{ headerShown: false }} />
 			<Stack.Screen name="ShowPosts" component={ShowPosts} options={{ headerShown: false }} />
 			<Stack.Screen name="CreatePost" component={CreatePost} options={{ headerShown: false }} />
@@ -40,4 +39,4 @@ function facilitiesNavigator(props) {
 	);
 }
 
-export default facilitiesNavigator;
+export default diningNavigatorR;

@@ -15,7 +15,7 @@ import ReadReview from '../src/screens/ReadReview.js';
 
 const Stack = createStackNavigator();
 
-function facilitiesNavigator(props) {
+function facilitiesNavigatorR(props) {
 	console.log('postTypeNavigator');
 	console.log(props.route.name);
 	return (
@@ -40,4 +40,4 @@ function facilitiesNavigator(props) {
 	);
 }
 
-export default facilitiesNavigator;
+export default facilitiesNavigatorR;
