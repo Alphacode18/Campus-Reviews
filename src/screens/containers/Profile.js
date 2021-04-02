@@ -3,6 +3,8 @@ import { Layout, Text, Button, Spinner, CheckBox } from '@ui-kitten/components';
 import firebase from '../../../config/firebase';
 import { Alert } from 'react-native';
 import { ThemeContext } from '../../../theme-context';
+
+import * as Linking from 'expo-linking';
 import {
   StyleSheet,
   Keyboard,
@@ -71,6 +73,17 @@ export default ProfileScreen = ({ navigation }) => {
     });*/
     }
   };
+  const Anchor = ({href}) => {
+   _handlePress = () => {
+    Linking.openURL(this.props.href);
+    this.props.onPress && this.props.onPress()
+    ;}
+    return (
+      <Button title={this.props.title} onPress={this._handlePress} />
+    );
+  }
+//}
+<Anchor href="mailto://Campus.Reviews.fb@gmail.com" title="Email Expo" /> // change to our email
   const handleEditUsername = () => {
     if (confirmUserName === userName) {
       Alert.alert('New Username must be different from current Username.');
@@ -197,6 +210,7 @@ export default ProfileScreen = ({ navigation }) => {
           TOGGLE THEME
         </Button>
       </ScrollView>
+
     </Layout>
   );
 };
@@ -219,3 +233,4 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
 });
+
