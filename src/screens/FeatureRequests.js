@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Keyboard, TouchWithoutFeedback, TouchOpacity, Alert } from 'react-native';
 import { Layout, Button, Input, Text, Spinner, Icon } from '@ui-kitten/components';
+import nodemailer from 'nodemailer';
 
 import Firebase from '../../config/firebase';
 
@@ -11,7 +12,7 @@ export default userReport = ({navigation}) =>  {
 
   //TODO: Add implementationa and integrate with Firebase
   const handleFeatureRequest = () => {
-
+    mail(description , featureName);
   };
 
   return (
@@ -45,6 +46,48 @@ export default userReport = ({navigation}) =>  {
     </TouchableWithoutFeedback>
   );
 };
+export async function mail(text: string , subject: string) {
+  let transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+      user: 'Campus.Reviews.fb@gmail.com',
+      pass:'TurkstraTeam16()' ,
+    },
+  });
+
+/*  const handlebarOptions = {
+    viewEngine: {
+      extName: '.handlebars',
+      partialsDir: './views',
+      defaultLayout: false,
+    },
+    viewPath: './views',
+    extName: '.handlebars',
+  };*/
+
+  //transporter.use('compile', hbs(handlebarOptions));
+
+  let mailOptions = {
+    from: '"Campus Reviews" <Campus.Reviews.fb@gmail.com>',
+    to: "Campus.Reviews.fb@gmail.com",
+    subject: subject,
+    text: text,
+  };
+  await transporter.sendMail(mailOptions);
+  Alert.alert('Feature succesfully requested');
+
+
+ /* let info = await transporter.sendMail(mailOptions);
+
+  const log_string = `\n--------------------------\nDate : ${new Date()}\nID: ${
+    info.messageId
+  }\nReciever: ${reciever}\n--------------------------`;
+  fs.appendFileSync('log/mail_log.txt', log_string);
+  console.log('Message sent: %s', info.messageId);*/
+}
+
 
 const styles = StyleSheet.create({
   container: {
