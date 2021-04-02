@@ -603,52 +603,6 @@ export default showPosts = ({ navigation, route }) => {
               }}
             />
 
-            <Select style= {
-              {minWidth: screenWidth}
-
-            }
-              selectedIndex={selectedIndex}
-              onSelect={index => setSelectedIndex(index)}>
-              <SelectItem title='Most Recent'/>
-              <SelectItem title='Oldest'/>
-              <SelectItem title='None'/>
-            </Select>
-
-            <Button
-              style={{
-                marginTop: 50,
-              }}
-              title='Back'
-              accessoryLeft={upIcon}
-              onPress={() => {
-                navigation.navigate('Loading', {
-                  index: index,
-                  postType: 'Posts',
-                  sort: 1,
-                });
-              }}
-            />
-
-            <Button
-              style={{
-                marginTop: 50,
-              }}
-              title='Back'
-              accessoryLeft={downIcon}
-              onPress={() => {
-                navigation.navigate('Loading', {
-                  index: index,
-                  postType: 'Posts',
-                  sort: 2,
-                });
-              }}
-            />
-
-            
-
-            
-
-            
 
             <Text
               style={{
@@ -674,6 +628,37 @@ export default showPosts = ({ navigation, route }) => {
               {' '}
               Create{' '}
             </Button>
+            <Select 
+            placeholder={"Sort"}
+            style= {
+              {minWidth: screenWidth, marginTop: 10, marginBottom: 10} 
+            
+            }
+              
+              selectedIndex={selectedIndex}
+              onSelect={index => setSelectedIndex(index)}>
+              <SelectItem title='Most Recent' onPress={() => {
+                navigation.navigate('Loading', {
+                  index: index,
+                  postType: 'Posts',
+                  sort: 1,
+                });
+              }}/>
+              <SelectItem title='Oldest' onPress={() => {
+                navigation.navigate('Loading', {
+                  index: index,
+                  postType: 'Posts',
+                  sort: 2,
+                });
+              }}/>
+              <SelectItem title='Votes' onPress={() => {
+                navigation.navigate('Loading', {
+                  index: index,
+                  postType: 'Posts',
+                  sort: 0,
+                });
+              }}/>
+            </Select>
             <TouchableOpacity>
               <List
                 style={{ maxHeight: 0.6 * screenHeight }}
@@ -685,6 +670,8 @@ export default showPosts = ({ navigation, route }) => {
               />
             </TouchableOpacity>
             <Text style={{ marginBottom: 20 }}></Text>
+            
+
           </ScrollView>
         </Layout>
       </TouchableWithoutFeedback>
