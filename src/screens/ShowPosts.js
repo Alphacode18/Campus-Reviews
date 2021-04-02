@@ -531,7 +531,7 @@ export default (showPosts = ({ navigation, route }) => {
 
 						<Text
 							style={{
-								marginTop: 50,
+								marginTop: 10,
 								marginBottom: 20,
 								fontSize: 36,
 								marginHorizontal: 2

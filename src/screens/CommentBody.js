@@ -141,7 +141,7 @@ export default (CommentBody = ({
 	) : (
 		<React.Fragment>
 			<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 }}>
-				<Text style={{ marginLeft: 16, marginBottom: 8 }}>{commentText}</Text>
+				<Text style={{ marginLeft: 16, marginBottom: 8 }}>{editCommentText}</Text>
 				<Button
 					style={styles.footerControl}
 					size="small"
