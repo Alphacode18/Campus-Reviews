@@ -517,7 +517,7 @@ export default (showPosts = ({ navigation, route }) => {
 							appearance={'ghost'}
 							size={'large'}
 							style={{
-								justifyContent: 'left',
+								justifyContent: 'center',
 								marginLeft: 0.02 * screenWidth,
 								marginTop: 0.1 * screenHeight,
 								maxWidth: 0.1 * screenWidth,
