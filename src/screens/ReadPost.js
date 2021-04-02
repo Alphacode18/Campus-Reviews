@@ -572,7 +572,7 @@ export default (readPost = ({ route, navigation }) => {
 
 						<TouchableOpacity>
 							<List
-								style={{ flex: 1 }}
+								style={{ maxHeight: 0.6 * screenHeight }}
 								data={comments}
 								ItemSeparatorComponent={Divider}
 								// renderItem={<renderItem navigation={navigation} currentUser={currentUser} postIDs={...postIDs} index={index}/>}
