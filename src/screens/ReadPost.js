@@ -544,7 +544,7 @@ export default (readPost = ({ route, navigation }) => {
 													edited: false,
 													editTimestamp: time
 												});
-											comments.push();
+
 											navigation.navigate('NewLoading', {
 												title: title,
 												post: post,
