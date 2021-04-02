@@ -317,6 +317,8 @@ export default (showReviews = ({ navigation, route }) => {
 	}
 	const screenWidth = Dimensions.get('window').width;
 	const screenHeight = Dimensions.get('window').height;
+	const [selectedIndex, setSelectedIndex] = React.useState(new IndexPath(0));
+	const [dispVal, setDispVal] = React.useState("Votes");
 	const ref = Firebase.database().ref(types[index] + ' Reviews/');
 
 	let reviewIDsToReviewsMap = new Map();
@@ -324,6 +326,11 @@ export default (showReviews = ({ navigation, route }) => {
 		for (let idx = 0; idx < tempReviews.length; idx++) {
 			reviewIDsToReviewsMap[reviewIDs[idx]] = reviews[idx];
 		}
+	} else {
+		for (let idx = 0; idx < reviews.length; idx++) {
+			reviewIDsToReviewsMap[reviewIDs[idx]] = reviews[idx];
+		}
+
 	}
 	console.log('map');
 	console.log(reviewIDsToReviewsMap);
@@ -345,23 +352,75 @@ export default (showReviews = ({ navigation, route }) => {
 	ref.off();
 
 	console.log(reviewIDsToReviewsMap[reviewIDs[0]]);
-	reviewIDs.sort(function(b2, a2) {
-		let b = reviewIDsToReviewsMap[b2];
-		let a = reviewIDsToReviewsMap[a2];
-		if (a.votes == b.votes) {
-			return a.createTimestamp > b.createTimestamp ? 1 : a.createTimestamp < b.createTimestamp ? -1 : 0;
-		}
+	console.log("dispVal: ");
+	console.log(dispVal);
 
-		return a.votes > b.votes ? 1 : -1;
-	});
+	if (dispVal === "Recent") {
+		console.log("recent clicked");
+		reviewIDs.sort(function(b2, a2) {
+			let b = reviewIDsToReviewsMap[b2];
+			let a = reviewIDsToReviewsMap[a2];
+			return a.date_time > b.date_time ? 1 : a.date_time < b.date_time ? -1 : 0;
+			
+		});
+	
+		reviews.sort(function(b, a) {
+			return a.date_time > b.date_time ? 1 : a.date_time < b.date_time ? -1 : 0;
+		});
 
-	reviews.sort(function(b, a) {
-		if (a.votes == b.votes) {
-			return a.createTimestamp > b.createTimestamp ? 1 : a.createTimestamp < b.createTimestamp ? -1 : 0;
-		}
+	} else if (dispVal === "Oldest") {
+		reviewIDs.sort(function(b2, a2) {
+			let b = reviewIDsToReviewsMap[b2];
+			let a = reviewIDsToReviewsMap[a2];
+			
+			return a.date_time > b.date_time ? -1 : a.date_time < b.date_time ? 1 : 0;
+			
+		});
+	
+		reviews.sort(function(b, a) {
+			
+			return a.date_time > b.date_time ? -1 : a.date_time < b.date_time ? 1 : 0;
+			
+		});
+	} else if (dispVal === "Votes") {
+		reviewIDs.sort(function(b2, a2) {
+			let b = reviewIDsToReviewsMap[b2];
+			let a = reviewIDsToReviewsMap[a2];
+			if (a.votes == b.votes) {
+				return a.date_time > b.date_time ? 1 : a.date_time < b.date_time ? -1 : 0;
+			}
+	
+			return a.votes > b.votes ? 1 : -1;
+		});
+	
+		reviews.sort(function(b, a) {
+			if (a.votes == b.votes) {
+				return a.date_time > b.date_time ? 1 : a.date_time < b.date_time ? -1 : 0;
+			}
+	
+			return a.votes > b.votes ? 1 : -1;
+		});
 
-		return a.votes > b.votes ? 1 : -1;
-	});
+	} else {
+		reviewIDs.sort(function(b2, a2) {
+			let b = reviewIDsToReviewsMap[b2];
+			let a = reviewIDsToReviewsMap[a2];
+			if (a.votes == b.votes) {
+				return a.date_time > b.date_time ? 1 : a.date_time < b.date_time ? -1 : 0;
+			}
+	
+			return a.votes > b.votes ? 1 : -1;
+		});
+	
+		reviews.sort(function(b, a) {
+			if (a.votes == b.votes) {
+				return a.date_time > b.date_time ? 1 : a.date_time < b.date_time ? -1 : 0;
+			}
+	
+			return a.votes > b.votes ? 1 : -1;
+		});
+	}
+	
 
 	const currentUser = Firebase.auth().currentUser.providerData[0].email.toString();
 
@@ -433,16 +492,24 @@ export default (showReviews = ({ navigation, route }) => {
 							justifyContent: 'center'
 						}}
 					>
+						
 						<Button
-							style={{
-								marginTop: 50
-							}}
 							title="Back"
+							appearance={'ghost'}
+							size={'large'}
+							style={{
+								justifyContent: 'center',
+								marginLeft: 0.02 * screenWidth,
+								marginTop: 0.05 * screenHeight,
+								maxWidth: 0.1 * screenWidth,
+								maxHeight: 0.1 * screenHeight
+							}}
 							accessoryLeft={BackIcon}
 							onPress={() => {
 								navigation.navigate('Buffer');
 							}}
 						/>
+
 						<Text
 							style={{
 								marginBottom: 20,
@@ -463,6 +530,42 @@ export default (showReviews = ({ navigation, route }) => {
 								});
 							}}
 						/>
+						<Select 
+							value={dispVal}
+							
+							style= {
+							{minWidth: screenWidth, marginTop: 10, marginBottom: 10} 
+							}
+							
+							selectedIndex={selectedIndex}
+							onSelect={setIndex => setSelectedIndex(setIndex)}>
+
+							<SelectItem title='Votes' onPress={() => {
+								setDispVal("Votes");
+								// navigation.navigate('Loading', {
+								//   index: index,
+								//   postType: 'Posts',
+								//   sort: 0,
+								// });
+							}}/>
+							<SelectItem title='Recent' onPress={() => {
+								setDispVal("Recent");
+								// navigation.navigate('Loading', {
+								//   index: index,
+								//   postType: 'Posts',
+								//   sort: 1,
+								// });
+							}}/>
+							<SelectItem title='Oldest' onPress={() => {
+								setDispVal("Oldest");
+								// navigation.navigate('Loading', {
+								//   index: index,
+								//   postType: 'Posts',
+								//   sort: 2,
+								// });
+							}}/>
+							
+						</Select>
 						<TouchableOpacity>
 							<List
 								style={{ maxHeight: 0.6 * screenHeight }}

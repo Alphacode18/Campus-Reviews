@@ -29,6 +29,7 @@ import {
 import { Dimensions, View } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
 import Firebase from '../../config/firebase';
+import { BorderlessButton } from 'react-native-gesture-handler';
 
 const types = [ 'Dining', 'On-Campus Facilities', 'Classes', 'Professors' ];
 
@@ -62,11 +63,8 @@ const Header = ({ props, title, user, date, rate }) => (
 				Review
 			</Text>
 		</View>
-		<Text category="s1" style={styles.text}>
-			{' '}
-			{title}{' '}
-		</Text>
-		<Text category="h5" style={styles.text} status="success">
+		
+		<Text category="h5" style={styles.rating}>
 			{' '}
 			({rate}/10)
 		</Text>
@@ -133,7 +131,7 @@ const Footer = ({
 							setTotalVotes(newTotalVotes);
 						}}
 					/>
-					<Text style={{ marginLeft: 5, marginRight: 5, marginTop: 5 }}>{voteString}</Text>
+					<Text style={styles.voteText}>{voteString}</Text>
 					<Button
 						size={dir > 0 ? 'small' : 'small'}
 						status={dir < 0 ? 'warning' : 'basic'}
@@ -230,7 +228,7 @@ const Footer = ({
 							setTotalVotes(newTotalVotes);
 						}}
 					/>
-					<Text style={{ marginLeft: 5, marginRight: 5, marginTop: 5 }}>{voteString}</Text>
+					<Text style={styles.voteText}>{voteString}</Text>
 					<Button
 						size={dir < 0 ? 'small' : 'small'}
 						status={dir < 0 ? 'warning' : 'basic'}
@@ -334,6 +332,9 @@ export default (readReview = ({ route, navigation }) => {
 								/>
 							)}
 						>
+							<Text category="s1" style={styles.title}>
+							{title}{' '}
+							</Text>
 							<Text style={styles.text} category="p1">
 								{text}
 							</Text>
@@ -363,7 +364,24 @@ const styles = StyleSheet.create({
 	commentLeft: {
 		margin: 8
 	},
+	title: {
+		fontWeight: 'bold',
+		fontSize: 20,
+		marginBottom: 10,
+	},
 	commentRight: {
 		margin: 8
+	},
+	rating: {
+		color: "#006400",
+		fontSize: 20,
+	},
+	voteText: {
+		marginLeft: 7, 
+		marginRight: 7, 
+		fontWeight: 'bold',
+		fontSize: 18,
+		marginTop: 5 
 	}
+	
 });

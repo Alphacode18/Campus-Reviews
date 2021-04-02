@@ -340,7 +340,7 @@ export default (readPost = ({ route, navigation }) => {
 	console.log('map');
 	console.log(commentIDstoCommentsMap[commentIDs[0]]);
 	console.log(commentIDstoCommentsMap);
-	if (sortVal == "Recent") {
+	if (sortVal === "Recent") {
 	  commentIDs.sort(function (b2, a2) {
 		let b = commentIDstoCommentsMap[b2];
 		let a = commentIDstoCommentsMap[a2];  
@@ -366,7 +366,7 @@ export default (readPost = ({ route, navigation }) => {
 		
   
 	  });
-	} else if (sortVal == "Oldest") {
+	} else if (sortVal === "Oldest") {
 	  commentIDs.sort(function (b2, a2) {
 		let b = commentIDstoCommentsMap[b2];
 		let a = commentIDstoCommentsMap[a2];
@@ -389,30 +389,6 @@ export default (readPost = ({ route, navigation }) => {
 		  ? 1
 		  : 0;
 	  });
-	} else if (sortVal == "Votes") {
-		commentIDs.sort(function (b2, a2) {
-			let b = commentIDstoCommentsMap[b2];
-			let a = commentIDstoCommentsMap[a2];  
-			console.log("a:b");
-			console.log(a.createTimestamp);
-			console.log(b.createTimestamp);
-			
-			return a.createTimestamp > b.createTimestamp
-			  ? 1
-			  : a.createTimestamp < b.createTimestamp
-			  ? -1
-			  : 0;
-		  });
-	  
-		  comments.sort(function (b, a) {
-			return a.createTimestamp > b.createTimestamp
-			  ? 1
-			  : a.createTimestamp < b.createTimestamp
-			  ? -1
-			  : 0;
-			
-	  
-		  });
 	} else {
 		commentIDs.sort(function (b2, a2) {
 			let b = commentIDstoCommentsMap[b2];
@@ -494,11 +470,18 @@ export default (readPost = ({ route, navigation }) => {
 			<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
 				<Layout style={styles.container} level={'1'}>
 					<ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+						
 						<Button
-							style={{
-								marginTop: 50
-							}}
 							title="Back"
+							appearance={'ghost'}
+							size={'large'}
+							style={{
+								justifyContent: 'center',
+								marginLeft: 0.02 * screenWidth,
+								marginTop: 0.05 * screenHeight,
+								maxWidth: 0.1 * screenWidth,
+								maxHeight: 0.1 * screenHeight
+							}}
 							accessoryLeft={BackIcon}
 							onPress={() => {
 								navigation.navigate('ShowPosts', {
@@ -507,7 +490,7 @@ export default (readPost = ({ route, navigation }) => {
 									tempPostIDs: postIDs
 								});
 							}}
-						/>	
+						/>
 						
 						<Card
 							style={styles.card}
