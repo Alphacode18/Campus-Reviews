@@ -7,7 +7,8 @@ import {
 	ScrollView,
 	TextInput,
 	KeyboardAvoidingView,
-	Alert
+	Alert,
+	EdgeInsetsPropType
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {
@@ -112,20 +113,21 @@ export default (CommentBody = ({
 										'editTimestamp'
 								] = datetime;
 								Firebase.database().ref().update(updates);
+								posts[i].commentText = editCommentText;
 
-								// navigation.navigate('NewLoading', {
-								// 	title: title,
-								// 	post: post,
-								// 	postId: postId,
-								// 	user: user,
-								// 	index: index,
-								// 	currentUser: currentUser,
-								// 	i: i,
-								// 	upvoteSet: upvoteSet,
-								// 	downvoteSet: downvoteSet,
-								// 	posts: posts,
-								// 	postIDs: postIDs
-								// });
+								navigation.navigate('NewLoading', {
+									title: title,
+									post: post,
+									postId: postId,
+									user: user,
+									index: index,
+									currentUser: currentUser,
+									i: i,
+									upvoteSet: upvoteSet,
+									downvoteSet: downvoteSet,
+									posts: posts,
+									postIDs: postIDs
+								});
 								setEditing(false);
 							} else {
 								Alert.alert('Please add text to your comment!');
