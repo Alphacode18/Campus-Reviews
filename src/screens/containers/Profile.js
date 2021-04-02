@@ -3,7 +3,7 @@ import { Layout, Text, Button, Spinner, CheckBox } from '@ui-kitten/components';
 import firebase from '../../../config/firebase';
 import { Alert } from 'react-native';
 import { ThemeContext } from '../../../theme-context';
-//import { Text } from 'react-native';
+
 import * as Linking from 'expo-linking';
 import {
   StyleSheet,
@@ -73,17 +73,20 @@ export default ProfileScreen = ({ navigation }) => {
     });*/
     }
   };
-  const Anchor = ({href}) => {
+  //}
+const Anchor = ({href}) => {
    _handlePress = () => {
-    Linking.openURL(this.props.href);
-    this.props.onPress && this.props.onPress()
-    ;}
+    //Linking.openURL(this.props.href);
+    Linking.openURL(href);
+   // this.props.onPress && this.props.onPress();
+   this.onPress && this.onPress();
+    };
     return (
-      <Button title={this.props.title} onPress={this._handlePress} />
+      <Button title={'BUTTON NAME'} onPress={this._handlePress} />
     );
   }
-//}
-<Anchor href="mailto://Campus.Reviews.fb@gmail.com" title="Email Expo" /> // change to our email
+
+
   const handleEditUsername = () => {
     if (confirmUserName === userName) {
       Alert.alert('New Username must be different from current Username.');
@@ -145,6 +148,8 @@ export default ProfileScreen = ({ navigation }) => {
         >
           <Text>Change Password</Text>
         </Button>
+<Anchor href="mailto://Campus.Reviews.fb@gmail.com" title="Email Expo" />
+
         <Text style={{ padding: 4, marginTop: 15 }}>Edit your User Name</Text>
         <Input
           style={styles.inputBox}
@@ -233,3 +238,4 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
 });
+
