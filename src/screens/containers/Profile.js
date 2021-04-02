@@ -76,10 +76,10 @@ export default ProfileScreen = ({ navigation }) => {
   const Anchor = ({href}) => {
    _handlePress = () => {
     Linking.openURL(this.props.href);
-    this.props.onPress && this.props.onPress()
-    ;}
+    this.props.onPress && this.props.onPress();
+    };
     return (
-      <Button title={this.props.title} onPress={this._handlePress} />
+      <Button title={'BUTTON NAME'} onPress={this._handlePress} />
     );
   }
 //}
