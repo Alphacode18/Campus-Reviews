@@ -35,6 +35,9 @@ const types = ['Dining', 'On-Campus Facilities', 'Classes', 'Professors'];
 export default loading = ({ navigation, route }) => {
   const index = route.params.index; 
   const postType = route.params.postType;
+  const sort = route.params.sort;
+  console.log("sort: ");
+  console.log(sort);
   const db = Firebase.database();
   let posts = [];
   let fields = [];
@@ -49,10 +52,24 @@ export default loading = ({ navigation, route }) => {
                 });
             });
         })
-
-        navigation.navigate('Show' + postType, {
+        if (sort == 1) {
+          navigation.navigate('Show' + postType, {
+              index: index,
+              sort: 1,
+          });
+        } else if (sort == 2) {
+          navigation.navigate('Show' + postType, {
             index: index,
+            sort: 2,
         });
+        } else {
+          navigation.navigate('Show' + postType, {
+            index: index,
+            sort: 0,
+        });
+
+        }
+        
     });
   }, 2000);
 
