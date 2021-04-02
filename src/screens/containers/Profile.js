@@ -82,9 +82,40 @@ const Anchor = ({href}) => {
    this.onPress && this.onPress();
     };
     return (
-      <Button title={'BUTTON NAME'} onPress={this._handlePress} />
+      <Button style={{ marginTop:20 }} onPress={this._handlePress} >
+      REQUEST A FEATURE
+      </Button>
     );
   }
+
+const Anchor2 = ({href}) => {
+   _handlePress = () => {
+    //Linking.openURL(this.props.href);
+    Linking.openURL(href);
+   // this.props.onPress && this.props.onPress();
+   this.onPress && this.onPress();
+    };
+    return (
+      <Button style={{ marginTop:20 }} onPress={this._handlePress} >
+      REPORT A USER
+      </Button>
+    );
+  }
+const Anchor3 = ({href}) => {
+   _handlePress = () => {
+    //Linking.openURL(this.props.href);
+    Linking.openURL(href);
+   // this.props.onPress && this.props.onPress();
+   this.onPress && this.onPress();
+    };
+    return (
+      <Button style={{ marginTop:20 }} onPress={this._handlePress} >
+      REPORT A BUG
+      </Button>
+    );
+  }
+
+
 
 
   const handleEditUsername = () => {
@@ -148,7 +179,11 @@ const Anchor = ({href}) => {
         >
           <Text>Change Password</Text>
         </Button>
-<Anchor href="mailto://Campus.Reviews.fb@gmail.com" title="Email Expo" />
+<Anchor href="mailto:Campus.Reviews.fb@gmail.com?subject=Feature Request&body=Request your feature below this line!\n" title="Email Expo" />
+
+<Anchor2 href="mailto:Campus.Reviews.fb@gmail.com?subject=User Report&body=Enter the user you're reporting, as well as any reasons below\n" title="Email Expo" />
+
+<Anchor3 href="mailto:Campus.Reviews.fb@gmail.com?subject=Bug Report&body=Describe the issue you're encountering below\n" title="Email Expo" />
 
         <Text style={{ padding: 4, marginTop: 15 }}>Edit your User Name</Text>
         <Input
@@ -238,4 +273,3 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
 });
-
