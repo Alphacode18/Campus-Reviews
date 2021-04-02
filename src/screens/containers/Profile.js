@@ -80,6 +80,7 @@ const Anchor = ({href}) => {
     Linking.openURL(href);
    // this.props.onPress && this.props.onPress();
    this.onPress && this.onPress();
+   Alert.alert('Feature succesfully requested');
     };
     return (
       <Button style={{ marginTop:20 }} onPress={this._handlePress} >
@@ -94,6 +95,7 @@ const Anchor2 = ({href}) => {
     Linking.openURL(href);
    // this.props.onPress && this.props.onPress();
    this.onPress && this.onPress();
+   Alert.alert('User succesfully reported');
     };
     return (
       <Button style={{ marginTop:20 }} onPress={this._handlePress} >
@@ -107,6 +109,7 @@ const Anchor3 = ({href}) => {
     Linking.openURL(href);
    // this.props.onPress && this.props.onPress();
    this.onPress && this.onPress();
+   Alert.alert('Bug reported');
     };
     return (
       <Button style={{ marginTop:20 }} onPress={this._handlePress} >
