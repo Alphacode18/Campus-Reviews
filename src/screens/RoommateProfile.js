@@ -56,6 +56,17 @@ export default (roommateProfile = ({ navigation, route }) => {
 								alignItems: 'center'
 							}}
 						>
+							<Text
+								style={{
+									marginTop: 30,
+									marginBottom: 20,
+									fontSize: 36,
+									marginHorizontal: 2
+								}}
+							>
+								{' '}
+								{'Roommate Profile'}{' '}
+							</Text>
 							<View
 								style={{
 									flexDirection: 'row',
