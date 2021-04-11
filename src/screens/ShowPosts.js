@@ -30,11 +30,12 @@ import InputScrollView from 'react-native-input-scroll-view';
 import { Dimensions } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
 import Firebase from '../../config/firebase';
-import { useScrollToTop } from '@react-navigation/native';
+import { CurrentRenderContext, useScrollToTop } from '@react-navigation/native';
 import { render } from 'react-dom';
 import { Circle } from 'react-native-svg';
 // import Post from './Post.js';
 
+const admins = new Set();
 const types = [ 'Dining', 'On-Campus Facilities', 'Classes', 'Professors' ];
 let posts = [];
 let postIDs = [];
@@ -75,6 +76,11 @@ const renderHeader = () => (
 		/>
 	</Layout>
 );
+
+const initializeAdmins = () => {
+	admins.add('rrajash@purdue.edu');
+	admins.add('seela@purdue.edu');
+};
 
 const getDisplayTime = (curTime, time) => {
 	const diff = Math.floor((curTime - time) / 1000);
@@ -132,7 +138,7 @@ const Footer = ({ props, title, post, postID, navigation, index, user, currentUs
 
 	const downIcon = (props) => <Icon {...props} name="arrow-downward-outline" />;
 
-	return user == currentUser ? (
+	return user == currentUser || admins.has(currentUser) ? (
 		<React.Fragment>
 			<View style={{ flexDirection: 'row', margin: 3 }}>
 				<View {...props} style={{ flexDirection: 'row', flex: 0.5, margin: 3 }}>
@@ -323,6 +329,7 @@ const renderIcon = ({ props, navigation }) => (
 );
 
 export default (showPosts = ({ navigation, route }) => {
+	initializeAdmins();
 	const index = route.params.index;
 	const [ selectedIndex, setSelectedIndex ] = React.useState(new IndexPath(0));
 	const [ dispVal, setDispVal ] = React.useState('Votes');
