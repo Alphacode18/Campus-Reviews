@@ -218,14 +218,17 @@ const Footer = ({
 					<Button
 						style={styles.footerControl}
 						size="small"
-						accessoryLeft={editIcon}
+						appearance={currentUser != user ? 'ghost' : null}
+						accessoryLeft={currentUser == user ? editIcon : null}
 						onPress={() => {
-							navigation.navigate('EditPost', {
-								title: title,
-								post: post,
-								postID: postID,
-								index: index
-							});
+							if (currentUser == user) {
+								navigation.navigate('EditPost', {
+									title: title,
+									post: post,
+									postID: postID,
+									index: index
+								});
+							}
 						}}
 					/>
 				</View>
@@ -541,7 +544,8 @@ export default (readPost = ({ route, navigation }) => {
 									onChangeText={(commentText) => setCommentText(commentText)}
 								/>
 								<Button
-									status="basic"
+									style={{ marginRight: 10 }}
+									appearance={'ghost'}
 									accessoryLeft={plusIcon}
 									onPress={() => {
 										if (!(commentText === '')) {

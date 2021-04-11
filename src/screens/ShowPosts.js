@@ -232,14 +232,17 @@ const Footer = ({ props, title, post, postID, navigation, index, user, currentUs
 					<Button
 						style={styles.footerControl}
 						size="small"
-						accessoryLeft={editIcon}
+						appearance={currentUser != user ? 'ghost' : null}
+						accessoryLeft={currentUser == user ? editIcon : null}
 						onPress={() => {
-							navigation.navigate('EditPost', {
-								title: title,
-								post: post,
-								postID: postID,
-								index: index
-							});
+							if (currentUser == user) {
+								navigation.navigate('EditPost', {
+									title: title,
+									post: post,
+									postID: postID,
+									index: index
+								});
+							}
 						}}
 					/>
 				</View>
