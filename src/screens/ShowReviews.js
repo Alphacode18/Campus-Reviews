@@ -28,6 +28,8 @@ import { HeaderHeightContext } from '@react-navigation/stack';
 import Firebase from '../../config/firebase';
 import { useScrollToTop } from '@react-navigation/native';
 
+const admins = new Set();
+
 const types = [ 'Dining', 'On-Campus Facilities', 'Classes', 'Professors' ];
 
 const rateVal = [ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10' ];
@@ -44,6 +46,11 @@ const plusIcon = (props) => <Icon {...props} name="plus" />;
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 const renderBackAction = () => <Icon icon={BackIcon} />;
+
+const initializeAdmins = () => {
+	admins.add('rrajash@purdue.edu');
+	admins.add('seela@purdue.edu');
+};
 
 const renderHeader = () => (
 	<Layout
@@ -131,7 +138,7 @@ const Footer = ({
 	const upIcon = (props) => <Icon {...props} name="arrow-upward-outline" />;
 
 	const downIcon = (props) => <Icon {...props} name="arrow-downward-outline" />;
-	return user == currentUser ? (
+	return user == currentUser || admins.has(currentUser) ? (
 		<React.Fragment>
 			<View style={{ flexDirection: 'row', margin: 3 }}>
 				<View {...props} style={{ flexDirection: 'row', flex: 0.5, margin: 3 }}>
@@ -225,15 +232,18 @@ const Footer = ({
 					<Button
 						style={styles.footerControl}
 						size="small"
-						accessoryLeft={editIcon}
+						appearance={currentUser != user ? 'ghost' : null}
+						accessoryLeft={currentUser == user ? editIcon : null}
 						onPress={() => {
-							navigation.navigate('EditReview', {
-								review_title: title,
-								review_text: text,
-								index: index,
-								review_rate: rate,
-								review_id: review_id
-							});
+              if (currentUser == user) {
+								navigation.navigate('EditReview', {
+                  review_title: title,
+                  review_text: text,
+                  index: index,
+                  review_rate: rate,
+                  review_id: review_id
+								});
+							}
 						}}
 					/>
 				</View>
@@ -309,7 +319,8 @@ const Footer = ({
 };
 
 export default (showReviews = ({ navigation, route }) => {
-	const index = route.params.index;
+	initializeAdmins();
+  const index = route.params.index;
 	let { tempReviews, tempReviewIDs } = route.params;
 	if (tempReviews != undefined && tempReviews.length > 0) {
 		reviews = tempReviews;
@@ -498,7 +509,7 @@ export default (showReviews = ({ navigation, route }) => {
 							appearance={'ghost'}
 							size={'large'}
 							style={{
-								justifyContent: 'center',
+								justifyContent: 'left',
 								marginLeft: 0.02 * screenWidth,
 								marginTop: 0.05 * screenHeight,
 								maxWidth: 0.1 * screenWidth,
