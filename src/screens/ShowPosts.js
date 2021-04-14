@@ -1,4 +1,4 @@
-import React, { useState, ReactDOM, useReducer } from 'react';
+import React, { useState, useEffect, ReactDOM, useReducer } from 'react';
 import {
 	StyleSheet,
 	TouchableWithoutFeedback,
@@ -8,7 +8,8 @@ import {
 	KeyboardAvoidingView,
 	View,
 	TouchableOpacity,
-	Alert
+	Alert,
+	SafeAreaView
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {
@@ -334,13 +335,16 @@ const renderIcon = ({ props, navigation }) => (
 export default (showPosts = ({ navigation, route }) => {
 	initializeAdmins();
 	const index = route.params.index;
+	let { tempPosts, tempPostIDs } = route.params;
+	const [ dbPosts, setDbPosts ] = useState([]);
+	const [ dbPostIDs, setDbPostIDs ] = useState([]);
 	const [ selectedIndex, setSelectedIndex ] = React.useState(new IndexPath(0));
 	const [ dispVal, setDispVal ] = React.useState('Votes');
-	console.log('Index path: ');
-	console.log(selectedIndex.row);
-
 	const sort = route.params.sort;
-	let { tempPosts, tempPostIDs } = route.params;
+
+	const screenWidth = Dimensions.get('window').width;
+	const screenHeight = Dimensions.get('window').height;
+
 	if (tempPosts != undefined && tempPosts.length > 0) {
 		posts = tempPosts;
 		postIDs = tempPostIDs;
@@ -349,13 +353,41 @@ export default (showPosts = ({ navigation, route }) => {
 		console.log('posts');
 		console.log(posts);
 	}
-	const screenWidth = Dimensions.get('window').width;
-	const screenHeight = Dimensions.get('window').height;
+
 	const ref = Firebase.database().ref(types[index] + ' Posts/');
+
+	useEffect(() => {
+		if (tempPosts == undefined) {
+			console.log('entered db');
+			ref.on('value', (snapshot) => {
+				console.log('ref');
+				let n = posts.length;
+				for (let i = 0; i < n; i++) {
+					posts.pop();
+					postIDs.pop();
+				}
+				let index = 0;
+				snapshot.forEach(function(data) {
+					setDbPosts((dbPosts) => [ ...dbPosts, data.toJSON() ]);
+					setDbPostIDs((dbPostIDs) => [ ...dbPostIDs, data.key ]);
+					console.log('postsDB');
+					console.log(dbPostIDs);
+					console.log(dbPosts);
+					index++;
+				});
+
+				ref.off();
+			});
+		}
+	}, []);
+
+	posts = dbPosts;
+	postIDs = dbPostIDs;
+	console.log('posts');
+	console.log(dbPostIDs);
+	console.log(dbPosts);
+
 	let postIDsToPostsMap = new Map();
-	console.log('map');
-	console.log(postIDsToPostsMap);
-	console.log(posts);
 	if (tempPosts != undefined && tempPosts.length > 0) {
 		for (let idx = 0; idx < tempPosts.length; idx++) {
 			postIDsToPostsMap[postIDs[idx]] = posts[idx];
@@ -366,22 +398,6 @@ export default (showPosts = ({ navigation, route }) => {
 		}
 	}
 
-	ref.on('value', (snapshot) => {
-		console.log('ref');
-		let n = posts.length;
-		for (let i = 0; i < n; i++) {
-			posts.pop();
-			postIDs.pop();
-		}
-		let index = 0;
-		snapshot.forEach(function(data) {
-			posts.push(data.toJSON());
-			postIDs.push(data.key);
-			postIDsToPostsMap[postIDs[index]] = posts[index];
-			index++;
-		});
-	});
-	ref.off();
 	console.log('map');
 	console.log(postIDsToPostsMap[postIDs[0]]);
 	console.log(postIDsToPostsMap);
@@ -514,117 +530,119 @@ export default (showPosts = ({ navigation, route }) => {
 		<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
 			<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
 				<Layout style={styles.container} level={'1'}>
-					<ScrollView
-						contentContainerStyle={{
-							flexGrow: 1,
-							width: screenWidth,
-							alignItems: 'center',
-							justifyContent: 'center'
-						}}
-					>
-						<Button
-							title="Back"
-							appearance={'ghost'}
-							size={'large'}
-							style={{
-								justifyContent: 'left',
-								marginLeft: 0.02 * screenWidth,
-								marginTop: 0.05 * screenHeight,
-								maxWidth: 0.1 * screenWidth,
-								maxHeight: 0.1 * screenHeight
+					<SafeAreaView>
+						<ScrollView
+							contentContainerStyle={{
+								flexGrow: 1,
+								width: screenWidth,
+								alignItems: 'center',
+								justifyContent: 'center'
 							}}
-							accessoryLeft={BackIcon}
-							onPress={() => {
-								navigation.navigate('Buffer');
-							}}
-						/>
+						>
+							<Button
+								title="Back"
+								appearance={'ghost'}
+								size={'large'}
+								style={{
+									justifyContent: 'left',
+									marginLeft: 0.02 * screenWidth,
+									marginTop: 0.05 * screenHeight,
+									maxWidth: 0.1 * screenWidth,
+									maxHeight: 0.1 * screenHeight
+								}}
+								accessoryLeft={BackIcon}
+								onPress={() => {
+									navigation.navigate('Buffer');
+								}}
+							/>
 
-						<Text
-							style={{
-								marginTop: 50,
-								marginBottom: 20,
-								fontSize: 36,
-								marginHorizontal: 2
-							}}
-						>
-							{' '}
-							{types[index]}{' '}
-						</Text>
-						<Button
-							status="basic"
-							accessoryLeft={plusIcon}
-							onPress={() => {
-								navigation.navigate('CreatePost', {
-									index: index,
-									currentUser: currentUser
-								});
-							}}
-						>
-							{' '}
-							Create{' '}
-						</Button>
-						<Select
-							value={dispVal}
-							style={{ minWidth: screenWidth, marginTop: 10, marginBottom: 10 }}
-							selectedIndex={selectedIndex}
-							onSelect={(setIndex) => setSelectedIndex(setIndex)}
-						>
-							<SelectItem
-								title="Votes"
-								onPress={() => {
-									setDispVal('Votes');
-									// navigation.navigate('Loading', {
-									//   index: index,
-									//   postType: 'Posts',
-									//   sort: 0,
-									// });
+							<Text
+								style={{
+									marginTop: 50,
+									marginBottom: 20,
+									fontSize: 36,
+									marginHorizontal: 2
 								}}
-							/>
-							<SelectItem
-								title="Recent"
+							>
+								{' '}
+								{types[index]}{' '}
+							</Text>
+							<Button
+								status="basic"
+								accessoryLeft={plusIcon}
 								onPress={() => {
-									setDispVal('Recent');
-									// navigation.navigate('Loading', {
-									//   index: index,
-									//   postType: 'Posts',
-									//   sort: 1,
-									// });
+									navigation.navigate('CreatePost', {
+										index: index,
+										currentUser: currentUser
+									});
 								}}
-							/>
-							<SelectItem
-								title="Oldest"
+							>
+								{' '}
+								Create{' '}
+							</Button>
+							<Select
+								value={dispVal}
+								style={{ minWidth: screenWidth, marginTop: 10, marginBottom: 10 }}
+								selectedIndex={selectedIndex}
+								onSelect={(setIndex) => setSelectedIndex(setIndex)}
+							>
+								<SelectItem
+									title="Votes"
+									onPress={() => {
+										setDispVal('Votes');
+										// navigation.navigate('Loading', {
+										//   index: index,
+										//   postType: 'Posts',
+										//   sort: 0,
+										// });
+									}}
+								/>
+								<SelectItem
+									title="Recent"
+									onPress={() => {
+										setDispVal('Recent');
+										// navigation.navigate('Loading', {
+										//   index: index,
+										//   postType: 'Posts',
+										//   sort: 1,
+										// });
+									}}
+								/>
+								<SelectItem
+									title="Oldest"
+									onPress={() => {
+										setDispVal('Oldest');
+										// navigation.navigate('Loading', {
+										//   index: index,
+										//   postType: 'Posts',
+										//   sort: 2,
+										// });
+									}}
+								/>
+							</Select>
+							<Button
 								onPress={() => {
-									setDispVal('Oldest');
-									// navigation.navigate('Loading', {
-									//   index: index,
-									//   postType: 'Posts',
-									//   sort: 2,
-									// });
+									navigation.navigate('RoommateProfile', {
+										currentUser: currentUser
+									});
 								}}
-							/>
-						</Select>
-						<Button
-							onPress={() => {
-								navigation.navigate('RoommateProfile', {
-									currentUser: currentUser
-								});
-							}}
-						>
-							{' '}
-							Create Roommate Profile{' '}
-						</Button>
-						<TouchableOpacity>
-							<List
-								style={{ maxHeight: 0.6 * screenHeight }}
-								data={posts}
-								ItemSeparatorComponent={Divider}
-								// renderItem={<renderItem navigation={navigation} currentUser={currentUser} postIDs={...postIDs} index={index}/>}
-								renderItem={renderItem}
-								ListHeaderComponent={renderHeader}
-							/>
-						</TouchableOpacity>
-						<Text style={{ marginBottom: 20 }} />
-					</ScrollView>
+							>
+								{' '}
+								Create Roommate Profile{' '}
+							</Button>
+							<TouchableOpacity>
+								<List
+									style={{ maxHeight: 0.6 * screenHeight }}
+									data={posts}
+									ItemSeparatorComponent={Divider}
+									// renderItem={<renderItem navigation={navigation} currentUser={currentUser} postIDs={...postIDs} index={index}/>}
+									renderItem={renderItem}
+									ListHeaderComponent={renderHeader}
+								/>
+							</TouchableOpacity>
+							<Text style={{ marginBottom: 20 }} />
+						</ScrollView>
+					</SafeAreaView>
 				</Layout>
 			</TouchableWithoutFeedback>
 		</KeyboardAvoidingView>
