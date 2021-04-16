@@ -9,10 +9,22 @@ import {
 	textarea,
 	Alert,
 	View,
-	SafeAreaView
+	SafeAreaView,
+	ViewComponent
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Layout, Text, Button, Input, Select, SelectItem, IndexPath, Icon, Radio } from '@ui-kitten/components';
+import {
+	Layout,
+	Text,
+	Button,
+	Input,
+	Select,
+	SelectItem,
+	IndexPath,
+	Icon,
+	Radio,
+	RadioGroup
+} from '@ui-kitten/components';
 import InputScrollView from 'react-native-input-scroll-view';
 import { Dimensions } from 'react-native';
 import Slider from '@react-native-community/slider';
@@ -52,7 +64,9 @@ export default (roommateProfile = ({ navigation, route }) => {
 	const [ borrowVal, setborrowVal ] = useState(0);
 	const [ noiseVal, setnoiseVal ] = useState(0);
 	const [ neatVal, setneatVal ] = useState(0);
-	const [ checked, setChecked ] = React.useState(false);
+	const [ checkSmoker, setCheckSmoker ] = useState(false);
+	const [ checkSex, setCheckSex ] = useState(false);
+	const [ para, setPara ] = useState('');
 	const today = new Date();
 	const time = today.getTime();
 
@@ -138,6 +152,40 @@ export default (roommateProfile = ({ navigation, route }) => {
 									onChangeText={(major) => setMajor(major)}
 								/>
 							</View>
+							<View
+								style={{
+									marginBottom: 10,
+									flexDirection: 'row',
+									justifyContent: 'flex-start',
+									alignItems: 'flex-start'
+								}}
+							>
+								<Text style={{ marginTop: 5, marginRight: 10 }}>{'Sex:'}</Text>
+								<RadioGroup
+									style={{
+										flexDirection: 'row',
+										justifyContent: 'flex-start',
+										alignItems: 'flex-start'
+									}}
+									selectedIndex={checkSex}
+									onChange={(index) => setCheckSex(index)}
+								>
+									<Radio>Male</Radio>
+									<Radio>Female</Radio>
+								</RadioGroup>
+							</View>
+							<View style={{ marginBottom: 10, flexDirection: 'row', justifyContent: 'flex-start' }}>
+								<Text style={{ marginTop: 5, marginRight: 10 }}>{'Are you a smoker?'}</Text>
+								<RadioGroup
+									style={{ flexDirection: 'row' }}
+									selectedIndex={checkSmoker}
+									onChange={(index) => setCheckSmoker(index)}
+								>
+									<Radio>Yes</Radio>
+									<Radio>No</Radio>
+								</RadioGroup>
+							</View>
+							<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }} />
 							<View style={{ marginBottom: 10, alignItems: 'center' }}>
 								<Text style={{ marginTop: 5 }}>{'How early do you go to bed?'}</Text>
 								<Text style={{ marginTop: 5 }}>{questions[0][bedtimeVal]}</Text>
@@ -154,7 +202,7 @@ export default (roommateProfile = ({ navigation, route }) => {
 							</View>
 							<View style={{ marginBottom: 10, alignItems: 'center' }}>
 								<Text style={{ marginTop: 5 }}>
-									{'How much time a day do you spend on videogames?'}
+									{'How much time a day do you spend on \n\t\t\t\tvideogames?'}
 								</Text>
 								<Text style={{ marginTop: 5 }}>{questions[1][videogameVal]}</Text>
 								<Slider
@@ -212,7 +260,7 @@ export default (roommateProfile = ({ navigation, route }) => {
 							</View>
 							<View style={{ marginBottom: 10, alignItems: 'center' }}>
 								<Text style={{ marginTop: 5 }}>
-									{'How often will you need to borrow items from your roommate?'}
+									{'How often will you need to borrow items \n\t\t\tfrom your roommate?'}
 								</Text>
 								<Text style={{ marginTop: 5 }}>{questions[4][borrowVal]}</Text>
 								<Slider
@@ -227,7 +275,7 @@ export default (roommateProfile = ({ navigation, route }) => {
 								/>
 							</View>
 							<View style={{ marginBottom: 10, alignItems: 'center' }}>
-								<Text style={{ marginTop: 5 }}>{'What is your noise tolerance level'}</Text>
+								<Text style={{ marginTop: 5 }}>{'What is your noise tolerance level?'}</Text>
 								<Text style={{ marginTop: 5 }}>{questions[5][noiseVal]}</Text>
 								<Slider
 									style={{ width: 200, height: 40 }}
@@ -241,7 +289,7 @@ export default (roommateProfile = ({ navigation, route }) => {
 								/>
 							</View>
 							<View style={{ marginBottom: 10, alignItems: 'center' }}>
-								<Text style={{ marginTop: 5 }}>{'How neat are you'}</Text>
+								<Text style={{ marginTop: 5 }}>{'How neat are you?'}</Text>
 								<Text style={{ marginTop: 5 }}>{questions[6][neatVal]}</Text>
 								<Slider
 									style={{ width: 200, height: 40 }}
@@ -254,13 +302,42 @@ export default (roommateProfile = ({ navigation, route }) => {
 									maximumTrackTintColor="#000000"
 								/>
 							</View>
-							<View style={{ marginBottom: 10, alignItems: 'center' }}>
-								<Text style={{ marginTop: 5 }}>{'Are you a smoker?'}</Text>
-								<Radio checked={checked} onChange={(nextChecked) => setChecked(nextChecked)}>
-									{'Click if true'}
-								</Radio>
+							<View style={{ marginTop: 10, marginBottom: 10 }}>
+								<Text style={{ marginBottom: 10 }}> Tell us about yourself.</Text>
+								<Input
+									multiline={true}
+									textStyle={{ minHeight: 256, maxHeight: 256 }}
+									style={{ width: '90%', paddingTop: 5 }}
+									placeholder="Enter text here..."
+									value={para}
+									onChangeText={(para) => setPara(para)}
+								/>
 							</View>
-							<Button>Submit</Button>
+							<Button
+								appearance="outline"
+								style={{ marginBottom: 20 }}
+								onPress={() => {
+									navigation.navigate('AssignPriority', {
+										name: name,
+										email: email,
+										year: academicYears[selectedIndex.row],
+										major: major,
+										sex: checkSex ? 'Male' : 'Female',
+										isSmoker: checkSmoker ? 'Yes' : 'No',
+										bedtimeVal: bedtimeVal,
+										videogameVal: videogameVal,
+										academicVal: academicVal,
+										socialVal: socialVal,
+										peopleVal: peopleVal,
+										borrowVal: borrowVal,
+										noiseVal: noiseVal,
+										neatVal: neatVal,
+										para: para
+									});
+								}}
+							>
+								Next
+							</Button>
 						</ScrollView>
 					</View>
 				</SafeAreaView>
