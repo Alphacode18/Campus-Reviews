@@ -605,7 +605,7 @@ export default (showPosts = ({ navigation, route }) => {
 						</Select>
 						<Button
 							onPress={() => {
-								navigation.navigate('RoommateProfile', {
+								navigation.navigate('RoommateHome', {
 									currentUser: currentUser
 								});
 							}}

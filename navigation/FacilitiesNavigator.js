@@ -14,6 +14,7 @@ import ShowReviews from '../src/screens/ShowReviews.js';
 import ReadReview from '../src/screens/ReadReview.js';
 import RoommateProfile from '../src/screens/RoommateProfile.js';
 import AssignPriority from '../src/screens/AssignPriority.js';
+import RoommateHome from '../src/screens/RoommateHome.js';
 
 const Stack = createStackNavigator();
 
@@ -38,6 +39,7 @@ function classNavigator() {
 			<Stack.Screen name="NewLoading" component={NewLoading} options={{ headerShown: false }} />
 			<Stack.Screen name="RoommateProfile" component={RoommateProfile} options={{ headerShown: false }} />
 			<Stack.Screen name="AssignPriority" component={AssignPriority} options={{ headerShown: false }} />
+			<Stack.Screen name="RoommateHome" component={RoommateHome} options={{ headerShown: false }} />
 		</Stack.Navigator>
 	);
 }
