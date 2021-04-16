@@ -32,6 +32,7 @@ import Firebase from '../../config/firebase';
 
 export default (assignPriority = ({ navigation, route }) => {
 	const {
+		currentUser,
 		name,
 		email,
 		year,
@@ -58,6 +59,48 @@ export default (assignPriority = ({ navigation, route }) => {
 	const [ t6, setT6 ] = useState('');
 	const [ t7, setT7 ] = useState('');
 	const [ t8, setT8 ] = useState('');
+	const map = new Map();
+	const map2 = new Map();
+	let currentAlias = currentUser.substr(0, currentUser.indexOf('@'));
+
+	const validate = () => {
+		if ((t1 === '' || t1.length > 1 || t1 < '1' || t1 > '8') ||
+			(t2 === '' || t2.length > 1 || t2 < '1' || t2 > '8') ||
+			(t3 === '' || t3.length > 1 || t3 < '1' || t3 > '8') ||
+			(t4 === '' || t4.length > 1 || t4 < '1' || t4 > '8') ||
+			(t5 === '' || t5.length > 1 || t5 < '1' || t5 > '8') ||
+			(t6 === '' || t6.length > 1 || t6 < '1' || t6 > '8') ||
+			(t7 === '' || t7.length > 1 || t7 < '1' || t7 > '8') ||
+			(t8 === '' || t8.length > 1 || t8 < '1' || t8 > '8')) {
+				return false;
+			}
+		else {
+			const set = new Set([t1, t2, t3, t4, t5, t6, t7, t8]);
+			return (set.size === 8);
+		}
+	};
+
+	const initializeMap = () => {
+		map[t1] = 1;
+		map[t2] = 2;
+		map[t3] = 3;
+		map[t4] = 4;
+		map[t5] = 5;
+		map[t6] = 6;
+		map[t7] = 7;
+		map[t8] = 8;
+
+		map2[bedtimeVal + 'bedtimeVal'] = '1';
+		map2[videogameVal + 'videogameVal'] = '2';
+		map2[academicVal + 'academicVal'] = '3';
+		map2[socialVal + 'socialVal'] = '4';
+		map2[peopleVal + 'peopleVal'] = '5';
+		map2[borrowVal + 'borrowVal'] = '6';
+		map2[noiseVal + 'noiseVal'] = '7';
+		map2[neatVal + 'neatVal'] = '8';
+
+	};
+
 
 	return (
 		<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
@@ -127,7 +170,37 @@ export default (assignPriority = ({ navigation, route }) => {
 								</View>
 							</View>
 							<View style={{ marginTop: 10, alignItems: 'center' }}>
-								<Button appearance="outline"> Done </Button>
+
+								<Button appearance="outline" onPress={() => {
+									if (validate() == true) {
+
+										initializeMap();
+
+										Firebase.database().ref('/Roommate Profile/' + currentAlias + '/').push({
+											name: name,
+											email: email,
+											year: year,
+											major: major,
+											sex: sex,
+											isSmoker: isSmoker,
+											bedtimeVal: [bedtimeVal, map[map2[bedtimeVal + 'bedtimeVal']]],
+											videogameVal: [videogameVal, map[map2[videogameVal + 'videogameVal']]],
+											academicVal: [academicVal, map[map2[academicVal + 'academicVal']]],
+											socialVal: [socialVal, map[map2[socialVal + 'socialVal']]],
+											peopleVal: [peopleVal, map[map2[peopleVal + 'peopleVal']]],
+											borrowVal: [borrowVal, map[map2[borrowVal + 'borrowVal']]],
+											noiseVal: [noiseVal, map[map2[noiseVal + 'noiseVal']]],
+											neatVal: [neatVal, map[map2[neatVal + 'neatVal']]],
+											para: para
+										});
+
+										navigation.navigate('Buffer');
+									}
+									else {
+										Alert.alert('Please fill in all fields with unique numbers from 1-8.');
+									}
+								}}> Done </Button>
+								
 							</View>
 							<Text>_______________________________________</Text>
 							<View style={{ marginTop: 20, alignItems: 'center', flexDirection: 'row' }}>

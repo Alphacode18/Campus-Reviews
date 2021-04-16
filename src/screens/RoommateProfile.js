@@ -47,7 +47,6 @@ const questions = [
 const ExitIcon = (props) => <Icon {...props} name="close-outline" />;
 
 export default (roommateProfile = ({ navigation, route }) => {
-	console.log('roommate profile');
 	const currentUser = route.params.currentUser;
 	const [ name, setName ] = useState('');
 	const [ email, setEmail ] = useState('');
@@ -69,11 +68,25 @@ export default (roommateProfile = ({ navigation, route }) => {
 	const [ para, setPara ] = useState('');
 	const today = new Date();
 	const time = today.getTime();
+	const [ filledSex, setFilledSex ] = useState(false);
+	const [ filledSmoker, setFilledSmoker ] = useState(false);
 
 	const changeAcademicYearSelection = (selectedIndex) => {
 		console.log('selectedIndex');
 		console.log(selectedIndex);
 		setSelectedIndex(selectedIndex);
+	};
+
+	const validate = () => {
+		console.log(filledSex);
+		console.log(filledSmoker);
+		if (name === '' || email === '' || major === '' ||
+			filledSex == false || filledSmoker == false) {
+				return false;
+			}
+		else {
+			return true;
+		}
 	};
 
 	return (
@@ -168,7 +181,10 @@ export default (roommateProfile = ({ navigation, route }) => {
 										alignItems: 'flex-start'
 									}}
 									selectedIndex={checkSex}
-									onChange={(index) => setCheckSex(index)}
+									onChange={(index) => {
+										setCheckSex(index);
+										setFilledSex(true);
+									}}
 								>
 									<Radio>Male</Radio>
 									<Radio>Female</Radio>
@@ -178,8 +194,12 @@ export default (roommateProfile = ({ navigation, route }) => {
 								<Text style={{ marginTop: 5, marginRight: 10 }}>{'Are you a smoker?'}</Text>
 								<RadioGroup
 									style={{ flexDirection: 'row' }}
+
 									selectedIndex={checkSmoker}
-									onChange={(index) => setCheckSmoker(index)}
+									onChange={(index) => {
+										setCheckSmoker(index);
+										setFilledSmoker(true);
+									}}
 								>
 									<Radio>Yes</Radio>
 									<Radio>No</Radio>
@@ -317,23 +337,30 @@ export default (roommateProfile = ({ navigation, route }) => {
 								appearance="outline"
 								style={{ marginBottom: 20 }}
 								onPress={() => {
-									navigation.navigate('AssignPriority', {
-										name: name,
-										email: email,
-										year: academicYears[selectedIndex.row],
-										major: major,
-										sex: checkSex ? 'Male' : 'Female',
-										isSmoker: checkSmoker ? 'Yes' : 'No',
-										bedtimeVal: bedtimeVal,
-										videogameVal: videogameVal,
-										academicVal: academicVal,
-										socialVal: socialVal,
-										peopleVal: peopleVal,
-										borrowVal: borrowVal,
-										noiseVal: noiseVal,
-										neatVal: neatVal,
-										para: para
-									});
+									if (validate() == true) {
+
+										navigation.navigate('AssignPriority', {
+											currentUser: currentUser,
+											name: name,
+											email: email,
+											year: academicYears[selectedIndex.row],
+											major: major,
+											sex: checkSex === 0 ? 'Male' : 'Female',
+											isSmoker: checkSmoker === 0 ? 'Yes' : 'No',
+											bedtimeVal: bedtimeVal,
+											videogameVal: videogameVal,
+											academicVal: academicVal,
+											socialVal: socialVal,
+											peopleVal: peopleVal,
+											borrowVal: borrowVal,
+											noiseVal: noiseVal,
+											neatVal: neatVal,
+											para: para
+										});
+									}
+									else {
+										Alert.alert('Please fill in all fields.');
+									}
 								}}
 							>
 								Next
