@@ -1,4 +1,4 @@
-import React, { useState, ReactDOM, useReducer } from 'react';
+import React, { useState, useEffect, ReactDOM, useReducer } from 'react';
 import {
 	StyleSheet,
 	TouchableWithoutFeedback,
@@ -20,9 +20,47 @@ import { useScrollToTop } from '@react-navigation/native';
 import { render } from 'react-dom';
 
 const types = [ 'Dining', 'On-Campus Facilities', 'Classes', 'Professors' ];
+let profileKeys = [];
+let userProfiles = [];
+let profileNames = [];
+let currentUserProfile = null;
 
-export default (roommateHome = ({ navigation, route }) => {
+export default (FindRoommates = ({ navigation, route }) => {
 	const currentUser = route.params.currentUser;
+	let currentAlias = currentUser.substr(0, currentUser.indexOf('@'));
+	const [ profiles, setProfiles ] = useState([]);
+	const ref = Firebase.database().ref('/Roommate Profile');
+
+	useEffect(() => {
+		ref.on('value', (snapshot) => {
+			let n = profiles.length;
+			for (let i = 0; i < n; i++) {
+				profiles.pop();
+			}
+			snapshot.forEach(function(data) {
+				if (data.key === 'currentAlias') {
+					currentUserProfile = data.toJSON();
+				} else {
+					profileNames.push(data.key);
+					setProfiles((profiles) => [ ...profiles, data.toJSON() ]);
+				}
+			});
+
+			ref.off();
+		});
+	}, []);
+
+	for (let i = 0; i < profiles.length; i++) {
+		for (let key in profiles[i]) {
+			profileKeys[i] = key;
+		}
+	}
+
+	for (let i = 0; i < profiles.length; i++) {
+		let temp = profiles[i];
+		let temp2 = profileKeys[i];
+		userProfiles[i] = temp[temp2];
+	}
 
 	return (
 		<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -37,14 +75,7 @@ export default (roommateHome = ({ navigation, route }) => {
 					{' '}
 					Profile{' '}
 				</Button>
-				<Button
-					style={{ marginTop: 20 }}
-					onPress={() => {
-						navigation.navigate('FindRoommates', {
-							currentUser: currentUser
-						});
-					}}
-				>
+				<Button style={{ marginTop: 20 }} onPress={() => {}}>
 					{' '}
 					Find Roommates{' '}
 				</Button>
