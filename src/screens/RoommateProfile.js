@@ -102,6 +102,12 @@ export default (roommateProfile = ({ navigation, route }) => {
 								alignItems: 'center'
 							}}
 						>
+
+							<Button status="basic" onPress={() => navigation.navigate('Buffer')}>
+								{' '}
+								Back{' '}
+							</Button>
+
 							<Text
 								style={{
 									marginTop: 30,

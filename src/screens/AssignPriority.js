@@ -114,7 +114,12 @@ export default (assignPriority = ({ navigation, route }) => {
 								alignItems: 'center'
 							}}
 						>
-							<View style={{ justifyContent: 'center' }}>
+							<Button status="basic" onPress={() => navigation.navigate('RoommateProfile')}>
+								{' '}
+								Back{' '}
+							</Button>
+
+							<View style={{ justifyContent: 'center', marginTop: 20 }}>
 								<Text style={{ fontSize: 16 }}>
 									{'Please order the questions you just answered in terms of importance.'}
 								</Text>
