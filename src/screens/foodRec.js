@@ -1,6 +1,6 @@
 //TODO: Integrate with the latest version of homescreen
 import React, { useState } from 'react';
-import { StyleSheet, Keyboard, TouchWithoutFeedback, TouchOpacity, Alert } from 'react-native';
+import { StyleSheet, Keyboard, TouchWithoutFeedback, TouchableWithoutFeedback,TouchOpacity, Alert } from 'react-native';
 import { Layout, Button, Input, Text, Spinner, Icon } from '@ui-kitten/components';
 
 import Firebase from '../../config/firebase';
@@ -10,7 +10,7 @@ export default foodRec = ({navigation}) =>  {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <Layout style={styles.container} level={'1'}>
         <Text category='h1' style={{ padding: 20, marginTop: 50 }}>
-          Edit your User Name
+          FoodRec Page
         </Text>
       </Layout>
     </TouchableWithoutFeedback>
