@@ -95,7 +95,30 @@ export default (FindRoommates = ({ navigation, route }) => {
 		return;
 	};
 
-	const RenderMatches = (profileMatches) => {};
+	const RenderMatches = (profileMatches) => {
+
+		if (profileMatches.length > 1) {
+
+			profileMatches.map((profileMatch, i)) {
+
+				return (
+					<Card
+						style={styles.card}
+						onPress={() => {}}
+					>
+						<Text>{profileMatch.name}</Text>
+						<Text>{profileMatch.email}</Text>
+					</Card>
+				);
+			}
+		}
+		else {
+			return (
+				<Text>NO MATCHES! :(</Text>
+			);
+		}
+
+	};
 
 	return (
 		<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
