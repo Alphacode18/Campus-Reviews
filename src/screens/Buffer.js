@@ -54,6 +54,15 @@ export default buffer = (props) => {
                     postType: 'Posts'
                   });
             }}> Posts </Button>
+
+            <Button style={   
+              {marginTop: 20}
+            } onPress={() => {
+                  props.navigation.navigate('rec', {
+                    index: props.route.params.index,
+                    postType: 'Posts'
+                  });
+            }}> Recommendations </Button>
         </Layout>
     </TouchableWithoutFeedback>
   );

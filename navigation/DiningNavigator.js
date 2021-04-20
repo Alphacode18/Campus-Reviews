@@ -12,6 +12,7 @@ import CreateReview from '../src/screens/CreateReview.js';
 import EditReview from '../src/screens/EditReview.js';
 import ShowReviews from '../src/screens/ShowReviews.js';
 import ReadReview from '../src/screens/ReadReview.js';
+import foodRec from '../src/screens/foodRec';
 
 const Stack = createStackNavigator();
 
@@ -28,6 +29,11 @@ function diningNavigator() {
        <Stack.Screen
         name='Loading'
         component={Loading}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name='rec'
+        component={foodRec}
         options={{ headerShown: false }}
       />
       <Stack.Screen
