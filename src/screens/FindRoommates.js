@@ -99,7 +99,7 @@ export default (FindRoommates = ({ navigation, route }) => {
 
 		if (profileMatches.length > 1) {
 
-			profileMatches.map((profileMatch, i)) {
+			profileMatches.map((profileMatch, i)); {
 
 				return (
 					<Card
