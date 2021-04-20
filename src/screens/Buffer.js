@@ -31,12 +31,19 @@ import { useScrollToTop } from '@react-navigation/native';
 import { render } from 'react-dom';
 
 const types = ['Dining', 'On-Campus Facilities', 'Classes', 'Professors'];
+var isDining = false;
+
 
 export default buffer = (props) => {
   console.log('Buffer Index');
   console.log(props.route.params);
   console.log(props.route.params.index);
+  if (props.route.params.index == 0) {
+    isDining = true;
+    console.log("Dining selected");
+  }
 
+  
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <Layout style={styles.container} level={'1'}>
@@ -55,14 +62,28 @@ export default buffer = (props) => {
                   });
             }}> Posts </Button>
 
-            <Button style={   
-              {marginTop: 20}
-            } onPress={() => {
-                  props.navigation.navigate('rec', {
-                    index: props.route.params.index,
-                    postType: 'Posts'
-                  });
-            }}> Recommendations </Button>
+            {isDining ? <Button style={   
+                {marginTop: 20}
+              } onPress={() => {
+                    props.navigation.navigate('rec', {
+                      
+                    });
+              }}> Recommendations </Button> : console.log("not dining") } 
+              
+
+            
+            
+
+            
+
+            
+
+            
+              
+
+            
+
+            
         </Layout>
     </TouchableWithoutFeedback>
   );
