@@ -20,17 +20,28 @@ import { useScrollToTop } from '@react-navigation/native';
 import { render } from 'react-dom';
 
 const types = [ 'Dining', 'On-Campus Facilities', 'Classes', 'Professors' ];
-const MAX_SCORE = 144; // summation of 4n from 1 to 8
-const THRESHOLD = 0.3; // determines whether score is good enough for a match
+const MAX_SCORE = 576; // summation of 4*4n from 1 to 8
+const THRESHOLD = 0.25; // determines whether score is good enough for a match
 
 export default (FindRoommates = ({ navigation, route }) => {
 	const { currentUser, userProfiles, currentUserProfile } = route.params;
 	let profileMatches = [];
 	const matchToScoreMap = new Map();
 
+	console.log("in find roommates");
+
+
 	const calcHeuristic = (userProfiles, currentUserProfile) => {
-		for (let i = 0; i < userProfiles; i++) {
-			if (userProfiles[i].isSmoker === userProfiles[i].isSmoker) {
+		console.log("userProfiles");
+		//console.log(userProfiles.length);
+		for (let i = 0; i < userProfiles.length; i++) {
+			console.log("in the loop");
+			console.log(currentUserProfile)
+			if (userProfiles[i].isSmoker != currentUserProfile.isSmoker) {
+				console.log("in the smoker if");
+				console.log(userProfiles[i].isSmoker)
+				console.log(currentUserProfile.isSmoker)
+				
 				continue;
 			}
 			let other = userProfiles[i];
@@ -86,7 +97,11 @@ export default (FindRoommates = ({ navigation, route }) => {
 
 			// Minimize "distance" between individuals. Higher score means worse match.
 			let matchScore = (scoreUser + scoreOther) / 2 / MAX_SCORE;
-			if (matchScore < THRESHOLD) {
+			console.log("matchScore");
+			console.log(matchScore);
+			if (matchScore <= 1) {
+				console.log("matchScore");
+				console.log(matchScore);
 				profileMatches.push(other);
 				matchToScoreMap[other] = matchScore;
 			}
@@ -95,9 +110,16 @@ export default (FindRoommates = ({ navigation, route }) => {
 		return;
 	};
 
+
+	calcHeuristic(userProfiles, currentUserProfile);
+
 	const RenderMatches = (profileMatches) => {
 
-		if (profileMatches.length > 1) {
+		console.log("plength");
+		console.log(profileMatches.length);
+
+
+		if (profileMatches.length > 0) {
 
 			profileMatches.map((profileMatch, i)); {
 
@@ -123,6 +145,10 @@ export default (FindRoommates = ({ navigation, route }) => {
 	return (
 		<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
 			<Layout style={styles.container} level={'1'}>
+				<Button status="basic" onPress={() => navigation.navigate('Buffer')}>
+									{' '}
+									Back{' '}
+				</Button>
 				<RenderMatches profileMatches={profileMatches} />
 			</Layout>
 		</TouchableWithoutFeedback>

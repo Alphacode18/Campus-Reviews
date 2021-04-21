@@ -1,4 +1,4 @@
-import React, { useState, ReactDOM, useReducer } from 'react';
+import React, { useState, ReactDOM, useReducer, useEffect } from 'react';
 import {
 	StyleSheet,
 	TouchableWithoutFeedback,
@@ -62,6 +62,7 @@ export default (roommateHome = ({ navigation, route }) => {
 		userProfiles[i] = temp[temp2];
 	}
 
+
 	return (
 		<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
 			<Layout style={styles.container} level={'1'}>
@@ -78,7 +79,16 @@ export default (roommateHome = ({ navigation, route }) => {
 				<Button
 					style={{ marginTop: 20 }}
 					onPress={() => {
-						if (currentUser != null) {
+						//console.log("userProfiles");
+						//console.log(currentUserProfile.isSmoker);
+						if (currentUserProfile != null) {
+							for(let key in currentUserProfile) {
+								console.log("key");
+								console.log(currentUserProfile[key]);
+								currentUserProfile = currentUserProfile[key];
+							}
+							console.log("userProfiles -- ismoker");
+							console.log(currentUserProfile.isSmoker);
 							navigation.navigate('FindRoommates', {
 								currentUser: currentUser,
 								userProfiles: userProfiles,
