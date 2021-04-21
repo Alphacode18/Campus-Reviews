@@ -25,13 +25,12 @@ const THRESHOLD = 0.25; // determines whether score is good enough for a match
 
 export default (FindRoommates = ({ navigation, route }) => {
 	const { currentUser, userProfiles, currentUserProfile } = route.params;
-	let profileMatches = [];
 	const matchToScoreMap = new Map();
 
 	console.log("in find roommates");
 
 
-	const calcHeuristic = (userProfiles, currentUserProfile) => {
+	function calcHeuristic (userProfiles, currentUserProfile, profileMatches) {
 		console.log("userProfiles");
 		//console.log(userProfiles.length);
 		for (let i = 0; i < userProfiles.length; i++) {
@@ -107,14 +106,15 @@ export default (FindRoommates = ({ navigation, route }) => {
 			}
 		}
 
-		return;
+		return profileMatches;
 	};
 
 
-	calcHeuristic(userProfiles, currentUserProfile);
+	const RenderMatches = (userProfiles, currentUserProfile, calcHeuristic) => {
 
-	const RenderMatches = (profileMatches) => {
+		let profileMatches = [];
 
+		profileMatches = calcHeuristic(userProfiles, currentUserProfile, []);
 		console.log("plength");
 		console.log(profileMatches.length);
 
@@ -149,7 +149,7 @@ export default (FindRoommates = ({ navigation, route }) => {
 									{' '}
 									Back{' '}
 				</Button>
-				<RenderMatches profileMatches={profileMatches} />
+				<RenderMatches userProfiles={userProfiles} currentUserProfile={currentUserProfile} calcHeuristic={calcHeuristic} />
 			</Layout>
 		</TouchableWithoutFeedback>
 	);
