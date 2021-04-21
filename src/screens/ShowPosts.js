@@ -1,4 +1,4 @@
-import React, { useState, ReactDOM, useReducer } from 'react';
+import React, { useState, ReactDOM, useReducer, useEffect } from 'react';
 import {
   StyleSheet,
   TouchableWithoutFeedback,
@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import filter from 'lodash.filter';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {
   Layout,
@@ -54,44 +55,6 @@ const upIcon = (props) => <Icon {...props} name='arrow-upward-outline' />;
 const downIcon = (props) => <Icon {...props} name='arrow-downward-outline' />;
 
 const renderBackAction = () => <TopNavigationAction icon={BackIcon} />;
-
-const renderHeader = () => (
-  <Layout
-    style={{
-      padding: 10,
-      alignItems: 'center',
-      justifyContent: 'center',
-    }}
-  >
-    <Input
-      autoCapitalize='none'
-      status='info'
-      placeholder='Search'
-      style={{
-        borderRadius: 25,
-        borderColor: '#333',
-      }}
-      textStyle={{ color: '#000' }}
-    />
-  </Layout>
-);
-
-//Search Bar Related Code
-const handleSearch = (text) => {
-  const formattedQuery = text.toLowerCase();
-  const data = filter(fullData, (user) => {
-    return contains(user, formattedQuery);
-  });
-  setData(data);
-  setQuery(text);
-};
-const contains = ({ name, email }, query) => {
-  const { first, last } = name;
-  if (first.includes(query) || last.includes(query) || email.includes(query)) {
-    return true;
-  }
-  return false;
-};
 
 const getDisplayTime = (curTime, time) => {
   const diff = Math.floor((curTime - time) / 1000);
@@ -386,13 +349,44 @@ const renderIcon = ({ props, navigation }) => (
 );
 
 export default showPosts = ({ navigation, route }) => {
-  const [searchData, setSearchData] = useState(posts);
   const index = route.params.index;
   const [selectedIndex, setSelectedIndex] = React.useState(new IndexPath(0));
   const [dispVal, setDispVal] = React.useState('Votes');
   console.log('Index path: ');
   console.log(selectedIndex.row);
 
+  //Search For Me And You'll Find Me.
+  const [query, setQuery] = useState('');
+  const [data, setData] = useState(posts);
+
+  const handleSearch = () => {
+    const formattedQuery = query.toLowerCase();
+    if (formattedQuery === '') {
+      navigation.navigate('Loading', {
+        index: index,
+        postType: 'Posts',
+      });
+    } else {
+      const filtered_data = [];
+      for (let i = 0; i < data.length; i++) {
+        console.log('Data' + ' ' + data[i].title);
+        console.log(query);
+        if (data[i].title.toLowerCase().includes(formattedQuery)) {
+          filtered_data.push(data[i]);
+        }
+      }
+      if (filtered_data.isEmpty()) {
+        Alert.alert('No results found');
+      }
+      setData(filtered_data);
+    }
+  };
+
+  const renderSearchIcon = (props) => (
+    <TouchableWithoutFeedback onPress={handleSearch}>
+      <Icon {...props} name={'search-outline'} />
+    </TouchableWithoutFeedback>
+  );
   const sort = route.params.sort;
   let { tempPosts, tempPostIDs } = route.params;
   if (tempPosts != undefined && tempPosts.length > 0) {
@@ -434,6 +428,7 @@ export default showPosts = ({ navigation, route }) => {
       postIDsToPostsMap[postIDs[index]] = posts[index];
       index++;
     });
+    setData(posts);
   });
   ref.off();
   console.log('map');
@@ -694,12 +689,30 @@ export default showPosts = ({ navigation, route }) => {
             </Select>
             <TouchableOpacity>
               <List
-                style={{ maxHeight: 0.6 * screenHeight }}
-                data={posts}
+                style={{
+                  maxHeight: 0.6 * screenHeight,
+                  minWidth: 0.95 * screenWidth,
+                }}
+                data={data}
                 ItemSeparatorComponent={Divider}
                 // renderItem={<renderItem navigation={navigation} currentUser={currentUser} postIDs={...postIDs} index={index}/>}
                 renderItem={renderItem}
-                ListHeaderComponent={renderHeader}
+                ListHeaderComponent={
+                  <Layout
+                    style={{
+                      padding: 10,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Input
+                      placeholder='Search'
+                      value={query}
+                      onChangeText={(query) => setQuery(query)}
+                      accessoryRight={renderSearchIcon}
+                    />
+                  </Layout>
+                }
               />
             </TouchableOpacity>
             <Text style={{ marginBottom: 20 }}></Text>
