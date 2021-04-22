@@ -380,26 +380,30 @@ export default showReviews = ({ navigation, route }) => {
   const ref = Firebase.database().ref(types[index] + ' Reviews/');
   //Search For Me And You'll Find Me.
   const [query, setQuery] = useState('');
-  const [data, setData] = useState(posts);
+  const [data, setData] = useState(reviews);
 
   const handleSearch = () => {
     const formattedQuery = query.toLowerCase();
     if (formattedQuery === '') {
       navigation.navigate('Loading', {
         index: index,
-        postType: 'Posts',
+        postType: 'Reviews',
       });
     } else {
       const filtered_data = [];
       for (let i = 0; i < data.length; i++) {
-        console.log('Data' + ' ' + data[i].title);
+        console.log('Data' + ' ' + data[i].review_title);
         console.log(query);
-        if (data[i].title.toLowerCase().includes(formattedQuery)) {
+        if (data[i].review_title.toLowerCase().includes(formattedQuery)) {
           filtered_data.push(data[i]);
         }
       }
-      if (filtered_data.isEmpty()) {
+      if (filtered_data.length === 0) {
         Alert.alert('No results found');
+        navigation.navigate('Loading', {
+          index: index,
+          postType: 'Reviews',
+        });
       }
       setData(filtered_data);
     }
@@ -437,7 +441,7 @@ export default showReviews = ({ navigation, route }) => {
       reviewIDsToReviewsMap[reviewIDs[index]] = reviews[index];
       index++;
     });
-    setData(posts);
+    setData(reviews);
   });
   ref.off();
 

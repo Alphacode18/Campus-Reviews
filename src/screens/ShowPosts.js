@@ -375,10 +375,14 @@ export default showPosts = ({ navigation, route }) => {
           filtered_data.push(data[i]);
         }
       }
-      if (filtered_data.isEmpty()) {
-        Alert.alert('No results found');
-      }
       setData(filtered_data);
+      if (filtered_data.length === 0) {
+        Alert.alert('No results found');
+        navigation.navigate('Loading', {
+          index: index,
+          postType: 'Posts',
+        });
+      }
     }
   };
 
