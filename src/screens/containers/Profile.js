@@ -23,6 +23,7 @@ export default ProfileScreen = ({ navigation }) => {
   const [newEmail, setNewEmail] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [newUsername, setNewUsername] = useState('');
   const [userName, setUsername] = useState('');
   const [confirmUserName, setConfirmUserName] = useState('');
   const user = firebase.auth().currentUser;
@@ -137,10 +138,11 @@ export default ProfileScreen = ({ navigation }) => {
     );
   };
 
-  const handleEditUsername = () => {
-    if (confirmUserName === userName) {
-      Alert.alert('New Username must be different from current Username.');
-    }
+  const handleEditUsername = async () => {
+  const data = db.collection('users').doc(user['uid']);
+  const res = await data.update({username: newUsername});
+  setUsername(newUsername);
+  Alert.alert('The username has been updated');
   };
 
   return (
@@ -233,18 +235,9 @@ export default ProfileScreen = ({ navigation }) => {
         <Input
           style={styles.inputBox}
           placeholder='New User Name'
-          value={userName}
+          value={newUsername}
           autoCapitalize='none'
-          onChangeText={(userName) => setUsername(userName)}
-        />
-        <Input
-          style={styles.inputBox}
-          placeholder='Confirm User Name'
-          value={confirmUserName}
-          autoCapitalize='none'
-          onChangeText={(confirmUserName) =>
-            setConfirmUserName(confirmUserName)
-          }
+          onChangeText={(newUsername) => setNewUsername(newUsername)}
         />
         <Button
           onPress={handleEditUsername}
