@@ -5,6 +5,9 @@ import {
   TouchableWithoutFeedback,
   Alert,
   Keyboard,
+  ScrollView,
+  Dimensions,
+  View
 } from 'react-native';
 import Constants from 'expo-constants';
 const { manifest } = Constants;
@@ -15,9 +18,12 @@ import {
   Button,
   Spinner,
   Icon,
+  Popover,
+  CheckBox
 } from '@ui-kitten/components';
 import Firebase from '../../config/firebase';
 import axios from 'axios';
+import TandC from './TandC.js';
 
 export default register = ({ navigation }) => {
   const [username, setUsername] = useState('');
@@ -26,6 +32,16 @@ export default register = ({ navigation }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [visible, setVisible] = React.useState(false);
+  const [checked, setChecked] = React.useState(false);
+  const screenWidth = Dimensions.get('window').width;
+	const screenHeight = Dimensions.get('window').height;
+
+  const renderToggleButton = () => (
+    <Button onPress={() => setVisible(true)}>
+      Terms and Conditions
+    </Button>
+  );
 
   const AlertIcon = (props) => <Icon {...props} name='alert-circle-outline' />;
 
@@ -44,6 +60,10 @@ export default register = ({ navigation }) => {
    * Read Through Firebase Docs & firebase.config before implementation
    */
   const handleRegistrations = async () => {
+    if (checked == false) {
+      Alert.alert('Please agree to Terms and Conditions.');
+      return;
+    }
     const uri = `http://${manifest.debuggerHost
       .split(':')
       .shift()}:3000/${email}`;
@@ -78,6 +98,14 @@ export default register = ({ navigation }) => {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <Layout style={styles.container} level={'1'}>
+      <View contentContainerStyle={{ flex: 1, height: screenHeight }}>
+      <ScrollView
+							contentContainerStyle={{
+								flexGrow: 1,
+								width: screenWidth,
+                alignItems: 'center'
+							}}
+						>
         <Text category='h1' style={{ padding: 20, marginTop: 50 }}>
           Welcome To Campus Reviews!
         </Text>
@@ -111,6 +139,26 @@ export default register = ({ navigation }) => {
             setConfirmPassword(confirmPassword)
           }
         />
+        
+        <Popover
+          style = {{minWidth: 0.95*screenWidth, minHeight: 0.95*screenHeight}}
+          backdropStyle={styles.backdrop}
+          visible={visible}
+          anchor={renderToggleButton}
+          onBackdropPress={() => setVisible(false)}>
+          <Layout>
+          
+            <TandC/>
+            
+          </Layout>
+        </Popover>
+
+        <CheckBox
+          checked={checked}
+          onChange={nextChecked => setChecked(nextChecked)}>
+          {`I agree to Terms and Conditions`}
+        </CheckBox>
+
         <Button
           onPress={handleRegistrations}
           style={{ width: '50%', borderRadius: 20, marginTop: 20 }}
@@ -127,6 +175,8 @@ export default register = ({ navigation }) => {
             <Text style={{ textDecorationLine: 'underline' }}>Login</Text>
           </Text>
         </TouchableOpacity>
+        </ScrollView>
+        </View>
       </Layout>
     </TouchableWithoutFeedback>
   );
@@ -145,5 +195,17 @@ const styles = StyleSheet.create({
     padding: 15,
     fontSize: 16,
     textAlign: 'center',
+  },
+  content: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 4,
+    paddingVertical: 8,
+  },
+  avatar: {
+    marginHorizontal: 4,
+  },
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
 });
