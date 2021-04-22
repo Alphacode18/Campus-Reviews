@@ -8,7 +8,8 @@ import {
 	KeyboardAvoidingView,
 	View,
 	TouchableOpacity,
-	Alert
+	Alert,
+	SafeAreaView
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Layout, Text, Button, Input, Select, SelectItem, IndexPath, Icon, Card, Spinner } from '@ui-kitten/components';
@@ -26,21 +27,23 @@ const THRESHOLD = 0.25; // determines whether score is good enough for a match
 export default (FindRoommates = ({ navigation, route }) => {
 	const { currentUser, userProfiles, currentUserProfile } = route.params;
 	const matchToScoreMap = new Map();
+	const screenWidth = Dimensions.get('window').width;
+	const screenHeight = Dimensions.get('window').height;
 
-	console.log("in find roommates");
+	console.log('in find roommates');
 
-
-	function calcHeuristic (userProfiles, currentUserProfile, profileMatches) {
-		console.log("userProfiles");
+	const calcHeuristic = () => {
+		console.log('userProfiles');
 		//console.log(userProfiles.length);
+		let profileMatches = [];
 		for (let i = 0; i < userProfiles.length; i++) {
-			console.log("in the loop");
-			console.log(currentUserProfile)
+			console.log('in the loop');
+			console.log(currentUserProfile);
 			if (userProfiles[i].isSmoker != currentUserProfile.isSmoker) {
-				console.log("in the smoker if");
-				console.log(userProfiles[i].isSmoker)
-				console.log(currentUserProfile.isSmoker)
-				
+				console.log('in the smoker if');
+				console.log(userProfiles[i].isSmoker);
+				console.log(currentUserProfile.isSmoker);
+
 				continue;
 			}
 			let other = userProfiles[i];
@@ -96,10 +99,10 @@ export default (FindRoommates = ({ navigation, route }) => {
 
 			// Minimize "distance" between individuals. Higher score means worse match.
 			let matchScore = (scoreUser + scoreOther) / 2 / MAX_SCORE;
-			console.log("matchScore");
+			console.log('matchScore');
 			console.log(matchScore);
-			if (matchScore <= 1) {
-				console.log("matchScore");
+			if (matchScore <= 0.25) {
+				console.log('matchScore');
 				console.log(matchScore);
 				profileMatches.push(other);
 				matchToScoreMap[other] = matchScore;
@@ -109,47 +112,85 @@ export default (FindRoommates = ({ navigation, route }) => {
 		return profileMatches;
 	};
 
-
-	const RenderMatches = (userProfiles, currentUserProfile, calcHeuristic) => {
-
-		let profileMatches = [];
-
-		profileMatches = calcHeuristic(userProfiles, currentUserProfile, []);
-		console.log("plength");
+	const RenderMatches = () => {
+		let profileMatches = calcHeuristic();
+		console.log('plength');
 		console.log(profileMatches.length);
 
+		profileMatches.sort(function(a, b) {
+			return matchToScoreMap[b] - matchToScoreMap[a];
+		});
 
-		if (profileMatches.length > 0) {
-
-			profileMatches.map((profileMatch, i)); {
-
-				return (
-					<Card
-						style={styles.card}
-						onPress={() => {}}
-					>
-						<Text>{profileMatch.name}</Text>
-						<Text>{profileMatch.email}</Text>
-					</Card>
-				);
-			}
-		}
-		else {
-			return (
-				<Text>NO MATCHES! :(</Text>
-			);
-		}
-
+		return profileMatches.length > 0 ? (
+			<React.Fragment>
+				{profileMatches.map(function(profileMatch, i) {
+					return (
+						<Layout style={styles.container} level={'1'}>
+							<Card
+								style={{ minWidth: 0.95 * screenWidth }}
+								onPress={() => {
+									navigation.navigate('ReadRoommateProfile', {
+										profileMatch: profileMatch,
+										matchToScoreMap: matchToScoreMap
+									});
+								}}
+							>
+								<View
+									style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}
+								>
+									<Text>{profileMatch.name}</Text>
+									<Text>
+										{'Similarity: ' + (100 - Math.floor(100 * matchToScoreMap[profileMatch])) + '%'}
+									</Text>
+								</View>
+								<Text>{profileMatch.email}</Text>
+							</Card>
+							<Card style={{ minWidth: 0.95 * screenWidth }}>
+								<Text>{profileMatch.name}</Text>
+								<Text>{profileMatch.email}</Text>
+							</Card>
+							<Card style={{ minWidth: 0.95 * screenWidth }}>
+								<Text>{profileMatch.name}</Text>
+								<Text>{profileMatch.email}</Text>
+							</Card>
+						</Layout>
+					);
+				})}
+			</React.Fragment>
+		) : (
+			<Layout style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} level={'1'}>
+				<React.Fragment>
+					<Text>{'NO MATCHES! :('}</Text>
+				</React.Fragment>
+			</Layout>
+		);
 	};
 
 	return (
 		<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
 			<Layout style={styles.container} level={'1'}>
-				<Button status="basic" onPress={() => navigation.navigate('Buffer')}>
-									{' '}
-									Back{' '}
-				</Button>
-				<RenderMatches userProfiles={userProfiles} currentUserProfile={currentUserProfile} calcHeuristic={calcHeuristic} />
+				<SafeAreaView>
+					<Button
+						status="basic"
+						style={{ maxWidth: 0.3 * screenWidth, maxHeight: 0.1 * screenHeight }}
+						onPress={() => navigation.navigate('Buffer')}
+					>
+						{' '}
+						Back{' '}
+					</Button>
+					<Text
+						style={{
+							marginTop: 50,
+							marginBottom: 20,
+							fontSize: 36,
+							marginHorizontal: 2
+						}}
+					>
+						{'   '}
+						Find Roommates{' '}
+					</Text>
+					<RenderMatches />
+				</SafeAreaView>
 			</Layout>
 		</TouchableWithoutFeedback>
 	);
@@ -159,6 +200,6 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		alignItems: 'center',
-		justifyContent: 'center'
+		justifyContent: 'flex-start'
 	}
 });

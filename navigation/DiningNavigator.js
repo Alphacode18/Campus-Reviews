@@ -16,6 +16,7 @@ import RoommateProfile from '../src/screens/RoommateProfile.js';
 import AssignPriority from '../src/screens/AssignPriority.js';
 import RoommateHome from '../src/screens/RoommateHome.js';
 import FindRoommates from '../src/screens/FindRoommates.js';
+import ReadRoommateProfile from '../src/screens/ReadRoommateProfile.js';
 
 const Stack = createStackNavigator();
 
@@ -43,6 +44,7 @@ function diningNavigator() {
 			<Stack.Screen name="AssignPriority" component={AssignPriority} options={{ headerShown: false }} />
 			<Stack.Screen name="RoomateHome" component={RoommateHome} options={{ headerShown: false }} />
 			<Stack.Screen name="FindRoommates" component={FindRoommates} options={{ headerShown: false }} />
+			<Stack.Screen name="ReadRoommateProfile" component={ReadRoommateProfile} options={{ headerShown: false }} />
 		</Stack.Navigator>
 	);
 }

@@ -62,15 +62,30 @@ export default (roommateHome = ({ navigation, route }) => {
 		userProfiles[i] = temp[temp2];
 	}
 
-
 	return (
 		<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
 			<Layout style={styles.container} level={'1'}>
 				<Button
 					onPress={() => {
-						navigation.navigate('RoommateProfile', {
-							currentUser: currentUser
-						});
+						if (currentUserProfile == null) {
+							navigation.navigate('RoommateProfile', {
+								currentUser: currentUser
+							});
+						} else {
+							let cKey = '';
+							for (let key in currentUserProfile) {
+								console.log('key');
+								console.log(key);
+								cKey = key;
+								console.log(currentUserProfile[key]);
+								currentUserProfile = currentUserProfile[key];
+							}
+							navigation.navigate('RoommateProfile', {
+								currentUser: currentUser,
+								currentUserProfile: currentUserProfile,
+								key: cKey
+							});
+						}
 					}}
 				>
 					{' '}
@@ -82,12 +97,13 @@ export default (roommateHome = ({ navigation, route }) => {
 						//console.log("userProfiles");
 						//console.log(currentUserProfile.isSmoker);
 						if (currentUserProfile != null) {
-							for(let key in currentUserProfile) {
-								console.log("key");
+							for (let key in currentUserProfile) {
+								console.log('key');
+								console.log(key);
 								console.log(currentUserProfile[key]);
 								currentUserProfile = currentUserProfile[key];
 							}
-							console.log("userProfiles -- ismoker");
+							console.log('userProfiles -- ismoker');
 							console.log(currentUserProfile.isSmoker);
 							navigation.navigate('FindRoommates', {
 								currentUser: currentUser,

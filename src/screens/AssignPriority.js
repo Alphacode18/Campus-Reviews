@@ -33,6 +33,7 @@ import Firebase from '../../config/firebase';
 export default (assignPriority = ({ navigation, route }) => {
 	const {
 		currentUser,
+		currentUserProfile,
 		name,
 		email,
 		year,
@@ -47,36 +48,62 @@ export default (assignPriority = ({ navigation, route }) => {
 		borrowVal,
 		noiseVal,
 		neatVal,
-		para
+		para,
+		key
 	} = route.params;
 	const screenWidth = Dimensions.get('window').width;
 	const screenHeight = Dimensions.get('window').height;
-	const [ t1, setT1 ] = useState('');
-	const [ t2, setT2 ] = useState('');
-	const [ t3, setT3 ] = useState('');
-	const [ t4, setT4 ] = useState('');
-	const [ t5, setT5 ] = useState('');
-	const [ t6, setT6 ] = useState('');
-	const [ t7, setT7 ] = useState('');
-	const [ t8, setT8 ] = useState('');
+
+	let cT1 = '';
+	let cT2 = '';
+	let cT3 = '';
+	let cT4 = '';
+	let cT5 = '';
+	let cT6 = '';
+	let cT7 = '';
+	let cT8 = '';
+
+	if (currentUserProfile != null) {
+		cT1 = currentUserProfile.priority1;
+		cT2 = currentUserProfile.priority2;
+		cT3 = currentUserProfile.priority3;
+		cT4 = currentUserProfile.priority4;
+		cT5 = currentUserProfile.priority5;
+		cT6 = currentUserProfile.priority6;
+		cT7 = currentUserProfile.priority7;
+		cT8 = currentUserProfile.priority8;
+	}
+
+	const [ t1, setT1 ] = useState(cT1);
+	const [ t2, setT2 ] = useState(cT2);
+	const [ t3, setT3 ] = useState(cT3);
+	const [ t4, setT4 ] = useState(cT4);
+	const [ t5, setT5 ] = useState(cT5);
+	const [ t6, setT6 ] = useState(cT6);
+	const [ t7, setT7 ] = useState(cT7);
+	const [ t8, setT8 ] = useState(cT8);
 	const map = new Map();
 	const map2 = new Map();
 	let currentAlias = currentUser.substr(0, currentUser.indexOf('@'));
 
 	const validate = () => {
-		if ((t1 === '' || t1.length > 1 || t1 < '1' || t1 > '8') ||
+		if (
+			t1 === '' ||
+			t1.length > 1 ||
+			t1 < '1' ||
+			t1 > '8' ||
 			(t2 === '' || t2.length > 1 || t2 < '1' || t2 > '8') ||
 			(t3 === '' || t3.length > 1 || t3 < '1' || t3 > '8') ||
 			(t4 === '' || t4.length > 1 || t4 < '1' || t4 > '8') ||
 			(t5 === '' || t5.length > 1 || t5 < '1' || t5 > '8') ||
 			(t6 === '' || t6.length > 1 || t6 < '1' || t6 > '8') ||
 			(t7 === '' || t7.length > 1 || t7 < '1' || t7 > '8') ||
-			(t8 === '' || t8.length > 1 || t8 < '1' || t8 > '8')) {
-				return false;
-			}
-		else {
-			const set = new Set([t1, t2, t3, t4, t5, t6, t7, t8]);
-			return (set.size === 8);
+			(t8 === '' || t8.length > 1 || t8 < '1' || t8 > '8')
+		) {
+			return false;
+		} else {
+			const set = new Set([ t1, t2, t3, t4, t5, t6, t7, t8 ]);
+			return set.size === 8;
 		}
 	};
 
@@ -98,9 +125,7 @@ export default (assignPriority = ({ navigation, route }) => {
 		map2[borrowVal + 'borrowVal'] = '6';
 		map2[noiseVal + 'noiseVal'] = '7';
 		map2[neatVal + 'neatVal'] = '8';
-
 	};
-
 
 	return (
 		<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
@@ -175,37 +200,55 @@ export default (assignPriority = ({ navigation, route }) => {
 								</View>
 							</View>
 							<View style={{ marginTop: 10, alignItems: 'center' }}>
+								<Button
+									appearance="outline"
+									onPress={() => {
+										if (validate() == true) {
+											initializeMap();
+											console.log(email);
+											if (currentUserProfile != null) {
+												Firebase.database()
+													.ref('/Roommate Profile/' + currentAlias + '/')
+													.remove();
+											}
+											Firebase.database().ref('/Roommate Profile/' + currentAlias + '/').push({
+												name: name,
+												email: email,
+												year: year,
+												major: major,
+												sex: sex,
+												isSmoker: isSmoker,
+												bedtimeVal: [ bedtimeVal, map[map2[bedtimeVal + 'bedtimeVal']] ],
+												videogameVal: [
+													videogameVal,
+													map[map2[videogameVal + 'videogameVal']]
+												],
+												academicVal: [ academicVal, map[map2[academicVal + 'academicVal']] ],
+												socialVal: [ socialVal, map[map2[socialVal + 'socialVal']] ],
+												peopleVal: [ peopleVal, map[map2[peopleVal + 'peopleVal']] ],
+												borrowVal: [ borrowVal, map[map2[borrowVal + 'borrowVal']] ],
+												noiseVal: [ noiseVal, map[map2[noiseVal + 'noiseVal']] ],
+												neatVal: [ neatVal, map[map2[neatVal + 'neatVal']] ],
+												para: para,
+												priority1: t1,
+												priority2: t2,
+												priority3: t3,
+												priority4: t4,
+												priority5: t5,
+												priority6: t6,
+												priority7: t7,
+												priority8: t8
+											});
 
-								<Button appearance="outline" onPress={() => {
-									if (validate() == true) {
-
-										initializeMap();
-
-										Firebase.database().ref('/Roommate Profile/' + currentAlias + '/').push({
-											name: name,
-											email: email,
-											year: year,
-											major: major,
-											sex: sex,
-											isSmoker: isSmoker,
-											bedtimeVal: [bedtimeVal, map[map2[bedtimeVal + 'bedtimeVal']]],
-											videogameVal: [videogameVal, map[map2[videogameVal + 'videogameVal']]],
-											academicVal: [academicVal, map[map2[academicVal + 'academicVal']]],
-											socialVal: [socialVal, map[map2[socialVal + 'socialVal']]],
-											peopleVal: [peopleVal, map[map2[peopleVal + 'peopleVal']]],
-											borrowVal: [borrowVal, map[map2[borrowVal + 'borrowVal']]],
-											noiseVal: [noiseVal, map[map2[noiseVal + 'noiseVal']]],
-											neatVal: [neatVal, map[map2[neatVal + 'neatVal']]],
-											para: para
-										});
-
-										navigation.navigate('Buffer');
-									}
-									else {
-										Alert.alert('Please fill in all fields with unique numbers from 1-8.');
-									}
-								}}> Done </Button>
-								
+											navigation.navigate('Buffer');
+										} else {
+											Alert.alert('Please fill in all fields with unique numbers from 1-8.');
+										}
+									}}
+								>
+									{' '}
+									Done{' '}
+								</Button>
 							</View>
 							<Text>_______________________________________</Text>
 							<View style={{ marginTop: 20, alignItems: 'center', flexDirection: 'row' }}>

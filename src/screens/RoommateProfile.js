@@ -48,28 +48,75 @@ const ExitIcon = (props) => <Icon {...props} name="close-outline" />;
 
 export default (roommateProfile = ({ navigation, route }) => {
 	const currentUser = route.params.currentUser;
-	const [ name, setName ] = useState('');
-	const [ email, setEmail ] = useState('');
-	const [ major, setMajor ] = useState('');
-	const [ selectedIndex, setSelectedIndex ] = useState(new IndexPath(0));
+	const currentUserProfile = route.params.currentUserProfile;
+	const key = route.params.key;
+	console.log('roommmate profile');
+	console.log(currentUserProfile);
+	let cName = '';
+	let cEmail = '';
+	let cMajor = '';
+	let cSelectedIndex = new IndexPath(0);
+	let cBedtimeVal = 0;
+	let cVideogameVal = 0;
+	let cAcademicVal = 0;
+	let cSocialVal = 0;
+	let cPeopleVal = 0;
+	let cBorrowVal = 0;
+	let cNoiseVal = 0;
+	let cNeatVal = 0;
+	let cPara = '';
+	let cSmoker = false;
+	let cSex = false;
+	let cFilled = false;
+
+	if (currentUserProfile != null) {
+		cName = currentUserProfile.name;
+		cEmail = currentUserProfile.email;
+		cMajor - currentUserProfile.major;
+
+		if (currentUserProfile.year === 'Sophomore') {
+			cSelectedIndex = new IndexPath(1);
+		} else if (currentUserProfile.year === 'Junior') {
+			cSelectedIndex = new IndexPath(2);
+		} else if (currentUserProfile.year === 'Senior') {
+			cSelectedIndex = new IndexPath(3);
+		}
+		cBedtimeVal = currentUserProfile.bedtimeVal[0];
+		cVideogameVal = currentUserProfile.videogameVal[0];
+		cAcademicVal = currentUserProfile.academicVal[0];
+		cSocialVal = currentUserProfile.socialVal[0];
+		cPeopleVal = currentUserProfile.peopleVal[0];
+		cBorrowVal = currentUserProfile.borrowVal[0];
+		cNoiseVal = currentUserProfile.noiseVal[0];
+		cNeatVal = currentUserProfile.neatVal[0];
+		cPara = currentUserProfile.para;
+		cSmoker = currentUserProfile.checkSmoker === 'Yes' ? 0 : 1;
+		cSex = currentUserProfile.sex === 'Male' ? 0 : 1;
+		cFilled = true;
+	}
+
+	const [ name, setName ] = useState(cName);
+	const [ email, setEmail ] = useState(cEmail);
+	const [ major, setMajor ] = useState(cMajor);
+	const [ selectedIndex, setSelectedIndex ] = useState(cSelectedIndex);
 	const screenWidth = Dimensions.get('window').width;
 	const screenHeight = Dimensions.get('window').height;
 	const displayValue = academicYears[selectedIndex.row];
-	const [ bedtimeVal, setbedtimeVal ] = useState(0);
-	const [ videogameVal, setvideogameVal ] = useState(0);
-	const [ academicVal, setacademicVal ] = useState(0);
-	const [ socialVal, setsocialVal ] = useState(0);
-	const [ peopleVal, setpeopleVal ] = useState(0);
-	const [ borrowVal, setborrowVal ] = useState(0);
-	const [ noiseVal, setnoiseVal ] = useState(0);
-	const [ neatVal, setneatVal ] = useState(0);
-	const [ checkSmoker, setCheckSmoker ] = useState(false);
-	const [ checkSex, setCheckSex ] = useState(false);
-	const [ para, setPara ] = useState('');
+	const [ bedtimeVal, setbedtimeVal ] = useState(cBedtimeVal);
+	const [ videogameVal, setvideogameVal ] = useState(cVideogameVal);
+	const [ academicVal, setacademicVal ] = useState(cAcademicVal);
+	const [ socialVal, setsocialVal ] = useState(cSocialVal);
+	const [ peopleVal, setpeopleVal ] = useState(cPeopleVal);
+	const [ borrowVal, setborrowVal ] = useState(cBorrowVal);
+	const [ noiseVal, setnoiseVal ] = useState(cNoiseVal);
+	const [ neatVal, setneatVal ] = useState(cNeatVal);
+	const [ checkSmoker, setCheckSmoker ] = useState(cSmoker);
+	const [ checkSex, setCheckSex ] = useState(cSex);
+	const [ para, setPara ] = useState(cPara);
 	const today = new Date();
 	const time = today.getTime();
-	const [ filledSex, setFilledSex ] = useState(false);
-	const [ filledSmoker, setFilledSmoker ] = useState(false);
+	const [ filledSex, setFilledSex ] = useState(cFilled);
+	const [ filledSmoker, setFilledSmoker ] = useState(cFilled);
 
 	const changeAcademicYearSelection = (selectedIndex) => {
 		console.log('selectedIndex');
@@ -80,11 +127,9 @@ export default (roommateProfile = ({ navigation, route }) => {
 	const validate = () => {
 		console.log(filledSex);
 		console.log(filledSmoker);
-		if (name === '' || email === '' || major === '' ||
-			filledSex == false || filledSmoker == false) {
-				return false;
-			}
-		else {
+		if (name === '' || email === '' || major === '' || filledSex == false || filledSmoker == false) {
+			return false;
+		} else {
 			return true;
 		}
 	};
@@ -102,7 +147,6 @@ export default (roommateProfile = ({ navigation, route }) => {
 								alignItems: 'center'
 							}}
 						>
-
 							<Button status="basic" onPress={() => navigation.navigate('Buffer')}>
 								{' '}
 								Back{' '}
@@ -200,7 +244,6 @@ export default (roommateProfile = ({ navigation, route }) => {
 								<Text style={{ marginTop: 5, marginRight: 10 }}>{'Are you a smoker?'}</Text>
 								<RadioGroup
 									style={{ flexDirection: 'row' }}
-
 									selectedIndex={checkSmoker}
 									onChange={(index) => {
 										setCheckSmoker(index);
@@ -344,9 +387,9 @@ export default (roommateProfile = ({ navigation, route }) => {
 								style={{ marginBottom: 20 }}
 								onPress={() => {
 									if (validate() == true) {
-
 										navigation.navigate('AssignPriority', {
 											currentUser: currentUser,
+											currentUserProfile: currentUserProfile,
 											name: name,
 											email: email,
 											year: academicYears[selectedIndex.row],
@@ -361,10 +404,10 @@ export default (roommateProfile = ({ navigation, route }) => {
 											borrowVal: borrowVal,
 											noiseVal: noiseVal,
 											neatVal: neatVal,
-											para: para
+											para: para,
+											key: key
 										});
-									}
-									else {
+									} else {
 										Alert.alert('Please fill in all fields.');
 									}
 								}}
