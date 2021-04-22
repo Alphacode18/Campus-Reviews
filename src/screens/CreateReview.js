@@ -43,7 +43,7 @@ export default createReview = ({ navigation, route }) => {
     const [review_title, settitleText] = useState('');
     const [review_text, setreviewText] = useState('');
     const [selectedIndex_type, setSelectedIndex_type] = useState(new IndexPath(index));
-    const [selectedIndex_rest, setSelectedIndex_rest] = useState("");
+    const [selectedIndex_rest, setSelectedIndex_rest] = useState(new IndexPath(0));
     const [notSelected_type, setNotSelected_type] = useState(true);
     const [selectedIndex_rate, setSelectedIndex_rate] = useState(new IndexPath(0));
     const [notSelected_rate, setNotSelected_rate] = useState(true);
@@ -107,7 +107,34 @@ export default createReview = ({ navigation, route }) => {
                 
                         <Text category='h1' style={{ padding: 20, marginTop: 0 }}> Create Review </Text>
 
-                    
+                        {/* <Button style={{width: "90%"}} onPress={() => {
+                                var restID = 0;
+                                const dataset = require('./YelpWLData.json');
+                                for (restID; restID < 150; restID++) {
+                                    if (dataset[restID].name.includes("amp")) {
+                                        dataset[restID].name = dataset[restID].name.replace("amp;", "");
+                                    }
+                                    Firebase.database().ref('/localRestaurants' ).push({
+
+                                        
+                                        name: dataset[restID].name,
+                                        rating: dataset[restID].aggregatedRating,
+                                        id: restID,
+                                    });
+                                }
+                                
+
+                            }}>
+                            add list
+                        </Button> */}
+                        
+
+                        <Button style={{width: "90%"}} onPress={() => {
+                                console.log(selectedIndex_rest.row);
+                                
+                            }}>
+                            printID
+                        </Button>
 
 
                         
@@ -191,6 +218,7 @@ export default createReview = ({ navigation, route }) => {
                                         votes: 0,
                                         upvoteSet: {temp: true},
                                         downvoteSet: {temp: true}, 
+                                        restaurant_id: (selectedIndex_rest.row),
                                     });
 
                                     navigation.navigate('Loading', {

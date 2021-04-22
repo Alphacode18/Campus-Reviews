@@ -43,9 +43,6 @@ export default buffer = (props) => {
     console.log("Dining selected");
   }
 
- 
-
-
   
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -74,31 +71,6 @@ export default buffer = (props) => {
                     });
               }}> Recommendations </Button> : console.log("not dining") } 
 
-              {/* {isDining ? <Button
-                            style={{ width: '50%', borderRadius: 20, marginTop: 25 }}
-                            status={'success'}
-                            onPress={() => {
-                              let name = "";
-                              let rating = 0;
-                              for (let idx = 0; idx < 150; idx++) {
-                                name = dataset[idx].name;
-                                rating = dataset[idx].aggregatedRating;
-                                if (name.includes("amp;")) {
-                                  name = name.replace("amp;", "");
-                                }
-                                console.log(name + " " + rating);
-                                // Firebase.database().ref('/localRestaurants').push({
-                                //   name: name,
-                                //   rating: rating,
-                                // });
-                              }
-
-                              
-
-                            }}
-                        >
-                            <Text style={{ color: 'white' }}>Create Review</Text>
-                        </Button> : console.log("not dining")} */}
 
         </Layout>
     </TouchableWithoutFeedback>
