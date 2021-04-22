@@ -23,10 +23,10 @@ const types = [ 'Dining', 'On-Campus Facilities', 'Classes', 'Professors' ];
 let profileKeys = [];
 let profileNames = [];
 let userProfiles = [];
-let currentUserProfile = null;
 
 export default (roommateHome = ({ navigation, route }) => {
 	const currentUser = route.params.currentUser;
+	let currentUserProfile = null;
 	let currentAlias = currentUser.substr(0, currentUser.indexOf('@'));
 	const [ profiles, setProfiles ] = useState([]);
 	const ref = Firebase.database().ref('/Roommate Profile');

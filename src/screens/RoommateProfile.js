@@ -45,6 +45,7 @@ const questions = [
 ];
 
 const ExitIcon = (props) => <Icon {...props} name="close-outline" />;
+const trashIcon = (props) => <Icon {...props} name="trash-2" />;
 
 export default (roommateProfile = ({ navigation, route }) => {
 	const currentUser = route.params.currentUser;
@@ -72,7 +73,7 @@ export default (roommateProfile = ({ navigation, route }) => {
 	if (currentUserProfile != null) {
 		cName = currentUserProfile.name;
 		cEmail = currentUserProfile.email;
-		cMajor - currentUserProfile.major;
+		cMajor = currentUserProfile.major;
 
 		if (currentUserProfile.year === 'Sophomore') {
 			cSelectedIndex = new IndexPath(1);
@@ -117,6 +118,7 @@ export default (roommateProfile = ({ navigation, route }) => {
 	const time = today.getTime();
 	const [ filledSex, setFilledSex ] = useState(cFilled);
 	const [ filledSmoker, setFilledSmoker ] = useState(cFilled);
+	let currentAlias = currentUser.substr(0, currentUser.indexOf('@'));
 
 	const changeAcademicYearSelection = (selectedIndex) => {
 		console.log('selectedIndex');
@@ -140,6 +142,45 @@ export default (roommateProfile = ({ navigation, route }) => {
 				{/* <Button accessoryCenter={ExitIcon} style={{color: 'white', borderColor: 'white', position: 'absolute', top:'7%', left: '70%' }} onPress={() => navigation.navigate('Home')}> </Button>  */}
 				<SafeAreaView>
 					<View contentContainerStyle={{ flex: 1, height: screenHeight }}>
+						<View style={{ flexDirection: 'row' }}>
+							<Button
+								style={{ marginLeft: 0.03 * screenWidth }}
+								status="basic"
+								onPress={() => navigation.navigate('Buffer')}
+							>
+								{' '}
+								Back{' '}
+							</Button>
+							<Button
+								style={{ marginLeft: 0.6 * screenWidth }}
+								size="small"
+								accessoryLeft={trashIcon}
+								status="basic"
+								onPress={() => {
+									Alert.alert(
+										'Confirm Deletion',
+										'Are you sure you want to delete your roommate profile?',
+										[
+											{
+												text: 'Cancel',
+												onPress: () => console.log('Cancel Pressed'),
+												style: 'cancel'
+											},
+											{
+												text: 'Delete',
+												onPress: () => {
+													Firebase.database()
+														.ref('/Roommate Profile/' + currentAlias + '/')
+														.remove();
+													navigation.navigate('RoommateHome', {});
+												}
+											}
+										],
+										{ cancelable: false }
+									);
+								}}
+							/>
+						</View>
 						<ScrollView
 							contentContainerStyle={{
 								flexGrow: 1,
@@ -147,11 +188,6 @@ export default (roommateProfile = ({ navigation, route }) => {
 								alignItems: 'center'
 							}}
 						>
-							<Button status="basic" onPress={() => navigation.navigate('Buffer')}>
-								{' '}
-								Back{' '}
-							</Button>
-
 							<Text
 								style={{
 									marginTop: 30,
