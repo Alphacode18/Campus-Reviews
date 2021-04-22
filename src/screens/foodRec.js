@@ -37,6 +37,8 @@ export default foodRec = ({navigation}) =>  {
   for (let idx = 0; idx < 5; idx++) {
     arr[idx] = jsonAsArray[idx];
   }
+
+  
   const renderItem = (info) => {
 		let i = info.index;
 		let item = info.item;

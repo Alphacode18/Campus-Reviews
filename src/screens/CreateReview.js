@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ScrollView, TextInput, KeyboardAvoidingView, textarea} from 'react-native';
 import { Layout, Text, Button, Input, Select, SelectItem, IndexPath } from '@ui-kitten/components';
 import { Dimensions, Alert } from 'react-native';
+import {SearchField} from 'react-search-field';
 import { HeaderHeightContext } from '@react-navigation/stack';
 
 import Firebase from '../../config/firebase';
+import firebase from 'firebase';
 
 const rateVal = [
     '0',
@@ -27,6 +29,8 @@ const typeVal = [
     'Professors'
   ];
 
+var restArray = [];
+
 
 const useInputState = (initialValue = '') => {
     const [value, setValue] = React.useState(initialValue);
@@ -39,6 +43,7 @@ export default createReview = ({ navigation, route }) => {
     const [review_title, settitleText] = useState('');
     const [review_text, setreviewText] = useState('');
     const [selectedIndex_type, setSelectedIndex_type] = useState(new IndexPath(index));
+    const [selectedIndex_rest, setSelectedIndex_rest] = useState("");
     const [notSelected_type, setNotSelected_type] = useState(true);
     const [selectedIndex_rate, setSelectedIndex_rate] = useState(new IndexPath(0));
     const [notSelected_rate, setNotSelected_rate] = useState(true);
@@ -56,6 +61,41 @@ export default createReview = ({ navigation, route }) => {
         setSelectedIndex_rate(selectedIndex_rate);
         setNotSelected_rate(false);
     };
+
+    const changeSelect_rest = (selectedIndex_rest) => {
+        setSelectedIndex_rest(selectedIndex_rest);
+      };
+
+    let options = null;
+
+    firebase
+    .database()
+    .ref(`/localRestaurants`).on("value", snapshot => {
+
+            snapshot.forEach(function(data) {
+            console.log("FireBase comp: ", data.toJSON().name);
+                    // data.toJSON.name
+
+            restArray.push(data.toJSON().name);
+                                        
+
+            })
+            console.log(restArray);
+
+            //console.log("FireB ",snapshot.forEach)
+    })
+
+    const dVal = restArray[selectedIndex_rest.row];
+
+    const renderOption = (title) => (
+        <SelectItem title={title}/>
+    );
+
+
+    if (restArray) {
+        console.log("mapped done");
+        
+    }
         
     return (
         <KeyboardAvoidingView
@@ -66,6 +106,11 @@ export default createReview = ({ navigation, route }) => {
                     <ScrollView contentContainerStyle={{flexGrow : 1, width : screenWidth, alignItems: 'center', justifyContent: 'center'}}>
                 
                         <Text category='h1' style={{ padding: 20, marginTop: 0 }}> Create Review </Text>
+
+                    
+
+
+                        
                         <Select
                             placeholder='Default'
                             selectedIndex_type={selectedIndex_type}
@@ -76,6 +121,19 @@ export default createReview = ({ navigation, route }) => {
                             <SelectItem title='Classes'/>
                             <SelectItem title='Professors'/>
                         </Select>
+
+                        
+
+                        <Select
+                            style={{width: '90%'}}
+                            placeholder='Default'
+                            value={dVal}
+                            selectedIndex={selectedIndex_rest}
+                            onSelect={index => setSelectedIndex_rest(index)}>
+                            {restArray.map(renderOption)}
+                        </Select>
+
+                        
                         <Input
                             style={{width: '90%', paddingTop : 10}}
                             size='medium'
@@ -132,7 +190,7 @@ export default createReview = ({ navigation, route }) => {
                                         edited_time: datetime,
                                         votes: 0,
                                         upvoteSet: {temp: true},
-                                        downvoteSet: {temp: true}
+                                        downvoteSet: {temp: true}, 
                                     });
 
                                     navigation.navigate('Loading', {

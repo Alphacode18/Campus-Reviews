@@ -32,7 +32,7 @@ import { render } from 'react-dom';
 
 const types = ['Dining', 'On-Campus Facilities', 'Classes', 'Professors'];
 var isDining = false;
-
+const dataset = require('./YelpWLData.json');
 
 export default buffer = (props) => {
   console.log('Buffer Index');
@@ -42,6 +42,9 @@ export default buffer = (props) => {
     isDining = true;
     console.log("Dining selected");
   }
+
+ 
+
 
   
   return (
@@ -62,6 +65,7 @@ export default buffer = (props) => {
                   });
             }}> Posts </Button>
 
+
             {isDining ? <Button style={   
                 {marginTop: 20}
               } onPress={() => {
@@ -69,21 +73,33 @@ export default buffer = (props) => {
                       
                     });
               }}> Recommendations </Button> : console.log("not dining") } 
-              
 
-            
-            
+              {/* {isDining ? <Button
+                            style={{ width: '50%', borderRadius: 20, marginTop: 25 }}
+                            status={'success'}
+                            onPress={() => {
+                              let name = "";
+                              let rating = 0;
+                              for (let idx = 0; idx < 150; idx++) {
+                                name = dataset[idx].name;
+                                rating = dataset[idx].aggregatedRating;
+                                if (name.includes("amp;")) {
+                                  name = name.replace("amp;", "");
+                                }
+                                console.log(name + " " + rating);
+                                // Firebase.database().ref('/localRestaurants').push({
+                                //   name: name,
+                                //   rating: rating,
+                                // });
+                              }
 
-            
+                              
 
-            
+                            }}
+                        >
+                            <Text style={{ color: 'white' }}>Create Review</Text>
+                        </Button> : console.log("not dining")} */}
 
-            
-              
-
-            
-
-            
         </Layout>
     </TouchableWithoutFeedback>
   );
