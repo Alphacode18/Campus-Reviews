@@ -19,6 +19,8 @@ import { Input, Icon, Card, Modal } from '@ui-kitten/components';
 const user = firebase.auth().currentUser;
 
 export default ProfileScreen = ({ navigation }) => {
+  const [currentEmail, setCurrentEmail] = useState('');
+  const [newEmail, setNewEmail] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [userName, setUsername] = useState('');
@@ -80,6 +82,15 @@ export default ProfileScreen = ({ navigation }) => {
       Alert.alert("Error. Could not change Password.")
     });*/
     }
+  };
+   const handleChangeEmail = () => {
+  var user = firebase.auth().currentUser;
+  user
+    .updateEmail(newEmail)
+    .then(() => {
+       Alert.alert('Email was updated');
+    })
+
   };
   //}
   const Anchor = ({ href }) => {
@@ -187,6 +198,22 @@ export default ProfileScreen = ({ navigation }) => {
         >
           <Text>Change Password</Text>
         </Button>
+        <Text style={{ padding: 4, marginTop: 15 }}>Change your email</Text>
+        <Input
+          style={styles.inputBox}
+          placeholder='Enter New Email'
+          value={newEmail}
+          autoCapitalize='none'
+          onChangeText={(newEmail) => setNewEmail(newEmail)}
+        />
+        <Button
+          onPress={handleChangeEmail}
+          style={{ width: '50%', borderRadius: 20, marginTop: 15 }}
+          appearance='outline'
+        >
+          <Text>Change Email</Text>
+        </Button>
+
         <Anchor
           href='mailto:Campus.Reviews.fb@gmail.com?subject=Feature Request&body=Request your feature below this line!\n'
           title='Email Expo'
