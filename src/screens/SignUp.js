@@ -16,7 +16,7 @@ import {
   Spinner,
   Icon,
 } from '@ui-kitten/components';
-import Firebase from '../../config/firebase';
+import Firebase, { db } from '../../config/firebase';
 import axios from 'axios';
 
 export default register = ({ navigation }) => {
@@ -56,20 +56,19 @@ export default register = ({ navigation }) => {
       const data = res.data;
       console.log('Validation Successful?', data['isValid']);
       if (res.data['isValid']) {
-        Firebase.auth()
-          .createUserWithEmailAndPassword(email, password)
-          .then((user) => {
-            console.log(user['user']['uid']);
-            const store = {
-              uid: user['user']['uid'],
-              username: username,
-            };
-            db.collection('users').doc(user['user']['uid']).set(store);
-          })
-          .catch((error) => {
-            setLoading(false);
-            Alert.alert('Invalid Email or Incomplete Details'); //TODO: Alert text may need to be updated.
-          });
+        const response = await Firebase.auth().createUserWithEmailAndPassword(
+          email,
+          password
+        );
+        setLoading(false);
+        console.log(response);
+        if (response.user.uid) {
+          const user = {
+            uid: response.user.uid,
+            username: username,
+          };
+          db.collection('users').doc(response.user.uid).set(user);
+        }
       } else {
         setLoading(false);
         Alert.alert(
