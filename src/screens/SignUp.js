@@ -58,7 +58,14 @@ export default register = ({ navigation }) => {
       if (res.data['isValid']) {
         Firebase.auth()
           .createUserWithEmailAndPassword(email, password)
-          .then(() => {})
+          .then((user) => {
+            console.log(user['user']['uid']);
+            const store = {
+              uid: user['user']['uid'],
+              username: username,
+            };
+            db.collection('users').doc(user['user']['uid']).set(store);
+          })
           .catch((error) => {
             setLoading(false);
             Alert.alert('Invalid Email or Incomplete Details'); //TODO: Alert text may need to be updated.
