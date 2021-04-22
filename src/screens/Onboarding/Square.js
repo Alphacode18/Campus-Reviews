@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Animated, Dimensions } from 'react-native';
-import _data from '../../content/Onboarding';
+import _data from '../content/Onboarding';
 const { width, height } = Dimensions.get('screen');
 
 const Square = ({ scrollX }) => {

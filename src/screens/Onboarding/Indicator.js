@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Animated, View, Dimensions } from 'react-native';
-import _data from '../../content/Onboarding';
+import _data from '../content/Onboarding';
 const { width } = Dimensions.get('screen');
 
 const Indicator = ({ scrollX }) => {

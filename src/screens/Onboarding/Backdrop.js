@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Animated, StyleSheet, Dimensions } from 'react-native';
-import _data from '../../content/Onboarding';
-import backgrounds from '../../constants/Onboarding';
+import _data from '../content/Onboarding';
+import backgrounds from '../constants/Onboarding';
 const { width } = Dimensions.get('screen');
 
 const Backdrop = ({ scrollX }) => {
