@@ -79,7 +79,7 @@ export default function onboardingScreen({ navigation }) {
             navigation.navigate('Login');
           }}
         >
-          <Text>Log In</Text>
+          <Text style={{ alignSelf: 'center' }}>Log In</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
@@ -87,7 +87,7 @@ export default function onboardingScreen({ navigation }) {
             navigation.navigate('SignUp');
           }}
         >
-          <Text>Sign Up</Text>
+          <Text style={{ alignSelf: 'center' }}>Sign Up</Text>
         </TouchableOpacity>
       </View>
       <Indicator scrollX={scrollX} />
@@ -104,9 +104,10 @@ const styles = StyleSheet.create({
   },
   button: {
     justifyContent: 'center',
-    backgroundColor: 'white',
-    borderRadius: 25,
+    backgroundColor: '#EDF1F7',
+    borderRadius: 10,
     padding: 20,
+    width: 150,
     marginBottom: 50,
     marginHorizontal: 25,
   },
