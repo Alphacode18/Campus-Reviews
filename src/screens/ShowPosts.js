@@ -56,7 +56,7 @@ const upIcon = (props) => <Icon {...props} name="arrow-upward-outline" />;
 
 const downIcon = (props) => <Icon {...props} name="arrow-downward-outline" />;
 
-const renderBackAction = () => <TopNavigationAction icon={BackIcon} />;
+// const renderBackAction = () => <TopNavigationAction icon={BackIcon} />;
 
 const renderHeader = () => (
 	<Layout

@@ -45,7 +45,7 @@ const plusIcon = (props) => <Icon {...props} name="plus" />;
 
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
-const renderBackAction = () => <Icon icon={BackIcon} />;
+// const renderBackAction = () => <Icon icon={BackIcon} />;
 
 const initializeAdmins = () => {
 	admins.add('rrajash@purdue.edu');
