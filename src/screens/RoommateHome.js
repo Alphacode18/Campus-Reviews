@@ -27,9 +27,9 @@ let userProfiles = [];
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 export default (roommateHome = ({ navigation, route }) => {
-	const isFocused = useIsFocused();
+	let isFocused = useIsFocused();
 	const currentUser = route.params.currentUser;
-	let currentUserProfile = null;
+	const [ currentUserProfile, setCurrentUserProfile ] = useState(null);
 	let currentAlias = currentUser.substr(0, currentUser.indexOf('@'));
 	const [ profiles, setProfiles ] = useState([]);
 	const ref = Firebase.database().ref('/Roommate Profile');
@@ -39,6 +39,7 @@ export default (roommateHome = ({ navigation, route }) => {
 
 	useEffect(
 		() => {
+			console.log('use Effect');
 			ref.on('value', (snapshot) => {
 				let n = profiles.length;
 				for (let i = 0; i < n; i++) {
@@ -46,17 +47,19 @@ export default (roommateHome = ({ navigation, route }) => {
 				}
 				snapshot.forEach(function(data) {
 					if (data.key === currentAlias) {
-						currentUserProfile = data.toJSON();
+						setCurrentUserProfile(data.toJSON());
 					} else {
 						profileNames.push(data.key);
 						setProfiles((profiles) => [ ...profiles, data.toJSON() ]);
 					}
 				});
 
+				// console.log('done with effect');
+				// console.log(profiles);
+				// console.log(currentUserProfile);
+
 				ref.off();
 			});
-
-			return;
 		},
 		[ isFocused ]
 	);
@@ -96,22 +99,27 @@ export default (roommateHome = ({ navigation, route }) => {
 				<View style={styles.container}>
 					<Button
 						onPress={() => {
+							console.log('press');
+							console.log(userProfiles);
+							console.log(currentUserProfile);
 							if (currentUserProfile == null) {
 								navigation.navigate('RoommateProfile', {
 									currentUser: currentUser
 								});
 							} else {
 								let cKey = '';
+								console.log('else');
+								let navProfile = null;
 								for (let key in currentUserProfile) {
 									console.log('key');
 									console.log(key);
 									cKey = key;
 									console.log(currentUserProfile[key]);
-									currentUserProfile = currentUserProfile[key];
+									navProfile = currentUserProfile[key];
 								}
 								navigation.navigate('RoommateProfile', {
 									currentUser: currentUser,
-									currentUserProfile: currentUserProfile,
+									currentUserProfile: navProfile,
 									key: cKey
 								});
 							}
@@ -125,19 +133,19 @@ export default (roommateHome = ({ navigation, route }) => {
 						onPress={() => {
 							//console.log("userProfiles");
 							//console.log(currentUserProfile.isSmoker);
+							let navProfile = null;
 							if (currentUserProfile != null) {
 								for (let key in currentUserProfile) {
 									console.log('key');
 									console.log(key);
 									console.log(currentUserProfile[key]);
-									currentUserProfile = currentUserProfile[key];
+									navProfile = currentUserProfile[key];
 								}
-								console.log('userProfiles -- ismoker');
-								console.log(currentUserProfile.isSmoker);
+
 								navigation.navigate('FindRoommates', {
 									currentUser: currentUser,
 									userProfiles: userProfiles,
-									currentUserProfile: currentUserProfile
+									currentUserProfile: navProfile
 								});
 							} else {
 								Alert.alert('Please make a profile first so we can match you.');

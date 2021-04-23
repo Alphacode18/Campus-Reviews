@@ -146,14 +146,6 @@ export default (FindRoommates = ({ navigation, route }) => {
 								</View>
 								<Text>{profileMatch.email}</Text>
 							</Card>
-							<Card style={{ minWidth: 0.95 * screenWidth }}>
-								<Text>{profileMatch.name}</Text>
-								<Text>{profileMatch.email}</Text>
-							</Card>
-							<Card style={{ minWidth: 0.95 * screenWidth }}>
-								<Text>{profileMatch.name}</Text>
-								<Text>{profileMatch.email}</Text>
-							</Card>
 						</Layout>
 					);
 				})}
