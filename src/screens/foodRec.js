@@ -17,7 +17,6 @@ let finalCollab = [];
 const renderHeader = () => (
 	<Layout
 		style={{
-			padding: 10,
 			alignItems: 'center',
 			justifyContent: 'center'
 		}}
@@ -42,7 +41,7 @@ export default foodRec = ({route, navigation}) =>  {
 
   	let arr = [];
 
-  	for (let idx = 0; idx < 5; idx++) {
+  	for (let idx = 0; idx < 10; idx++) {
     	arr[idx] = jsonAsArray[idx];
   	}
 	  
@@ -130,10 +129,9 @@ export default foodRec = ({route, navigation}) =>  {
 			finalCollab.push(tmp1);
 		}
     })
-	console.log(finalCollab);
 	// step 3
 	const result = recommend.cFilter(finalCollab, 0);
-	console.log(result);
+	console.log(a);
 	let a = [];
 	if (result[0] == -1) {
 		console.log("there are no reviews for current user");
@@ -141,7 +139,7 @@ export default foodRec = ({route, navigation}) =>  {
 		//arr[0].name = "You have not made any reviews. We need data to create your recommendation.";
 		//arr[0].aggregatedRating = "";
 	} else {
-		for (let idx = 0; idx < 5; idx++) {
+		for (let idx = 0; idx < 10; idx++) {
 			a.push(jsonAsArray[result[idx]]);
 		}
 	}
@@ -163,9 +161,6 @@ export default foodRec = ({route, navigation}) =>  {
 				>
 					<Text style={styles.commentLeft} status="info" category="s1">
 						{item.name}
-					</Text>
-					<Text style={styles.commentRight} category="s1" status="success">
-						{item.aggregatedRating}
 					</Text>
 
 				</View>
@@ -194,7 +189,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    top: 50
   },
   commentLeft: {
     fontSize: 20,
@@ -203,6 +197,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   title: {
+	paddingTop:50,
     fontSize: 30,
     alignItems: 'center',
   }

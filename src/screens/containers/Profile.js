@@ -49,16 +49,19 @@ export default ProfileScreen = ({ navigation }) => {
         Alert.alert('Something went wrong');
       });
   };
-  const handleDelete = () => {
+  const handleDelete = async () => {
+    console.log("user uid: ", user['uid']);
+    const dat = await db.collection("users").doc(user['uid']).delete();
     user
       .delete()
       .then(() => {
         setLoading(true);
+        
         Alert.alert('Account Deletion successful');
       })
       .catch(function (error) {
         Alert.alert('Something went wrong');
-      });
+      }); 
   };
   const getUsername = async () => {
     const data = db.collection('users').doc(user['uid']);
