@@ -29,6 +29,9 @@ const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 export default (roommateHome = ({ navigation, route }) => {
 	let isFocused = useIsFocused();
 	const currentUser = route.params.currentUser;
+	const postType = route.params.postType;
+	console.log('Roommate Home post type');
+	console.log(postType);
 	const [ currentUserProfile, setCurrentUserProfile ] = useState(null);
 	let currentAlias = currentUser.substr(0, currentUser.indexOf('@'));
 	const [ profiles, setProfiles ] = useState([]);
@@ -93,7 +96,7 @@ export default (roommateHome = ({ navigation, route }) => {
 					}}
 					accessoryLeft={BackIcon}
 					onPress={() => {
-						navigation.navigate('ShowPosts');
+						navigation.navigate('Show' + postType);
 					}}
 				/>
 				<View style={styles.container}>

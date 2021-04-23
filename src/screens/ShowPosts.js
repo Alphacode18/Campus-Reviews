@@ -42,7 +42,6 @@ const types = [ 'Dining', 'On-Campus Facilities', 'Classes', 'Professors' ];
 let posts = [];
 let postIDs = [];
 
-
 const sortVals = [ 'Votes', 'Recent', 'Oldest' ];
 
 const trashIcon = (props) => <Icon {...props} name="trash-2" />;
@@ -57,7 +56,7 @@ const upIcon = (props) => <Icon {...props} name="arrow-upward-outline" />;
 
 const downIcon = (props) => <Icon {...props} name="arrow-downward-outline" />;
 
-const renderBackAction = () => <TopNavigationAction icon={BackIcon} />;
+// const renderBackAction = () => <TopNavigationAction icon={BackIcon} />;
 
 const renderHeader = () => (
 	<Layout
@@ -335,384 +334,400 @@ const renderIcon = ({ props, navigation }) => (
 	</TouchableWithoutFeedback>
 );
 
-export default showPosts = ({ navigation, route }) => {
-  const index = route.params.index;
-  const [selectedIndex, setSelectedIndex] = React.useState(new IndexPath(0));
-  const [dispVal, setDispVal] = React.useState('Votes');
-  console.log('Index path: ');
-  console.log(selectedIndex.row);
+export default (showPosts = ({ navigation, route }) => {
+	initializeAdmins();
+	const index = route.params.index;
+	const postType = route.params.postType;
+	const [ selectedIndex, setSelectedIndex ] = React.useState(new IndexPath(0));
+	const [ dispVal, setDispVal ] = React.useState('Votes');
+	console.log('Index path: ');
+	console.log(selectedIndex.row);
 
-  //Search For Me And You'll Find Me.
-  const [query, setQuery] = useState('');
-  const [data, setData] = useState(posts);
+	//Search For Me And You'll Find Me.
+	const [ query, setQuery ] = useState('');
+	const [ data, setData ] = useState(posts);
 
-  const handleSearch = () => {
-    const formattedQuery = query.toLowerCase();
-    if (formattedQuery === '') {
-      navigation.navigate('Loading', {
-        index: index,
-        postType: 'Posts',
-      });
-    } else {
-      const filtered_data = [];
-      for (let i = 0; i < data.length; i++) {
-        console.log('Data' + ' ' + data[i].title);
-        console.log(query);
-        if (data[i].title.toLowerCase().includes(formattedQuery)) {
-          filtered_data.push(data[i]);
-        }
-      }
-      setData(filtered_data);
-      if (filtered_data.length === 0) {
-        Alert.alert('No results found');
-        navigation.navigate('Loading', {
-          index: index,
-          postType: 'Posts',
-        });
-      }
-    }
-  };
+	const handleSearch = () => {
+		const formattedQuery = query.toLowerCase();
+		if (formattedQuery === '') {
+			navigation.navigate('Loading', {
+				index: index,
+				postType: 'Posts'
+			});
+		} else {
+			const filtered_data = [];
+			for (let i = 0; i < data.length; i++) {
+				console.log('Data' + ' ' + data[i].title);
+				console.log(query);
+				if (data[i].title.toLowerCase().includes(formattedQuery)) {
+					filtered_data.push(data[i]);
+				}
+			}
+			setData(filtered_data);
+			if (filtered_data.length === 0) {
+				Alert.alert('No results found');
+				navigation.navigate('Loading', {
+					index: index,
+					postType: 'Posts'
+				});
+			}
+		}
+	};
 
-  const renderSearchIcon = (props) => (
-    <TouchableWithoutFeedback onPress={handleSearch}>
-      <Icon {...props} name={'search-outline'} />
-    </TouchableWithoutFeedback>
-  );
-  const sort = route.params.sort;
-  let { tempPosts, tempPostIDs } = route.params;
-  if (tempPosts != undefined && tempPosts.length > 0) {
-    posts = tempPosts;
-    postIDs = tempPostIDs;
-    console.log('if');
-    console.log(tempPosts);
-    console.log('posts');
-    console.log(posts);
-  }
-  const screenWidth = Dimensions.get('window').width;
-  const screenHeight = Dimensions.get('window').height;
-  const ref = Firebase.database().ref(types[index] + ' Posts/');
-  let postIDsToPostsMap = new Map();
-  console.log('map');
-  console.log(postIDsToPostsMap);
-  console.log(posts);
-  if (tempPosts != undefined && tempPosts.length > 0) {
-    for (let idx = 0; idx < tempPosts.length; idx++) {
-      postIDsToPostsMap[postIDs[idx]] = posts[idx];
-    }
-  } else {
-    for (let idx = 0; idx < posts.length; idx++) {
-      postIDsToPostsMap[postIDs[idx]] = posts[idx];
-    }
-  }
+	const renderSearchIcon = (props) => (
+		<TouchableWithoutFeedback onPress={handleSearch}>
+			<Icon {...props} name={'search-outline'} />
+		</TouchableWithoutFeedback>
+	);
+	const sort = route.params.sort;
+	let { tempPosts, tempPostIDs } = route.params;
+	if (tempPosts != undefined && tempPosts.length > 0) {
+		posts = tempPosts;
+		postIDs = tempPostIDs;
+		console.log('if');
+		console.log(tempPosts);
+		console.log('posts');
+		console.log(posts);
+	}
+	const screenWidth = Dimensions.get('window').width;
+	const screenHeight = Dimensions.get('window').height;
+	const ref = Firebase.database().ref(types[index] + ' Posts/');
+	let postIDsToPostsMap = new Map();
+	console.log('map');
+	console.log(postIDsToPostsMap);
+	console.log(posts);
+	if (tempPosts != undefined && tempPosts.length > 0) {
+		for (let idx = 0; idx < tempPosts.length; idx++) {
+			postIDsToPostsMap[postIDs[idx]] = posts[idx];
+		}
+	} else {
+		for (let idx = 0; idx < posts.length; idx++) {
+			postIDsToPostsMap[postIDs[idx]] = posts[idx];
+		}
+	}
 
-  ref.on('value', (snapshot) => {
-    console.log('ref');
-    let n = posts.length;
-    for (let i = 0; i < n; i++) {
-      posts.pop();
-      postIDs.pop();
-    }
-    let index = 0;
-    snapshot.forEach(function (data) {
-      posts.push(data.toJSON());
-      postIDs.push(data.key);
-      postIDsToPostsMap[postIDs[index]] = posts[index];
-      index++;
-    });
-    setData(posts);
-  });
-  ref.off();
-  console.log('map');
-  console.log(postIDsToPostsMap[postIDs[0]]);
-  console.log(postIDsToPostsMap);
-  if (dispVal === 'Recent') {
-    postIDs.sort(function (b2, a2) {
-      let b = postIDsToPostsMap[b2];
-      let a = postIDsToPostsMap[a2];
+	ref.on('value', (snapshot) => {
+		console.log('ref');
+		let n = posts.length;
+		for (let i = 0; i < n; i++) {
+			posts.pop();
+			postIDs.pop();
+		}
+		let index = 0;
+		snapshot.forEach(function(data) {
+			posts.push(data.toJSON());
+			postIDs.push(data.key);
+			postIDsToPostsMap[postIDs[index]] = posts[index];
+			index++;
+		});
+		setData(posts);
+	});
+	ref.off();
+	console.log('map');
+	console.log(postIDsToPostsMap[postIDs[0]]);
+	console.log(postIDsToPostsMap);
+	if (dispVal === 'Recent') {
+		postIDs.sort(function(b2, a2) {
+			let b = postIDsToPostsMap[b2];
+			let a = postIDsToPostsMap[a2];
 
-      console.log('postsorting');
-      //console.log(a.createTimestamp);
-      //console.log(b.createTimestamp);
+			console.log('postsorting');
+			//console.log(a.createTimestamp);
+			//console.log(b.createTimestamp);
 
-      return a.createTimestamp > b.createTimestamp
-        ? 1
-        : a.createTimestamp < b.createTimestamp
-        ? -1
-        : 0;
-    });
+			return a.createTimestamp > b.createTimestamp ? 1 : a.createTimestamp < b.createTimestamp ? -1 : 0;
+		});
 
-    posts.sort(function (b, a) {
-      console.log('postIdssorting');
-      return a.createTimestamp > b.createTimestamp
-        ? 1
-        : a.createTimestamp < b.createTimestamp
-        ? -1
-        : 0;
-    });
-  } else if (dispVal === 'Oldest') {
-    postIDs.sort(function (b2, a2) {
-      let b = postIDsToPostsMap[b2];
-      let a = postIDsToPostsMap[a2];
+		posts.sort(function(b, a) {
+			console.log('postIdssorting');
+			return a.createTimestamp > b.createTimestamp ? 1 : a.createTimestamp < b.createTimestamp ? -1 : 0;
+		});
+	} else if (dispVal === 'Oldest') {
+		postIDs.sort(function(b2, a2) {
+			let b = postIDsToPostsMap[b2];
+			let a = postIDsToPostsMap[a2];
 
-      // console.log("a:b");
-      // console.log(a.createTimestamp);
-      // console.log(b.createTimestamp);
+			// console.log("a:b");
+			// console.log(a.createTimestamp);
+			// console.log(b.createTimestamp);
 
-      return a.createTimestamp > b.createTimestamp
-        ? -1
-        : a.createTimestamp < b.createTimestamp
-        ? 1
-        : 0;
-    });
+			return a.createTimestamp > b.createTimestamp ? -1 : a.createTimestamp < b.createTimestamp ? 1 : 0;
+		});
 
-    posts.sort(function (b, a) {
-      return a.createTimestamp > b.createTimestamp
-        ? -1
-        : a.createTimestamp < b.createTimestamp
-        ? 1
-        : 0;
-    });
-  } else if (dispVal === 'Votes') {
-    postIDs.sort(function (b2, a2) {
-      let b = postIDsToPostsMap[b2];
-      let a = postIDsToPostsMap[a2];
-      if (a.votes == b.votes) {
-        return a.createTimestamp > b.createTimestamp
-          ? 1
-          : a.createTimestamp < b.createTimestamp
-          ? -1
-          : 0;
-      }
+		posts.sort(function(b, a) {
+			return a.createTimestamp > b.createTimestamp ? -1 : a.createTimestamp < b.createTimestamp ? 1 : 0;
+		});
+	} else if (dispVal === 'Votes') {
+		postIDs.sort(function(b2, a2) {
+			let b = postIDsToPostsMap[b2];
+			let a = postIDsToPostsMap[a2];
+			if (a.votes == b.votes) {
+				return a.createTimestamp > b.createTimestamp ? 1 : a.createTimestamp < b.createTimestamp ? -1 : 0;
+			}
 
-      return a.votes > b.votes ? 1 : -1;
-    });
+			return a.votes > b.votes ? 1 : -1;
+		});
 
-    posts.sort(function (b, a) {
-      if (a.votes == b.votes) {
-        return a.createTimestamp > b.createTimestamp
-          ? 1
-          : a.createTimestamp < b.createTimestamp
-          ? -1
-          : 0;
-      }
+		posts.sort(function(b, a) {
+			if (a.votes == b.votes) {
+				return a.createTimestamp > b.createTimestamp ? 1 : a.createTimestamp < b.createTimestamp ? -1 : 0;
+			}
 
-      return a.votes > b.votes ? 1 : -1;
-    });
-  } else {
-    postIDs.sort(function (b2, a2) {
-      let b = postIDsToPostsMap[b2];
-      let a = postIDsToPostsMap[a2];
-      if (a.votes == b.votes) {
-        return a.createTimestamp > b.createTimestamp
-          ? 1
-          : a.createTimestamp < b.createTimestamp
-          ? -1
-          : 0;
-      }
+			return a.votes > b.votes ? 1 : -1;
+		});
+	} else {
+		postIDs.sort(function(b2, a2) {
+			let b = postIDsToPostsMap[b2];
+			let a = postIDsToPostsMap[a2];
+			if (a.votes == b.votes) {
+				return a.createTimestamp > b.createTimestamp ? 1 : a.createTimestamp < b.createTimestamp ? -1 : 0;
+			}
 
-      return a.votes > b.votes ? 1 : -1;
-    });
+			return a.votes > b.votes ? 1 : -1;
+		});
 
-    posts.sort(function (b, a) {
-      if (a.votes == b.votes) {
-        return a.createTimestamp > b.createTimestamp
-          ? 1
-          : a.createTimestamp < b.createTimestamp
-          ? -1
-          : 0;
-      }
+		posts.sort(function(b, a) {
+			if (a.votes == b.votes) {
+				return a.createTimestamp > b.createTimestamp ? 1 : a.createTimestamp < b.createTimestamp ? -1 : 0;
+			}
 
-      return a.votes > b.votes ? 1 : -1;
-    });
-  }
+			return a.votes > b.votes ? 1 : -1;
+		});
+	}
 
-  const currentUser = Firebase.auth().currentUser.providerData[0].email.toString();
+	const currentUser = Firebase.auth().currentUser.providerData[0].email.toString();
 
-  const renderItem = (info) => {
-    let i = info.index;
-    let item = info.item;
+	const renderItem = (info) => {
+		let i = info.index;
+		let item = info.item;
 
-    return (
-      <Card
-        style={styles.card}
-        header={(props) => (
-          <Header
-            {...props}
-            title={item.title}
-            user={item.user}
-            edited={item.edited}
-            createTime={item.createTimestamp}
-            editTime={item.editTimestamp}
-          />
-        )}
-        footer={(props) => (
-          <Footer
-            {...props}
-            title={item.title}
-            user={item.user}
-            postID={postIDs[i]}
-            post={item.post}
-            navigation={navigation}
-            index={index}
-            user={item.user}
-            currentUser={currentUser}
-            upvoteSet={item.upvoteSet}
-            downvoteSet={item.downvoteSet}
-            i={i}
-          />
-        )}
-        onPress={() => {
-          navigation.navigate('ReadPost', {
-            title: item.title,
-            post: item.post,
-            postId: postIDs[i],
-            user: item.user,
-            index: index,
-            currentUser: currentUser,
-            upvoteSet: posts[i].upvoteSet,
-            downvoteSet: posts[i].downvoteSet,
-            i: i,
-            posts: posts,
-            postIDs: postIDs,
-          });
-        }}
-      >
-        <Text>{item.post}</Text>
-      </Card>
-    );
-  };
+		return (
+			<Card
+				style={styles.card}
+				header={(props) => (
+					<Header
+						{...props}
+						title={item.title}
+						user={item.user}
+						edited={item.edited}
+						createTime={item.createTimestamp}
+						editTime={item.editTimestamp}
+					/>
+				)}
+				footer={(props) => (
+					<Footer
+						{...props}
+						title={item.title}
+						user={item.user}
+						postID={postIDs[i]}
+						post={item.post}
+						navigation={navigation}
+						index={index}
+						user={item.user}
+						currentUser={currentUser}
+						upvoteSet={item.upvoteSet}
+						downvoteSet={item.downvoteSet}
+						i={i}
+					/>
+				)}
+				onPress={() => {
+					navigation.navigate('ReadPost', {
+						title: item.title,
+						post: item.post,
+						postId: postIDs[i],
+						user: item.user,
+						index: index,
+						currentUser: currentUser,
+						upvoteSet: posts[i].upvoteSet,
+						downvoteSet: posts[i].downvoteSet,
+						i: i,
+						posts: posts,
+						postIDs: postIDs
+					});
+				}}
+			>
+				<Text>{item.post}</Text>
+			</Card>
+		);
+	};
 
-  return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-    >
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <Layout style={styles.container} level={'1'}>
-          <ScrollView
-            contentContainerStyle={{
-              flexGrow: 1,
-              width: screenWidth,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Button
-              title='Back'
-              appearance={'ghost'}
-              size={'large'}
-              style={{
-                justifyContent: 'left',
-                marginLeft: 0.02 * screenWidth,
-                marginTop: 0.05 * screenHeight,
-                maxWidth: 0.1 * screenWidth,
-                maxHeight: 0.1 * screenHeight,
-              }}
-              accessoryLeft={BackIcon}
-              onPress={() => {
-                navigation.navigate('Buffer');
-              }}
-            />
+	const ButtonFR = () => {
+		if (index == 1) {
+			return (
+				<View style={{ flexDirection: 'row' }}>
+					<Button
+						title="Back"
+						appearance={'ghost'}
+						size={'large'}
+						style={{
+							justifyContent: 'left',
+							marginLeft: 0.02 * screenWidth,
+							marginTop: 0.1 * screenHeight,
+							maxWidth: 0.1 * screenWidth,
+							minHeight: 0.1 * screenHeight,
+							marginRight: 0.3 * screenWidth
+						}}
+						accessoryLeft={BackIcon}
+						onPress={() => {
+							navigation.navigate('Buffer');
+						}}
+					/>
+					<Button
+						style={{
+							justifyContent: 'left',
+							marginLeft: 0.02 * screenWidth,
+							marginTop: 0.12 * screenHeight,
+							maxWidth: 0.5 * screenWidth,
+							maxHeight: 0.05 * screenHeight
+						}}
+						onPress={() => {
+							navigation.navigate('RoommateHome', {
+								currentUser: currentUser,
+								postType: postType
+							});
+						}}
+					>
+						{' '}
+						Find Roommates{' '}
+					</Button>
+				</View>
+			);
+		} else {
+			return (
+				<Button
+					title="Back"
+					appearance={'ghost'}
+					size={'large'}
+					style={{
+						justifyContent: 'left',
+						marginLeft: 0.02 * screenWidth,
+						marginTop: 0.1 * screenHeight,
+						maxWidth: 0.2 * screenWidth,
+						maxHeight: 0.1 * screenHeight,
+						marginRight: 0.8 * screenWidth
+					}}
+					accessoryLeft={BackIcon}
+					onPress={() => {
+						navigation.navigate('Buffer');
+					}}
+				/>
+			);
+		}
+	};
 
-            <Text
-              style={{
-                marginTop: 50,
-                marginBottom: 20,
-                fontSize: 36,
-                marginHorizontal: 2,
-              }}
-            >
-              {' '}
-              {types[index]}{' '}
-            </Text>
-            <Button
-              status='basic'
-              accessoryLeft={plusIcon}
-              onPress={() => {
-                navigation.navigate('CreatePost', {
-                  index: index,
-                  currentUser: currentUser,
-                });
-              }}
-            >
-              {' '}
-              Create{' '}
-            </Button>
-            <Select
-              value={dispVal}
-              style={{ minWidth: screenWidth, marginTop: 10, marginBottom: 10 }}
-              selectedIndex={selectedIndex}
-              onSelect={(setIndex) => setSelectedIndex(setIndex)}
-            >
-              <SelectItem
-                title='Votes'
-                onPress={() => {
-                  setDispVal('Votes');
-                  // navigation.navigate('Loading', {
-                  //   index: index,
-                  //   postType: 'Posts',
-                  //   sort: 0,
-                  // });
-                }}
-              />
-              <SelectItem
-                title='Recent'
-                onPress={() => {
-                  setDispVal('Recent');
-                  // navigation.navigate('Loading', {
-                  //   index: index,
-                  //   postType: 'Posts',
-                  //   sort: 1,
-                  // });
-                }}
-              />
-              <SelectItem
-                title='Oldest'
-                onPress={() => {
-                  setDispVal('Oldest');
-                  // navigation.navigate('Loading', {
-                  //   index: index,
-                  //   postType: 'Posts',
-                  //   sort: 2,
-                  // });
-                }}
-              />
-            </Select>
-            <TouchableOpacity>
-              <List
-                style={{
-                  maxHeight: 0.6 * screenHeight,
-                  minWidth: 0.95 * screenWidth,
-                }}
-                data={data}
-                ItemSeparatorComponent={Divider}
-                // renderItem={<renderItem navigation={navigation} currentUser={currentUser} postIDs={...postIDs} index={index}/>}
-                renderItem={renderItem}
-                ListHeaderComponent={
-                  <Layout
-                    style={{
-                      padding: 10,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Input
-                      placeholder='Search'
-                      value={query}
-                      onChangeText={(query) => setQuery(query)}
-                      accessoryRight={renderSearchIcon}
-                    />
-                  </Layout>
-                }
-              />
-            </TouchableOpacity>
-            <Text style={{ marginBottom: 20 }}></Text>
-          </ScrollView>
-        </Layout>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
-  );
-};
+	return (
+		<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+			<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+				<Layout style={styles.container} level={'1'}>
+					<ScrollView
+						contentContainerStyle={{
+							flexGrow: 1,
+							width: screenWidth,
+							alignItems: 'center',
+							justifyContent: 'center'
+						}}
+					>
+						<ButtonFR />
+
+						<Text
+							style={{
+								marginTop: 25,
+								marginBottom: 20,
+								fontSize: 36,
+								marginHorizontal: 2
+							}}
+						>
+							{' '}
+							{index === 1 ? 'On-Campus\n\t Facilities' : types[index]}{' '}
+						</Text>
+						<Button
+							status="basic"
+							accessoryLeft={plusIcon}
+							onPress={() => {
+								navigation.navigate('CreatePost', {
+									index: index,
+									currentUser: currentUser
+								});
+							}}
+						>
+							{' '}
+							Create{' '}
+						</Button>
+						<Select
+							value={dispVal}
+							style={{ minWidth: screenWidth, marginTop: 10, marginBottom: 10 }}
+							selectedIndex={selectedIndex}
+							onSelect={(setIndex) => setSelectedIndex(setIndex)}
+						>
+							<SelectItem
+								title="Votes"
+								onPress={() => {
+									setDispVal('Votes');
+									// navigation.navigate('Loading', {
+									//   index: index,
+									//   postType: 'Posts',
+									//   sort: 0,
+									// });
+								}}
+							/>
+							<SelectItem
+								title="Recent"
+								onPress={() => {
+									setDispVal('Recent');
+									// navigation.navigate('Loading', {
+									//   index: index,
+									//   postType: 'Posts',
+									//   sort: 1,
+									// });
+								}}
+							/>
+							<SelectItem
+								title="Oldest"
+								onPress={() => {
+									setDispVal('Oldest');
+									// navigation.navigate('Loading', {
+									//   index: index,
+									//   postType: 'Posts',
+									//   sort: 2,
+									// });
+								}}
+							/>
+						</Select>
+						<TouchableOpacity>
+							<List
+								style={{
+									maxHeight: 0.6 * screenHeight,
+									minWidth: 0.95 * screenWidth
+								}}
+								data={data}
+								ItemSeparatorComponent={Divider}
+								// renderItem={<renderItem navigation={navigation} currentUser={currentUser} postIDs={...postIDs} index={index}/>}
+								renderItem={renderItem}
+								ListHeaderComponent={
+									<Layout
+										style={{
+											padding: 10,
+											alignItems: 'center',
+											justifyContent: 'center'
+										}}
+									>
+										<Input
+											placeholder="Search"
+											value={query}
+											onChangeText={(query) => setQuery(query)}
+											accessoryRight={renderSearchIcon}
+										/>
+									</Layout>
+								}
+							/>
+						</TouchableOpacity>
+						<Text style={{ marginBottom: 20 }} />
+					</ScrollView>
+				</Layout>
+			</TouchableWithoutFeedback>
+		</KeyboardAvoidingView>
+	);
+});
 
 const styles = StyleSheet.create({
 	container: {

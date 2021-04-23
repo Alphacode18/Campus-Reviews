@@ -142,6 +142,20 @@ export default ProfileScreen = ({ navigation }) => {
       </Button>
     );
   };
+  const Anchor4 = ({ href }) => {
+    _handlePress = () => {
+      //Linking.openURL(this.props.href);
+      Linking.openURL(href);
+      // this.props.onPress && this.props.onPress();
+      this.onPress && this.onPress();
+      Alert.alert('Reason sent to user');
+    };
+    return (
+      <Button style={{ marginTop: 20 }} onPress={this._handlePress}>
+        SEND BAN REASON
+      </Button>
+    );
+  };
 
   const handleEditUsername = async () => {
   const data = db.collection('users').doc(user['uid']);
@@ -223,8 +237,14 @@ export default ProfileScreen = ({ navigation }) => {
         <Button
         onPress={_handlePressButtonAsync}
         >
-          <Text>Ban User</Text>
+          <Text>BAN USER</Text>
         </Button>
+
+        <Anchor4
+          href="mailto:prakasht@purdue.edu?subject=You were banned from Campus Reviewst&body=You were banned because\n"// add purdue username right before @purdue.edu
+          title='Email Expo'
+        />
+
 
         <Anchor
           href='mailto:Campus.Reviews.fb@gmail.com?subject=Feature Request&body=Request your feature below this line!\n'
