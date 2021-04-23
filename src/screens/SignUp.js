@@ -12,7 +12,7 @@ import {
 import Constants from 'expo-constants';
 const { manifest } = Constants;
 import { Layout, Text, Input, Button, Spinner, Icon, Popover, Modal, CheckBox } from '@ui-kitten/components';
-import Firebase from '../../config/firebase';
+import Firebase, { db } from '../../config/firebase';
 import axios from 'axios';
 import TandC from './TandC.js';
 
@@ -55,31 +55,44 @@ export default (register = ({ navigation }) => {
 			handleRegistrations();
 		}
 	};
-	const handleRegistrations = async () => {
-		const uri = `http://${manifest.debuggerHost.split(':').shift()}:3000/${email}`;
-		setLoading(true);
-		if (username.length > 30) {
-			setLoading(false);
-			Alert.alert('Username longer than expected');
-		} else if (password === confirmPassword) {
-			const res = await axios.get(uri);
-			const data = res.data;
-			console.log('Validation Successful?', data['isValid']);
-			if (res.data['isValid']) {
-				Firebase.auth().createUserWithEmailAndPassword(email, password).then(() => {}).catch((error) => {
-					setLoading(false);
-					Alert.alert('Invalid Email or Incomplete Details'); //TODO: Alert text may need to be updated.
-				});
-			} else {
-				setLoading(false);
-				Alert.alert("We couldn't validate your purdue identity. Please try again");
-			}
-		} else {
-			setLoading(false);
-			Alert.alert('Passwords Do Not Match');
-		}
-	};
 
+  const handleRegistrations = async () => {
+    const uri = `http://${manifest.debuggerHost
+      .split(':')
+      .shift()}:3000/${email}`;
+    setLoading(true);
+    if (username.length > 30) {
+      setLoading(false);
+      Alert.alert('Username longer than expected');
+    } else if (password === confirmPassword) {
+      const res = await axios.get(uri);
+      const data = res.data;
+      console.log('Validation Successful?', data['isValid']);
+      if (res.data['isValid']) {
+        const response = await Firebase.auth().createUserWithEmailAndPassword(
+          email,
+          password
+        );
+        setLoading(false);
+        console.log(response);
+        if (response.user.uid) {
+          const user = {
+            uid: response.user.uid,
+            username: username,
+          };
+          db.collection('users').doc(response.user.uid).set(user);
+        }
+      } else {
+        setLoading(false);
+        Alert.alert(
+          "We couldn't validate your purdue identity. Please try again"
+        );
+      }
+    } else {
+      setLoading(false);
+      Alert.alert('Passwords Do Not Match');
+    }
+  };
 	return (
 		<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
 			<Layout style={styles.container} level={'1'}>
@@ -122,7 +135,6 @@ export default (register = ({ navigation }) => {
 							secureTextEntry={secureTextEntry}
 							onChangeText={(confirmPassword) => setConfirmPassword(confirmPassword)}
 						/>
-
 						<Modal
 							style={{ maxHeight: 0.8 * screenHeight, minWidth: screenWidth }}
 							backdropStyle={styles.backdrop}

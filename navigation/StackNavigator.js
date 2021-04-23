@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Login from '../src/screens/Login';
 import SignUp from '../src/screens/SignUp';
-import Home from '../src/screens/Home';
+import Onboarding from '../src/screens/Onboarding';
 import EditPost from '../src/screens/EditPost';
 import ShowPosts from '../src/screens/ShowPosts';
 import ReadPost from '../src/screens/ReadPost';
@@ -17,8 +17,8 @@ function AuthStack() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-          name='Home'
-          component={Home}
+          name='Onboarding'
+          component={Onboarding}
           options={{ headerShown: false }}
         />
         <Stack.Screen
