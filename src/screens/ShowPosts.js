@@ -629,14 +629,14 @@ export default (showPosts = ({ navigation, route }) => {
 
 						<Text
 							style={{
-								marginTop: 50,
+								marginTop: 25,
 								marginBottom: 20,
 								fontSize: 36,
 								marginHorizontal: 2
 							}}
 						>
 							{' '}
-							{types[index]}{' '}
+							{index === 1 ? 'On-Campus\n\t Facilities' : types[index]}{' '}
 						</Text>
 						<Button
 							status="basic"
