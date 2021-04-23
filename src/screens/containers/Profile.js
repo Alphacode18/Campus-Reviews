@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Layout, Text, Button, Spinner, CheckBox } from '@ui-kitten/components';
-import firebase from '../../../config/firebase';
+import firebase, {db} from '../../../config/firebase';
 import { Alert } from 'react-native';
 import { ThemeContext } from '../../../theme-context';
 
@@ -39,16 +39,21 @@ export default ProfileScreen = ({ navigation }) => {
         Alert.alert('Something went wrong');
       });
   };
-  const handleDelete = () => {
+  const handleDelete = async () => {
+    console.log("user uid: ", user['uid']);
+    const dat = await db.collection("users").doc(user['uid']).delete();
     user
       .delete()
       .then(() => {
         setLoading(true);
+        
         Alert.alert('Account Deletion successful');
       })
       .catch(function (error) {
         Alert.alert('Something went wrong');
       });
+     
+      
   };
   const handleChangePassword = () => {
     // Re-use functionality needs to be tested.

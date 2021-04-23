@@ -129,12 +129,12 @@ export default createReview = ({ navigation, route }) => {
                         </Button> */}
                         
 
-                        <Button style={{width: "90%"}} onPress={() => {
+                        {/* <Button style={{width: "90%"}} onPress={() => {
                                 console.log(selectedIndex_rest.row);
                                 
                             }}>
                             printID
-                        </Button>
+                        </Button> */}
 
 
                         

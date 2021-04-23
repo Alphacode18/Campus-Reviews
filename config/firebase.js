@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+import 'firebase/firestore';
 import {
   API_KEY,
   AUTH_DOMAIN,
@@ -19,7 +20,13 @@ const firebaseConfig = {
   appId: APP_ID,
 };
 
-// Initialize Firebase
 const Firebase = firebase.initializeApp(firebaseConfig);
+
+export const db = firebase.firestore();
+
+// avoid deprecated warnings
+db.settings({
+  timestampsInSnapshots: true,
+});
 
 export default Firebase;
