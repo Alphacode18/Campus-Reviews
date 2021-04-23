@@ -30,6 +30,7 @@ import { Dimensions, View } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
 import Firebase from '../../config/firebase';
 
+const admins = new Set();
 const types = [ 'Dining', 'On-Campus Facilities', 'Classes', 'Professors' ];
 
 const editIcon = (props) => <Icon {...props} name="edit-outline" />;
@@ -37,6 +38,11 @@ const editIcon = (props) => <Icon {...props} name="edit-outline" />;
 const trashIcon = (props) => <Icon {...props} name="trash-2" />;
 
 const checkIcon = (props) => <Icon {...props} name="checkmark-outline" />;
+
+const initializeAdmins = () => {
+	admins.add('rrajash@purdue.edu');
+	admins.add('seela@purdue.edu');
+};
 
 export default (CommentBody = ({
 	commentText,
@@ -55,6 +61,7 @@ export default (CommentBody = ({
 	postIDs,
 	commentUser
 }) => {
+	initializeAdmins();
 	const [ editCommentText, setEditCommentText ] = useState(commentText);
 	const [ editing, setEditing ] = useState(false);
 	const [ deleting, setDeleting ] = useState(false);
@@ -79,8 +86,8 @@ export default (CommentBody = ({
 					onChangeText={setEditCommentText}
 				/>
 				<Button
-					status="basic"
-					appearance={commentUser != currentUser ? 'ghost' : null}
+					size="medium"
+					appearance={commentUser != currentUser ? 'ghost' : 'ghost'}
 					accessoryLeft={commentUser == currentUser ? checkIcon : null}
 					onPress={() => {
 						if (currentUser == commentUser) {
@@ -146,8 +153,8 @@ export default (CommentBody = ({
 				<Text style={{ marginLeft: 16, marginBottom: 8 }}>{commentText}</Text>
 				<Button
 					style={styles.footerControl}
-					size="small"
-					appearance={commentUser != currentUser ? 'ghost' : null}
+					size="medium"
+					appearance={commentUser != currentUser ? 'ghost' : 'ghost'}
 					accessoryLeft={commentUser == currentUser ? editIcon : null}
 					onPress={() => {
 						if (currentUser == commentUser) setEditing(true);
@@ -155,11 +162,11 @@ export default (CommentBody = ({
 				/>
 
 				<Button
-					size="small"
-					appearance={commentUser != currentUser ? 'ghost' : null}
-					accessoryLeft={commentUser == currentUser ? trashIcon : null}
+					size="medium"
+					appearance={commentUser != currentUser && !admins.has(currentUser) ? 'ghost' : 'ghost'}
+					accessoryLeft={commentUser == currentUser || admins.has(currentUser) ? trashIcon : null}
 					onPress={() => {
-						if (commentUser == currentUser) {
+						if (commentUser != currentUser || admins.has(currentUser)) {
 							Alert.alert(
 								'Confirm Deletion',
 								'Are you sure you want to delete this Comment?',

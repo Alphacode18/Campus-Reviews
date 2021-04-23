@@ -57,9 +57,9 @@ export default function onboardingScreen({ navigation }) {
                   style={{
                     color: 'white',
                     fontWeight: '800',
-                    fontSize: 28,
+                    fontSize: 14,
                     marginBottom: 10,
-                    marginTop: 10,
+                    marginTop: 20,
                   }}
                 >
                   {item.title}
