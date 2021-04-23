@@ -31,6 +31,8 @@ import { HeaderHeightContext } from '@react-navigation/stack';
 import Firebase from '../../config/firebase';
 import { BorderlessButton } from 'react-native-gesture-handler';
 
+const admins = new Set();
+
 const types = [ 'Dining', 'On-Campus Facilities', 'Classes', 'Professors' ];
 
 const rateVal = [ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10' ];
@@ -46,6 +48,11 @@ const trashIcon = (props) => <Icon {...props} name="trash-2" />;
 const editIcon = (props) => <Icon {...props} name="edit-outline" />;
 
 const renderBackAction = () => <TopNavigationAction icon={BackIcon} />;
+
+const initializeAdmins = () => {
+	admins.add('rrajash@purdue.edu');
+	admins.add('seela@purdue.edu');
+};
 
 const Header = ({ props, title, user, date, rate }) => (
 	<View
@@ -104,7 +111,7 @@ const Footer = ({
 
 	const downIcon = (props) => <Icon {...props} name="arrow-downward-outline" />;
 
-	return user == currentUser ? (
+	return user == currentUser || admins.has(currentUser) ? (
 		<React.Fragment>
 			<View style={{ flexDirection: 'row', margin: 3 }}>
 				<View {...props} style={{ flexDirection: 'row', flex: 0.5, margin: 3 }}>
@@ -176,7 +183,10 @@ const Footer = ({
 										text: 'Delete',
 										onPress: () => {
 											Firebase.database().ref(types[index] + ' Reviews/' + review_id).remove();
-											navigation.navigate('ShowReviews');
+											navigation.navigate('Loading', {
+												index: index,
+												postType: 'Reviews'
+											});
 										}
 									}
 								],
@@ -187,15 +197,18 @@ const Footer = ({
 					<Button
 						style={styles.footerControl}
 						size="small"
-						accessoryLeft={editIcon}
+						appearance={currentUser != user ? 'ghost' : null}
+						accessoryLeft={currentUser == user ? editIcon : null}
 						onPress={() => {
-							navigation.navigate('EditReview', {
-								review_title: title,
-								review_text: text,
-								index: index,
-								review_rate: rate,
-								review_id: review_id
-							});
+              if (currentUser == user) {
+								navigation.navigate('EditReview', {
+                  review_title: title,
+                  review_text: text,
+                  index: index,
+                  review_rate: rate,
+                  review_id: review_id
+								});
+							}
 						}}
 					/>
 				</View>
@@ -263,6 +276,7 @@ const Footer = ({
 };
 
 export default (readReview = ({ route, navigation }) => {
+  initializeAdmins();
 	const {
 		title,
 		user,

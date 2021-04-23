@@ -31,10 +31,16 @@ import { HeaderHeightContext } from '@react-navigation/stack';
 import Firebase from '../../config/firebase';
 import CommentBody from './CommentBody.js';
 
+const admins = new Set();
 const types = [ 'Dining', 'On-Campus Facilities', 'Classes', 'Professors' ];
 let comments = [];
 let commentIDs = [];
 const sortVals = [ 'Recent', 'Oldest' ];
+
+const initializeAdmins = () => {
+	admins.add('rrajash@purdue.edu');
+	admins.add('seela@purdue.edu');
+};
 
 const getDisplayTime = (curTime, time) => {
 	const diff = Math.floor((curTime - time) / 1000);
@@ -126,7 +132,7 @@ const Footer = ({
 
 	const downIcon = (props) => <Icon {...props} name="arrow-downward-outline" />;
 
-	return user == currentUser ? (
+	return user == currentUser || admins.has(currentUser) ? (
 		<React.Fragment>
 			<View style={{ flexDirection: 'row', margin: 3 }}>
 				<View {...props} style={{ flexDirection: 'row', flex: 0.5, margin: 3 }}>
@@ -198,7 +204,10 @@ const Footer = ({
 										text: 'Delete',
 										onPress: () => {
 											Firebase.database().ref(types[index] + ' Posts/' + postID).remove();
-											navigation.navigate('ShowPosts');
+											navigation.navigate('Loading', {
+												index: index,
+												postType: 'Posts'
+											});
 										}
 									}
 								],
@@ -209,14 +218,17 @@ const Footer = ({
 					<Button
 						style={styles.footerControl}
 						size="small"
-						accessoryLeft={editIcon}
+						appearance={currentUser != user ? 'ghost' : null}
+						accessoryLeft={currentUser == user ? editIcon : null}
 						onPress={() => {
-							navigation.navigate('EditPost', {
-								title: title,
-								post: post,
-								postID: postID,
-								index: index
-							});
+							if (currentUser == user) {
+								navigation.navigate('EditPost', {
+									title: title,
+									post: post,
+									postID: postID,
+									index: index
+								});
+							}
 						}}
 					/>
 				</View>
@@ -284,6 +296,7 @@ const Footer = ({
 };
 
 export default (readPost = ({ route, navigation }) => {
+	initializeAdmins();
 	const { title, post, postId, user, index, currentUser, upvoteSet, downvoteSet, i, posts, postIDs } = route.params;
 	const screenWidth = Dimensions.get('window').width;
 	const screenHeight = Dimensions.get('window').height;
@@ -531,7 +544,8 @@ export default (readPost = ({ route, navigation }) => {
 									onChangeText={(commentText) => setCommentText(commentText)}
 								/>
 								<Button
-									status="basic"
+									style={{ marginRight: 10 }}
+									appearance={'ghost'}
 									accessoryLeft={plusIcon}
 									onPress={() => {
 										if (!(commentText === '')) {

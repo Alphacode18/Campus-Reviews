@@ -28,7 +28,10 @@ import { HeaderHeightContext } from '@react-navigation/stack';
 import Firebase from '../../config/firebase';
 import { useScrollToTop } from '@react-navigation/native';
 
-const types = ['Dining', 'On-Campus Facilities', 'Classes', 'Professors'];
+
+const admins = new Set();
+
+const types = [ 'Dining', 'On-Campus Facilities', 'Classes', 'Professors' ];
 
 const rateVal = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 
@@ -44,6 +47,11 @@ const plusIcon = (props) => <Icon {...props} name='plus' />;
 const BackIcon = (props) => <Icon {...props} name='arrow-back' />;
 
 const renderBackAction = () => <Icon icon={BackIcon} />;
+
+const initializeAdmins = () => {
+	admins.add('rrajash@purdue.edu');
+	admins.add('seela@purdue.edu');
+};
 
 const renderHeader = () => (
   <Layout

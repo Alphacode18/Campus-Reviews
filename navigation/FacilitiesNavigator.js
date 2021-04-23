@@ -12,70 +12,40 @@ import CreateReview from '../src/screens/CreateReview.js';
 import EditReview from '../src/screens/EditReview.js';
 import ShowReviews from '../src/screens/ShowReviews.js';
 import ReadReview from '../src/screens/ReadReview.js';
+import RoommateProfile from '../src/screens/RoommateProfile.js';
+import AssignPriority from '../src/screens/AssignPriority.js';
+import RoommateHome from '../src/screens/RoommateHome.js';
+import FindRoommates from '../src/screens/FindRoommates.js';
+import ReadRoommateProfile from '../src/screens/ReadRoommateProfile.js';
 
 const Stack = createStackNavigator();
 
 function classNavigator() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name='Buffer'
-        component={Buffer}
-        initialParams={{ index: 1 }}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name='Loading'
-        component={Loading}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name='ShowPosts'
-        component={ShowPosts}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name='CreatePost'
-        component={CreatePost}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name='EditPost'
-        component={EditPost}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name='ReadPost'
-        component={ReadPost}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-          name='CreateReview'
-          component={CreateReview}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name='EditReview'
-          component={EditReview}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name='ShowReviews'
-          component={ShowReviews}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name='ReadReview'
-          component={ReadReview}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name='NewLoading'
-          component={NewLoading}
-          options={{ headerShown: false }}
-        />
-    </Stack.Navigator>
-  );
+	return (
+		<Stack.Navigator>
+			<Stack.Screen
+				name="Buffer"
+				component={Buffer}
+				initialParams={{ index: 1 }}
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen name="Loading" component={Loading} options={{ headerShown: false }} />
+			<Stack.Screen name="ShowPosts" component={ShowPosts} options={{ headerShown: false }} />
+			<Stack.Screen name="CreatePost" component={CreatePost} options={{ headerShown: false }} />
+			<Stack.Screen name="EditPost" component={EditPost} options={{ headerShown: false }} />
+			<Stack.Screen name="ReadPost" component={ReadPost} options={{ headerShown: false }} />
+			<Stack.Screen name="CreateReview" component={CreateReview} options={{ headerShown: false }} />
+			<Stack.Screen name="EditReview" component={EditReview} options={{ headerShown: false }} />
+			<Stack.Screen name="ShowReviews" component={ShowReviews} options={{ headerShown: false }} />
+			<Stack.Screen name="ReadReview" component={ReadReview} options={{ headerShown: false }} />
+			<Stack.Screen name="NewLoading" component={NewLoading} options={{ headerShown: false }} />
+			<Stack.Screen name="RoommateProfile" component={RoommateProfile} options={{ headerShown: false }} />
+			<Stack.Screen name="AssignPriority" component={AssignPriority} options={{ headerShown: false }} />
+			<Stack.Screen name="RoommateHome" component={RoommateHome} options={{ headerShown: false }} />
+			<Stack.Screen name="FindRoommates" component={FindRoommates} options={{ headerShown: false }} />
+			<Stack.Screen name="ReadRoommateProfile" component={ReadRoommateProfile} options={{ headerShown: false }} />
+		</Stack.Navigator>
+	);
 }
 
 export default classNavigator;
