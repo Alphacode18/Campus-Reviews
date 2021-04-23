@@ -321,6 +321,7 @@ const Footer = ({
 export default (showReviews = ({ navigation, route }) => {
 	initializeAdmins();
 	const index = route.params.index;
+	const postType = route.params.postType;
 	let { tempReviews, tempReviewIDs } = route.params;
 	if (tempReviews != undefined && tempReviews.length > 0) {
 		reviews = tempReviews;
@@ -551,7 +552,8 @@ export default (showReviews = ({ navigation, route }) => {
 						}}
 						onPress={() => {
 							navigation.navigate('RoommateHome', {
-								currentUser: currentUser
+								currentUser: currentUser,
+								postType: postType
 							});
 						}}
 					>

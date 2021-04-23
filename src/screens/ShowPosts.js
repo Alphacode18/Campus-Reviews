@@ -337,6 +337,7 @@ const renderIcon = ({ props, navigation }) => (
 export default (showPosts = ({ navigation, route }) => {
 	initializeAdmins();
 	const index = route.params.index;
+	const postType = route.params.postType;
 	const [ selectedIndex, setSelectedIndex ] = React.useState(new IndexPath(0));
 	const [ dispVal, setDispVal ] = React.useState('Votes');
 	console.log('Index path: ');
@@ -581,7 +582,8 @@ export default (showPosts = ({ navigation, route }) => {
 						}}
 						onPress={() => {
 							navigation.navigate('RoommateHome', {
-								currentUser: currentUser
+								currentUser: currentUser,
+								postType: postType
 							});
 						}}
 					>
