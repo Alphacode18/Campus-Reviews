@@ -54,7 +54,7 @@ const Header = ({ props, profileMatch, matchToScoreMap }) => {
 			<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
 				<Text style={{ marginTop: 10 }}>{profileMatch.sex}</Text>
 				<Text style={{ marginTop: 10 }}>
-					{'Similarity: ' + (100 - Math.floor(100 * matchToScoreMap[profileMatch])) + '%'}
+					{'Similarity: ' + (100 - Math.floor(100 * matchToScoreMap[profileMatch.key])) + '%'}
 				</Text>
 			</View>
 		</View>

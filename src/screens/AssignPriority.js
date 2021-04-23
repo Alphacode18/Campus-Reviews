@@ -250,7 +250,8 @@ export default (assignPriority = ({ navigation, route }) => {
 												priority5: t5,
 												priority6: t6,
 												priority7: t7,
-												priority8: t8
+												priority8: t8,
+												key: currentAlias
 											});
 
 											navigation.navigate('RoommateHome', {});

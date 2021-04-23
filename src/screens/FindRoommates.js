@@ -24,26 +24,18 @@ const types = [ 'Dining', 'On-Campus Facilities', 'Classes', 'Professors' ];
 const MAX_SCORE = 576; // summation of 4*4n from 1 to 8
 const THRESHOLD = 0.25; // determines whether score is good enough for a match
 const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
+const matchToScoreMap = new Map();
 
 export default (FindRoommates = ({ navigation, route }) => {
 	const { currentUser, userProfiles, currentUserProfile } = route.params;
-	const matchToScoreMap = new Map();
 	const screenWidth = Dimensions.get('window').width;
 	const screenHeight = Dimensions.get('window').height;
 
-	console.log('in find roommates');
 
 	const calcHeuristic = () => {
-		console.log('userProfiles');
-		//console.log(userProfiles.length);
 		let profileMatches = [];
 		for (let i = 0; i < userProfiles.length; i++) {
-			console.log('in the loop');
-			console.log(currentUserProfile);
 			if (userProfiles[i].isSmoker != currentUserProfile.isSmoker) {
-				console.log('in the smoker if');
-				console.log(userProfiles[i].isSmoker);
-				console.log(currentUserProfile.isSmoker);
 
 				continue;
 			}
@@ -100,15 +92,19 @@ export default (FindRoommates = ({ navigation, route }) => {
 
 			// Minimize "distance" between individuals. Higher score means worse match.
 			let matchScore = (scoreUser + scoreOther) / 2 / MAX_SCORE;
-			console.log('matchScore');
-			console.log(matchScore);
+			console.log("user");
+			console.log(other.key);
 			if (matchScore <= THRESHOLD) {
-				console.log('matchScore');
-				console.log(matchScore);
+				
 				profileMatches.push(other);
-				matchToScoreMap[other] = matchScore;
+				matchToScoreMap[other.key] = matchScore;
+				console.log("match scores");
+				console.log(matchToScoreMap[other.key]);
 			}
+			
 		}
+
+
 
 		return profileMatches;
 	};
@@ -119,7 +115,7 @@ export default (FindRoommates = ({ navigation, route }) => {
 		console.log(profileMatches.length);
 
 		profileMatches.sort(function(a, b) {
-			return matchToScoreMap[b] - matchToScoreMap[a];
+			return matchToScoreMap[b.key] - matchToScoreMap[a.key];
 		});
 
 		return profileMatches.length > 0 ? (
@@ -141,7 +137,7 @@ export default (FindRoommates = ({ navigation, route }) => {
 								>
 									<Text>{profileMatch.name}</Text>
 									<Text>
-										{'Similarity: ' + (100 - Math.floor(100 * matchToScoreMap[profileMatch])) + '%'}
+										{'Similarity: ' + (100 - Math.floor(100 * matchToScoreMap[profileMatch.key])) + '%'}
 									</Text>
 								</View>
 								<Text>{profileMatch.email}</Text>
