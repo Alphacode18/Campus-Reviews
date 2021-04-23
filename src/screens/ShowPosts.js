@@ -85,7 +85,7 @@ const initializeAdmins = () => {
 	admins.add('seela@purdue.edu');
 };
 
-const renderBackAction = () => <TopNavigationAction icon={BackIcon} />;
+//const renderBackAction = () => <TopNavigationAction icon={BackIcon} />;
 const getDisplayTime = (curTime, time) => {
 	const diff = Math.floor((curTime - time) / 1000);
 	let ret = '';

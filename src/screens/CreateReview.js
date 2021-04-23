@@ -5,7 +5,7 @@ import { Dimensions, Alert } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
 
 import Firebase from '../../config/firebase';
-
+import firebase from 'firebase';
 const rateVal = [
     '0',
     '1',
@@ -33,6 +33,11 @@ const useInputState = (initialValue = '') => {
     return { value, onChangeText: setValue };
 };
 
+const dataset = require('./YelpWLData.json');
+
+
+var restArray = [];
+
 export default createReview = ({ navigation, route }) => {
     const index = route.params.index;
     const currentUser = route.params.currentUser;
@@ -42,6 +47,7 @@ export default createReview = ({ navigation, route }) => {
     const [notSelected_type, setNotSelected_type] = useState(true);
     const [selectedIndex_rate, setSelectedIndex_rate] = useState(new IndexPath(0));
     const [notSelected_rate, setNotSelected_rate] = useState(true);
+    const [selectedIndex_rest, setSelectedIndex_rest] = useState("");
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
     const displayValue = typeVal[selectedIndex_type.row];
@@ -56,7 +62,42 @@ export default createReview = ({ navigation, route }) => {
         setSelectedIndex_rate(selectedIndex_rate);
         setNotSelected_rate(false);
     };
-        
+
+    const changeSelect_rest = (selectedIndex_rest) => {
+        setSelectedIndex_rest(selectedIndex_rest);
+    };
+
+      let options = null;
+
+      firebase
+      .database()
+      .ref(`/localRestaurants`).on("value", snapshot => {
+  
+              snapshot.forEach(function(data) {
+              console.log("FireBase comp: ", data.toJSON().name);
+                      // data.toJSON.name
+  
+              restArray.push(data.toJSON().name);
+                                          
+  
+              })
+              console.log(restArray);
+  
+              //console.log("FireB ",snapshot.forEach)
+      })
+  
+      const dVal = restArray[selectedIndex_rest.row];
+  
+      const renderOption = (title) => (
+          <SelectItem title={title}/>
+      );
+  
+  
+      if (restArray) {
+          console.log("mapped done");
+          
+      }
+
     return (
         <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -76,6 +117,16 @@ export default createReview = ({ navigation, route }) => {
                             <SelectItem title='Classes'/>
                             <SelectItem title='Professors'/>
                         </Select>
+
+                        <Select
+                            style={{width: '90%'}}
+                            placeholder='Default'
+                            value={dVal}
+                            selectedIndex={selectedIndex_rest}
+                            onSelect={index => setSelectedIndex_rest(index)}>
+                            {restArray.map(renderOption)}
+                        </Select>
+
                         <Input
                             style={{width: '90%', paddingTop : 10}}
                             size='medium'
@@ -132,7 +183,8 @@ export default createReview = ({ navigation, route }) => {
                                         edited_time: datetime,
                                         votes: 0,
                                         upvoteSet: {temp: true},
-                                        downvoteSet: {temp: true}
+                                        downvoteSet: {temp: true},
+                                        restaurant_id: (selectedIndex_rest.row),
                                     });
 
                                     navigation.navigate('Loading', {

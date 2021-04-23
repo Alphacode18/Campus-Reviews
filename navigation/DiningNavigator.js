@@ -17,6 +17,7 @@ import AssignPriority from '../src/screens/AssignPriority.js';
 import RoommateHome from '../src/screens/RoommateHome.js';
 import FindRoommates from '../src/screens/FindRoommates.js';
 import ReadRoommateProfile from '../src/screens/ReadRoommateProfile.js';
+import foodRec from '../src/screens/foodRec.js';
 
 const Stack = createStackNavigator();
 
@@ -31,6 +32,7 @@ function diningNavigator() {
 			/>
 
 			<Stack.Screen name="Loading" component={Loading} options={{ headerShown: false }} />
+			<Stack.Screen name='rec' component={foodRec} options={{ headerShown: false }}/>
 			<Stack.Screen name="ShowPosts" component={ShowPosts} options={{ headerShown: false }} />
 			<Stack.Screen name="CreatePost" component={CreatePost} options={{ headerShown: false }} />
 			<Stack.Screen name="EditPost" component={EditPost} options={{ headerShown: false }} />
