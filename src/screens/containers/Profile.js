@@ -241,7 +241,7 @@ export default ProfileScreen = ({ navigation }) => {
         </Button>
 
         <Anchor4
-          href="mailto:praksht@purdue.edu?subject=You were banned from Campus Reviewst&body=You were banned because\n"// add purdue username right before @purdue.edu
+          href="mailto:prakasht@purdue.edu?subject=You were banned from Campus Reviewst&body=You were banned because\n"// add purdue username right before @purdue.edu
           title='Email Expo'
         />
 
