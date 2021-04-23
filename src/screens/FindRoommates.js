@@ -115,7 +115,7 @@ export default (FindRoommates = ({ navigation, route }) => {
 		console.log(profileMatches.length);
 
 		profileMatches.sort(function(a, b) {
-			return matchToScoreMap[b.key] - matchToScoreMap[a.key];
+			return matchToScoreMap[a.key] - matchToScoreMap[b.key];
 		});
 
 		return profileMatches.length > 0 ? (
