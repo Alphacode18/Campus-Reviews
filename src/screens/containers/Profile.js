@@ -3,7 +3,7 @@ import { Layout, Text, Button, Spinner, CheckBox } from '@ui-kitten/components';
 import firebase, { db } from '../../../config/firebase';
 import { Alert } from 'react-native';
 import { ThemeContext } from '../../../theme-context';
-
+import * as WebBrowser from 'expo-web-browser';
 import * as Linking from 'expo-linking';
 import {
   StyleSheet,
@@ -19,6 +19,7 @@ import { Input, Icon, Card, Modal } from '@ui-kitten/components';
 const user = firebase.auth().currentUser;
 
 export default ProfileScreen = ({ navigation }) => {
+  const [result, setResult] = useState(null);
   const [currentEmail, setCurrentEmail] = useState('');
   const [newEmail, setNewEmail] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
@@ -32,6 +33,10 @@ export default ProfileScreen = ({ navigation }) => {
   const screenWidth = Dimensions.get('window').width;
   const themeContext = useContext(ThemeContext);
   // const firebase = require('firebase');
+  const _handlePressButtonAsync = async () => {
+    let result = await WebBrowser.openBrowserAsync('https://console.firebase.google.com/u/2/project/campus-reviews-e74e0/overview');
+    setResult(result);
+  };
   const handleLogout = () => {
     firebase
       .auth()
@@ -214,6 +219,11 @@ export default ProfileScreen = ({ navigation }) => {
           appearance='outline'
         >
           <Text>Change Email</Text>
+        </Button>
+        <Button
+        onPress={_handlePressButtonAsync}
+        >
+          <Text>Ban User</Text>
         </Button>
 
         <Anchor
