@@ -122,7 +122,7 @@ export default (FindRoommates = ({ navigation, route }) => {
 			<React.Fragment>
 				{profileMatches.map(function(profileMatch, i) {
 					return (
-						<Layout style={styles.container} level={'1'}>
+						<Layout level={'1'}>
 							<Card
 								style={{ minWidth: 0.95 * screenWidth }}
 								onPress={() => {
