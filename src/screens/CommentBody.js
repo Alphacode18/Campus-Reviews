@@ -166,7 +166,7 @@ export default (CommentBody = ({
 					appearance={commentUser != currentUser && !admins.has(currentUser) ? 'ghost' : 'ghost'}
 					accessoryLeft={commentUser == currentUser || admins.has(currentUser) ? trashIcon : null}
 					onPress={() => {
-						if (commentUser != currentUser || admins.has(currentUser)) {
+						if (commentUser == currentUser || admins.has(currentUser)) {
 							Alert.alert(
 								'Confirm Deletion',
 								'Are you sure you want to delete this Comment?',

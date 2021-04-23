@@ -170,7 +170,7 @@ export default foodRec = ({route, navigation}) =>  {
   
 	return (
     		<Layout style={styles.container} level={'1'}>
-            <Text style={styles.title}> Your Top 5 Custom Recommendations </Text>
+            <Text style={styles.title}> Your Top 10 Custom Recommendations </Text>
             <List
 								style={{ maxWidth: screenWidth, maxHeight: screenHeight,}}
 								data={a}

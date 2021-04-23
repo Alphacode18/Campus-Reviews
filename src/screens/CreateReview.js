@@ -6,6 +6,7 @@ import { HeaderHeightContext } from '@react-navigation/stack';
 
 import Firebase from '../../config/firebase';
 import firebase from 'firebase';
+import { PropsService } from '@ui-kitten/components/devsupport';
 const rateVal = [
     '0',
     '1',
@@ -118,14 +119,18 @@ export default createReview = ({ navigation, route }) => {
                             <SelectItem title='Professors'/>
                         </Select>
 
-                        <Select
+                        
+
+                        {index == 0 ? <Select
                             style={{width: '90%'}}
                             placeholder='Default'
                             value={dVal}
                             selectedIndex={selectedIndex_rest}
                             onSelect={index => setSelectedIndex_rest(index)}>
                             {restArray.map(renderOption)}
-                        </Select>
+                        </Select> : console.log("not dining") } 
+
+                        
 
                         <Input
                             style={{width: '90%', paddingTop : 10}}
@@ -173,19 +178,37 @@ export default createReview = ({ navigation, route }) => {
                                 else {
                                     const today = new Date();
                                     const datetime = today.getTime();
-                                    Firebase.database().ref('/' + typeVal[selectedIndex_type.row] + ' Reviews').push({
-                                        review_title: review_title,
-                                        review_rate: (selectedIndex_rate.row),
-                                        review_text: review_text,
-                                        user: currentUser,
-                                        date_time: datetime,
-                                        edited: false,
-                                        edited_time: datetime,
-                                        votes: 0,
-                                        upvoteSet: {temp: true},
-                                        downvoteSet: {temp: true},
-                                        restaurant_id: (selectedIndex_rest.row),
-                                    });
+
+                                    if (index == 0) {
+                                        Firebase.database().ref('/' + typeVal[selectedIndex_type.row] + ' Reviews').push({
+                                            review_title: review_title,
+                                            review_rate: (selectedIndex_rate.row),
+                                            review_text: review_text,
+                                            user: currentUser,
+                                            date_time: datetime,
+                                            edited: false,
+                                            edited_time: datetime,
+                                            votes: 0,
+                                            upvoteSet: {temp: true},
+                                            downvoteSet: {temp: true},
+                                            restaurant_id: (selectedIndex_rest.row),
+                                        });
+                                    } else {
+                                        Firebase.database().ref('/' + typeVal[selectedIndex_type.row] + ' Reviews').push({
+                                            review_title: review_title,
+                                            review_rate: (selectedIndex_rate.row),
+                                            review_text: review_text,
+                                            user: currentUser,
+                                            date_time: datetime,
+                                            edited: false,
+                                            edited_time: datetime,
+                                            votes: 0,
+                                            upvoteSet: {temp: true},
+                                            downvoteSet: {temp: true},
+                                        
+                                        });
+                                    }
+                                    
 
                                     navigation.navigate('Loading', {
                                         index: index,
