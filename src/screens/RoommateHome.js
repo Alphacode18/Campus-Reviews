@@ -1,4 +1,4 @@
-import React, { useState, ReactDOM, useReducer, useEffect } from 'react';
+import React, { useState, ReactDOM, useReducer, useEffect, useFocusEffect } from 'react';
 import {
 	StyleSheet,
 	TouchableWithoutFeedback,
@@ -16,7 +16,7 @@ import InputScrollView from 'react-native-input-scroll-view';
 import { Dimensions } from 'react-native';
 import { HeaderHeightContext } from '@react-navigation/stack';
 import Firebase from '../../config/firebase';
-import { useScrollToTop } from '@react-navigation/native';
+import { useScrollToTop, useIsFocused } from '@react-navigation/native';
 import { render } from 'react-dom';
 
 const types = [ 'Dining', 'On-Campus Facilities', 'Classes', 'Professors' ];
@@ -24,31 +24,42 @@ let profileKeys = [];
 let profileNames = [];
 let userProfiles = [];
 
+const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
+
 export default (roommateHome = ({ navigation, route }) => {
+	const isFocused = useIsFocused();
 	const currentUser = route.params.currentUser;
 	let currentUserProfile = null;
 	let currentAlias = currentUser.substr(0, currentUser.indexOf('@'));
 	const [ profiles, setProfiles ] = useState([]);
 	const ref = Firebase.database().ref('/Roommate Profile');
+	const screenWidth = Dimensions.get('window').width;
+	const screenHeight = Dimensions.get('window').height;
+	console.log('home roommate');
 
-	useEffect(() => {
-		ref.on('value', (snapshot) => {
-			let n = profiles.length;
-			for (let i = 0; i < n; i++) {
-				profiles.pop();
-			}
-			snapshot.forEach(function(data) {
-				if (data.key === currentAlias) {
-					currentUserProfile = data.toJSON();
-				} else {
-					profileNames.push(data.key);
-					setProfiles((profiles) => [ ...profiles, data.toJSON() ]);
+	useEffect(
+		() => {
+			ref.on('value', (snapshot) => {
+				let n = profiles.length;
+				for (let i = 0; i < n; i++) {
+					profiles.pop();
 				}
+				snapshot.forEach(function(data) {
+					if (data.key === currentAlias) {
+						currentUserProfile = data.toJSON();
+					} else {
+						profileNames.push(data.key);
+						setProfiles((profiles) => [ ...profiles, data.toJSON() ]);
+					}
+				});
+
+				ref.off();
 			});
 
-			ref.off();
-		});
-	}, []);
+			return;
+		},
+		[ isFocused ]
+	);
 
 	for (let i = 0; i < profiles.length; i++) {
 		for (let key in profiles[i]) {
@@ -64,60 +75,79 @@ export default (roommateHome = ({ navigation, route }) => {
 
 	return (
 		<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-			<Layout style={styles.container} level={'1'}>
+			<Layout style={{ flex: 1 }} level={'1'}>
 				<Button
-					onPress={() => {
-						if (currentUserProfile == null) {
-							navigation.navigate('RoommateProfile', {
-								currentUser: currentUser
-							});
-						} else {
-							let cKey = '';
-							for (let key in currentUserProfile) {
-								console.log('key');
-								console.log(key);
-								cKey = key;
-								console.log(currentUserProfile[key]);
-								currentUserProfile = currentUserProfile[key];
-							}
-							navigation.navigate('RoommateProfile', {
-								currentUser: currentUser,
-								currentUserProfile: currentUserProfile,
-								key: cKey
-							});
-						}
+					title="Back"
+					appearance={'ghost'}
+					size={'large'}
+					style={{
+						justifyContent: 'left',
+						marginLeft: 0.02 * screenWidth,
+						marginTop: 0.05 * screenHeight,
+						maxWidth: 0.2 * screenWidth,
+						maxHeight: 0.1 * screenHeight,
+						marginRight: 0.8 * screenWidth
 					}}
-				>
-					{' '}
-					Profile{' '}
-				</Button>
-				<Button
-					style={{ marginTop: 20 }}
+					accessoryLeft={BackIcon}
 					onPress={() => {
-						//console.log("userProfiles");
-						//console.log(currentUserProfile.isSmoker);
-						if (currentUserProfile != null) {
-							for (let key in currentUserProfile) {
-								console.log('key');
-								console.log(key);
-								console.log(currentUserProfile[key]);
-								currentUserProfile = currentUserProfile[key];
-							}
-							console.log('userProfiles -- ismoker');
-							console.log(currentUserProfile.isSmoker);
-							navigation.navigate('FindRoommates', {
-								currentUser: currentUser,
-								userProfiles: userProfiles,
-								currentUserProfile: currentUserProfile
-							});
-						} else {
-							Alert.alert('Please make a profile first so we can match you.');
-						}
+						navigation.navigate('ShowPosts');
 					}}
-				>
-					{' '}
-					Find Roommates{' '}
-				</Button>
+				/>
+				<View style={styles.container}>
+					<Button
+						onPress={() => {
+							if (currentUserProfile == null) {
+								navigation.navigate('RoommateProfile', {
+									currentUser: currentUser
+								});
+							} else {
+								let cKey = '';
+								for (let key in currentUserProfile) {
+									console.log('key');
+									console.log(key);
+									cKey = key;
+									console.log(currentUserProfile[key]);
+									currentUserProfile = currentUserProfile[key];
+								}
+								navigation.navigate('RoommateProfile', {
+									currentUser: currentUser,
+									currentUserProfile: currentUserProfile,
+									key: cKey
+								});
+							}
+						}}
+					>
+						{' '}
+						Profile{' '}
+					</Button>
+					<Button
+						style={{ marginTop: 20 }}
+						onPress={() => {
+							//console.log("userProfiles");
+							//console.log(currentUserProfile.isSmoker);
+							if (currentUserProfile != null) {
+								for (let key in currentUserProfile) {
+									console.log('key');
+									console.log(key);
+									console.log(currentUserProfile[key]);
+									currentUserProfile = currentUserProfile[key];
+								}
+								console.log('userProfiles -- ismoker');
+								console.log(currentUserProfile.isSmoker);
+								navigation.navigate('FindRoommates', {
+									currentUser: currentUser,
+									userProfiles: userProfiles,
+									currentUserProfile: currentUserProfile
+								});
+							} else {
+								Alert.alert('Please make a profile first so we can match you.');
+							}
+						}}
+					>
+						{' '}
+						Find Roommates{' '}
+					</Button>
+				</View>
 			</Layout>
 		</TouchableWithoutFeedback>
 	);

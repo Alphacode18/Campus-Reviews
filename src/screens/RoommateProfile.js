@@ -44,6 +44,7 @@ const questions = [
 	[ 'Very messy', 'Slightly messy', 'In the middle', 'Slightly neat', 'Very neat' ]
 ];
 
+const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 const ExitIcon = (props) => <Icon {...props} name="close-outline" />;
 const trashIcon = (props) => <Icon {...props} name="trash-2" />;
 
@@ -144,18 +145,26 @@ export default (roommateProfile = ({ navigation, route }) => {
 					<View contentContainerStyle={{ flex: 1, height: screenHeight }}>
 						<View style={{ flexDirection: 'row' }}>
 							<Button
-								style={{ marginLeft: 0.03 * screenWidth }}
-								status="basic"
-								onPress={() => navigation.navigate('Buffer')}
-							>
-								{' '}
-								Back{' '}
-							</Button>
+								title="Back"
+								appearance={'ghost'}
+								size={'large'}
+								style={{
+									maxHeight: 0.1 * screenHeight,
+									marginLeft: 10
+								}}
+								accessoryLeft={BackIcon}
+								onPress={() => {
+									navigation.navigate('RoommateHome', {
+										currentUser: currentUser
+									});
+								}}
+							/>
 							<Button
 								style={{ marginLeft: 0.6 * screenWidth }}
-								size="small"
+								size={'large'}
+								appearance={'ghost'}
 								accessoryLeft={trashIcon}
-								status="basic"
+								status="danger"
 								onPress={() => {
 									Alert.alert(
 										'Confirm Deletion',

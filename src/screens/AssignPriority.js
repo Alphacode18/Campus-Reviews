@@ -240,7 +240,7 @@ export default (assignPriority = ({ navigation, route }) => {
 												priority8: t8
 											});
 
-											navigation.navigate('Buffer');
+											navigation.navigate('RoommateHome', {});
 										} else {
 											Alert.alert('Please fill in all fields with unique numbers from 1-8.');
 										}

@@ -8,7 +8,8 @@ import {
 	KeyboardAvoidingView,
 	View,
 	TouchableOpacity,
-	Alert
+	Alert,
+	SafeAreaView
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {
@@ -510,6 +511,69 @@ export default (showPosts = ({ navigation, route }) => {
 		);
 	};
 
+	const ButtonFR = () => {
+		if (index == 1) {
+			return (
+				<View style={{ flexDirection: 'row' }}>
+					<Button
+						title="Back"
+						appearance={'ghost'}
+						size={'large'}
+						style={{
+							justifyContent: 'left',
+							marginLeft: 0.02 * screenWidth,
+							marginTop: 0.1 * screenHeight,
+							maxWidth: 0.1 * screenWidth,
+							minHeight: 0.1 * screenHeight,
+							marginRight: 0.3 * screenWidth
+						}}
+						accessoryLeft={BackIcon}
+						onPress={() => {
+							navigation.navigate('Buffer');
+						}}
+					/>
+					<Button
+						style={{
+							justifyContent: 'left',
+							marginLeft: 0.02 * screenWidth,
+							marginTop: 0.12 * screenHeight,
+							maxWidth: 0.5 * screenWidth,
+							maxHeight: 0.05 * screenHeight
+						}}
+						onPress={() => {
+							navigation.navigate('RoommateHome', {
+								currentUser: currentUser
+							});
+						}}
+					>
+						{' '}
+						Find Roommates{' '}
+					</Button>
+				</View>
+			);
+		} else {
+			return (
+				<Button
+					title="Back"
+					appearance={'ghost'}
+					size={'large'}
+					style={{
+						justifyContent: 'left',
+						marginLeft: 0.02 * screenWidth,
+						marginTop: 0.1 * screenHeight,
+						maxWidth: 0.2 * screenWidth,
+						maxHeight: 0.1 * screenHeight,
+						marginRight: 0.8 * screenWidth
+					}}
+					accessoryLeft={BackIcon}
+					onPress={() => {
+						navigation.navigate('Buffer');
+					}}
+				/>
+			);
+		}
+	};
+
 	return (
 		<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
 			<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -522,26 +586,11 @@ export default (showPosts = ({ navigation, route }) => {
 							justifyContent: 'center'
 						}}
 					>
-						<Button
-							title="Back"
-							appearance={'ghost'}
-							size={'large'}
-							style={{
-								justifyContent: 'left',
-								marginLeft: 0.02 * screenWidth,
-								marginTop: 0.05 * screenHeight,
-								maxWidth: 0.1 * screenWidth,
-								maxHeight: 0.1 * screenHeight
-							}}
-							accessoryLeft={BackIcon}
-							onPress={() => {
-								navigation.navigate('Buffer');
-							}}
-						/>
+						<ButtonFR />
 
 						<Text
 							style={{
-								marginTop: 50,
+								marginTop: 30,
 								marginBottom: 20,
 								fontSize: 36,
 								marginHorizontal: 2
@@ -603,16 +652,7 @@ export default (showPosts = ({ navigation, route }) => {
 								}}
 							/>
 						</Select>
-						<Button
-							onPress={() => {
-								navigation.navigate('RoommateHome', {
-									currentUser: currentUser
-								});
-							}}
-						>
-							{' '}
-							Create Roommate Profile{' '}
-						</Button>
+
 						<TouchableOpacity>
 							<List
 								style={{ maxHeight: 0.6 * screenHeight }}

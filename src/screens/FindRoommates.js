@@ -23,6 +23,7 @@ import { render } from 'react-dom';
 const types = [ 'Dining', 'On-Campus Facilities', 'Classes', 'Professors' ];
 const MAX_SCORE = 576; // summation of 4*4n from 1 to 8
 const THRESHOLD = 0.25; // determines whether score is good enough for a match
+const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
 
 export default (FindRoommates = ({ navigation, route }) => {
 	const { currentUser, userProfiles, currentUserProfile } = route.params;
@@ -101,7 +102,7 @@ export default (FindRoommates = ({ navigation, route }) => {
 			let matchScore = (scoreUser + scoreOther) / 2 / MAX_SCORE;
 			console.log('matchScore');
 			console.log(matchScore);
-			if (matchScore <= 0.25) {
+			if (matchScore <= THRESHOLD) {
 				console.log('matchScore');
 				console.log(matchScore);
 				profileMatches.push(other);
@@ -171,13 +172,21 @@ export default (FindRoommates = ({ navigation, route }) => {
 			<Layout style={styles.container} level={'1'}>
 				<SafeAreaView>
 					<Button
-						status="basic"
-						style={{ maxWidth: 0.3 * screenWidth, maxHeight: 0.1 * screenHeight }}
-						onPress={() => navigation.navigate('Buffer')}
-					>
-						{' '}
-						Back{' '}
-					</Button>
+						title="Back"
+						appearance={'ghost'}
+						size={'large'}
+						style={{
+							maxHeight: 0.1 * screenHeight,
+							marginRight: 0.8 * screenWidth
+						}}
+						accessoryLeft={BackIcon}
+						onPress={() => {
+							navigation.navigate('RoommateHome', {
+								currentUser: currentUser
+							});
+						}}
+					/>
+
 					<Text
 						style={{
 							marginTop: 50,
