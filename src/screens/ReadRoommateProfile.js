@@ -33,6 +33,8 @@ import Firebase from '../../config/firebase';
 import { useScrollToTop } from '@react-navigation/native';
 import { render } from 'react-dom';
 
+const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
+
 const questions = [
 	[ 'Before 11pm', '11pm-12am', '12am-1am', '1am-2am', 'After 2am' ],
 	[ 'None', '0-1hr', '1-3hrs', '3-5hrs', 'Over 5hrs' ],
@@ -85,6 +87,20 @@ export default (readRoommateProfile = ({ route, navigation }) => {
 								alignItems: 'center'
 							}}
 						>
+							<Button
+								title="Back"
+								appearance={'ghost'}
+								size={'large'}
+								style={{
+									maxHeight: 0.1 * screenHeight,
+									marginRight: 0.8 * screenWidth
+								}}
+								accessoryLeft={BackIcon}
+								onPress={() => {
+									navigation.navigate('FindRoommates', {
+									});
+								}}
+							/>
 							<Card
 								style={{ minWidth: 0.95 * screenWidth }}
 								header={(props) => (

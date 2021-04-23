@@ -30,6 +30,8 @@ import Slider from '@react-native-community/slider';
 import { HeaderHeightContext } from '@react-navigation/stack';
 import Firebase from '../../config/firebase';
 
+const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
+
 export default (assignPriority = ({ navigation, route }) => {
 	const {
 		currentUser,
@@ -53,6 +55,7 @@ export default (assignPriority = ({ navigation, route }) => {
 	} = route.params;
 	const screenWidth = Dimensions.get('window').width;
 	const screenHeight = Dimensions.get('window').height;
+
 
 	let cT1 = '';
 	let cT2 = '';
@@ -139,10 +142,20 @@ export default (assignPriority = ({ navigation, route }) => {
 								alignItems: 'center'
 							}}
 						>
-							<Button status="basic" onPress={() => navigation.navigate('RoommateProfile')}>
-								{' '}
-								Back{' '}
-							</Button>
+							<Button
+								title="Back"
+								appearance={'ghost'}
+								size={'large'}
+								style={{
+									maxHeight: 0.1 * screenHeight,
+									marginRight: 0.8 * screenWidth
+								}}
+								accessoryLeft={BackIcon}
+								onPress={() => {
+									navigation.navigate('RoommateProfile', {
+									});
+								}}
+							/>
 
 							<View style={{ justifyContent: 'center', marginTop: 20 }}>
 								<Text style={{ fontSize: 16 }}>
